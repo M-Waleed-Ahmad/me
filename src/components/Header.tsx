@@ -32,7 +32,7 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2.5 font-mono text-sm tracking-widest text-text-primary hover:text-accent transition-colors flex-shrink-0"
         >
-          <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-accent" />
           <span className="font-semibold hidden sm:inline">WALEED AHMAD</span>
           <span className="font-semibold sm:hidden">WA</span>
           <span className="text-text-muted font-normal hidden md:inline">{'// WORKSPACE'}</span>

@@ -22,9 +22,9 @@ import {
 const typeMeta: Record<WorkspaceNode['type'], { label: string; icon: React.ElementType; className: string }> = {
   pillar: { label: 'Pillar', icon: Hash, className: 'text-accent' },
   project: { label: 'Project', icon: Layers, className: 'text-text-primary' },
-  technology: { label: 'Technology', icon: Code2, className: 'text-sky-400' },
-  concept: { label: 'Concept', icon: Zap, className: 'text-violet-400' },
-  experience: { label: 'Experience', icon: Briefcase, className: 'text-amber-400' },
+  technology: { label: 'Technology', icon: Code2, className: 'text-accent' },
+  concept: { label: 'Concept', icon: Zap, className: 'text-accent' },
+  experience: { label: 'Experience', icon: Briefcase, className: 'text-accent' },
 };
 
 const pillarLabels: Record<string, string> = {

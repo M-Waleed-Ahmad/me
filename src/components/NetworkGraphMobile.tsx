@@ -1,29 +1,34 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { WorkspaceNode } from '@/data/workspaceData';
 
 interface NetworkGraphMobileProps {
   nodes: WorkspaceNode[];
+  onReady?: () => void;
 }
 
 const pillarColors: Record<string, string> = {
-  products:     'border-emerald-500/40 text-emerald-400',
-  systems:      'border-blue-500/30 text-blue-400',
-  intelligence: 'border-violet-500/30 text-violet-400',
+  products:     'border-accent/40 text-accent',
+  systems:      'border-accent/35 text-accent',
+  intelligence: 'border-accent/30 text-accent',
 };
 
 const pillarBg: Record<string, string> = {
-  products:     'bg-emerald-500/5',
-  systems:      'bg-blue-500/5',
-  intelligence: 'bg-violet-500/5',
+  products:     'bg-accent/5',
+  systems:      'bg-accent/5',
+  intelligence: 'bg-accent/5',
 };
 
-export default function NetworkGraphMobile({ nodes }: NetworkGraphMobileProps) {
+export default function NetworkGraphMobile({ nodes, onReady }: NetworkGraphMobileProps) {
   const pillars = nodes.filter(n => n.type === 'pillar');
   const projects = nodes.filter(n => n.type === 'project');
   const techNodes = nodes.filter(n => n.type === 'technology').slice(0, 8);
+
+  useEffect(() => {
+    onReady?.();
+  }, [onReady]);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-4 py-8 overflow-auto">

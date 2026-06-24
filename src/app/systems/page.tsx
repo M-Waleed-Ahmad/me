@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Blocks,
@@ -244,14 +244,17 @@ function AutomationShowcase() {
 function CicdShowcase() {
   const [active, setActive] = useState(0);
   const activeStage = pipelineStages[active];
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) return;
+
     const timer = window.setInterval(() => {
       setActive((current) => (current + 1) % pipelineStages.length);
     }, 3600);
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <section id="cicd" className="scroll-mt-24 space-y-6 border-t border-border-muted pt-10">
@@ -295,7 +298,7 @@ function CicdShowcase() {
                 <motion.span
                   aria-hidden
                   animate={{ width: isActive ? '100%' : isPast ? '100%' : '0%' }}
-                  transition={{ duration: isActive ? 3.4 : 0.25, ease: 'linear' }}
+                  transition={{ duration: reduceMotion ? 0 : isActive ? 3.4 : 0.25, ease: 'linear' }}
                   className="absolute bottom-0 left-0 h-0.5 bg-accent"
                 />
               </button>

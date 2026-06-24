@@ -45,11 +45,10 @@ const BUILT_ROUTES = new Set([
 const PILLAR_META: Record<Exclude<MenuLevel, 'main'>, {
   icon: React.ElementType;
   label: string;
-  color: string;
 }> = {
-  products:     { icon: Layers, label: 'Products Pillar',     color: 'text-emerald-400' },
-  systems:      { icon: Code2,  label: 'Systems Pillar',      color: 'text-sky-400' },
-  intelligence: { icon: Cpu,    label: 'Intelligence Pillar', color: 'text-violet-400' },
+  products:     { icon: Layers, label: 'Products Pillar' },
+  systems:      { icon: Code2,  label: 'Systems Pillar' },
+  intelligence: { icon: Cpu,    label: 'Intelligence Pillar' },
 };
 
 export default function Navigator() {
@@ -195,7 +194,7 @@ export default function Navigator() {
                           >
                             <div className="flex items-center gap-3">
                               <div className="p-1.5 rounded bg-bg-panel border border-border-muted group-hover:border-border-focus transition-colors">
-                                <Icon className={`w-4 h-4 text-text-secondary group-hover:${meta.color.replace('text-', 'text-')} transition-colors`} />
+                                <Icon className="w-4 h-4 text-text-secondary transition-colors group-hover:text-accent" />
                               </div>
                               <div>
                                 <div className="text-sm font-semibold text-text-primary capitalize">

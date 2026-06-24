@@ -195,11 +195,11 @@ export function Tradeoff({ decision, pro, con }: { decision: string; pro: string
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border-muted">
         <div className="px-4 py-3 space-y-1">
-          <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider">↑ Gained</span>
+          <span className="text-[10px] font-mono text-accent uppercase tracking-wider">↑ Gained</span>
           <p className="text-xs text-text-secondary leading-relaxed">{pro}</p>
         </div>
         <div className="px-4 py-3 space-y-1">
-          <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">↓ Accepted</span>
+          <span className="text-[10px] font-mono text-text-muted uppercase tracking-wider">↓ Accepted</span>
           <p className="text-xs text-text-secondary leading-relaxed">{con}</p>
         </div>
       </div>

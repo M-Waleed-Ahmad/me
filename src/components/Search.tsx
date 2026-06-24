@@ -11,15 +11,15 @@ import { workspaceNodes, WorkspaceNode } from '@/data/workspaceData';
 const TYPE_META: Record<WorkspaceNode['type'], { label: string; icon: React.ElementType; color: string }> = {
   pillar:     { label: 'Pillar',     icon: Hash,     color: 'text-accent' },
   project:    { label: 'Project',    icon: Layers,   color: 'text-text-primary' },
-  technology: { label: 'Technology', icon: Code2,    color: 'text-sky-400' },
-  concept:    { label: 'Concept',    icon: Zap,      color: 'text-violet-400' },
-  experience: { label: 'Experience', icon: Briefcase,color: 'text-amber-400' },
+  technology: { label: 'Technology', icon: Code2,    color: 'text-accent' },
+  concept:    { label: 'Concept',    icon: Zap,      color: 'text-accent' },
+  experience: { label: 'Experience', icon: Briefcase,color: 'text-accent' },
 };
 
 const PILLAR_META: Record<string, { icon: React.ElementType; color: string }> = {
-  products:     { icon: Layers, color: 'text-emerald-400' },
-  systems:      { icon: Code2,  color: 'text-sky-400' },
-  intelligence: { icon: Cpu,    color: 'text-violet-400' },
+  products:     { icon: Layers, color: 'text-accent' },
+  systems:      { icon: Code2,  color: 'text-accent' },
+  intelligence: { icon: Cpu,    color: 'text-accent' },
 };
 
 // ─── Fuzzy scorer ────────────────────────────────────────────────────────────

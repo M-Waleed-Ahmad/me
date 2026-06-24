@@ -21,6 +21,8 @@ interface SimLink {
 interface NetworkGraphProps {
   nodes: WorkspaceNode[];
   edges: WorkspaceEdge[];
+  onReady?: () => void;
+  reduceMotion?: boolean;
 }
 
 const NODE_CONFIG: Record<WorkspaceNode['type'], { radius: number; color: string; labelColor: string }> = {
@@ -31,12 +33,13 @@ const NODE_CONFIG: Record<WorkspaceNode['type'], { radius: number; color: string
   experience:  { radius: 10, color: '#111111', labelColor: '#86868b' },
 };
 
-export default function NetworkGraph({ nodes, edges }: NetworkGraphProps) {
+export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = false }: NetworkGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredNode, setHoveredNode] = useState<WorkspaceNode | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const simulationRef = useRef<d3.Simulation<SimNode, SimLink> | null>(null);
+  const readyRef = useRef(false);
   const router = useRouter();
 
   const handleNodeClick = useCallback((node: SimNode) => {
@@ -45,6 +48,7 @@ export default function NetworkGraph({ nodes, edges }: NetworkGraphProps) {
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
+    readyRef.current = false;
 
     const container = containerRef.current;
     const width = container.clientWidth;
@@ -101,8 +105,8 @@ export default function NetworkGraph({ nodes, edges }: NetworkGraphProps) {
         const n = d as SimNode;
         return NODE_CONFIG[n.type].radius + 18;
       }))
-      .alphaDecay(0.012)       // very slow decay — gentle drift
-      .velocityDecay(0.55);    // heavy damping — no bouncing
+      .alphaDecay(reduceMotion ? 0.9 : 0.012)
+      .velocityDecay(reduceMotion ? 0.9 : 0.55);
 
     simulationRef.current = simulation;
 
@@ -194,6 +198,12 @@ export default function NetworkGraph({ nodes, edges }: NetworkGraphProps) {
 
     // Tick
     simulation.on('tick', () => {
+      if (!readyRef.current) {
+        readyRef.current = true;
+        onReady?.();
+        if (reduceMotion) simulation.stop();
+      }
+
       link
         .attr('x1', d => (d.source as SimNode).x!)
         .attr('y1', d => (d.source as SimNode).y!)
@@ -216,7 +226,7 @@ export default function NetworkGraph({ nodes, edges }: NetworkGraphProps) {
       simulation.stop();
       ro.disconnect();
     };
-  }, [nodes, edges, handleNodeClick]);
+  }, [nodes, edges, handleNodeClick, onReady, reduceMotion]);
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full">

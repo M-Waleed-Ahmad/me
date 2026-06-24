@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Compass, Zap, GitBranch, Cpu, Package } from 'lucide-react';
 import { useNavigator } from '@/context/NavigatorContext';
 import { workspaceNodes, workspaceEdges } from '@/data/workspaceData';
@@ -12,11 +12,7 @@ import WorkspaceMap from '@/components/WorkspaceMap';
 // Dynamic imports — NetworkGraph loads only on client, avoiding SSR issues with D3
 const NetworkGraph = dynamic(() => import('@/components/NetworkGraph'), {
   ssr: false,
-  loading: () => (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="w-1 h-1 rounded-full bg-accent animate-ping" />
-    </div>
-  ),
+  loading: () => null,
 });
 
 const NetworkGraphMobile = dynamic(() => import('@/components/NetworkGraphMobile'), {
@@ -30,10 +26,26 @@ const FOCUS_ITEMS = [
   { icon: Cpu, label: 'Applied AI / LLMs' },
 ];
 
+const DESKTOP_BOOT_STATES = [
+  'Opening workspace...',
+  'Mapping connections...',
+  'Workspace ready.',
+];
+
+const MOBILE_BOOT_STATES = [
+  'Opening workspace...',
+  'Workspace ready.',
+];
+
 export default function Home() {
   const { openNavigator } = useNavigator();
   const [isMobile, setIsMobile] = useState(false);
-  const [graphLoaded, setGraphLoaded] = useState(false);
+  const [graphReady, setGraphReady] = useState(false);
+  const [minimumBootTimePassed, setMinimumBootTimePassed] = useState(false);
+  const [bootStateIndex, setBootStateIndex] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const bootStates = isMobile ? MOBILE_BOOT_STATES : DESKTOP_BOOT_STATES;
+  const bootComplete = graphReady && minimumBootTimePassed;
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -43,9 +55,32 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => setGraphLoaded(true), 100);
-    return () => clearTimeout(t);
+    const minimumDelay = reduceMotion ? 120 : isMobile ? 620 : 920;
+    const readyTimer = window.setTimeout(() => setMinimumBootTimePassed(true), minimumDelay);
+
+    if (reduceMotion) {
+      return () => window.clearTimeout(readyTimer);
+    }
+
+    const messageTimer = window.setInterval(() => {
+      setBootStateIndex((index) => Math.min(index + 1, bootStates.length - 1));
+    }, isMobile ? 300 : 360);
+
+    return () => {
+      window.clearTimeout(readyTimer);
+      window.clearInterval(messageTimer);
+    };
+  }, [bootStates.length, isMobile, reduceMotion]);
+
+  const handleGraphReady = useCallback(() => {
+    setGraphReady(true);
   }, []);
+
+  const graphOpacity = useMemo(() => {
+    if (reduceMotion) return 0.8;
+    if (bootComplete) return 0.8;
+    return isMobile ? 0.18 : 0.32;
+  }, [bootComplete, isMobile, reduceMotion]);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -54,13 +89,23 @@ export default function Home() {
       <section className="relative h-[82vh] min-h-[560px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark sm:h-[85vh] sm:min-h-[600px]">
 
         {/* Network graph layer — fills the whole section */}
-        <div className="absolute inset-0 z-0 opacity-80">
-          {graphLoaded && (
-            isMobile
-              ? <NetworkGraphMobile nodes={workspaceNodes} />
-              : <NetworkGraph nodes={workspaceNodes} edges={workspaceEdges} />
-          )}
-        </div>
+        <motion.div
+          className="absolute inset-0 z-0"
+          initial={false}
+          animate={{ opacity: graphOpacity }}
+          transition={{ duration: reduceMotion ? 0.08 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {isMobile
+            ? <NetworkGraphMobile nodes={workspaceNodes} onReady={handleGraphReady} />
+            : (
+              <NetworkGraph
+                nodes={workspaceNodes}
+                edges={workspaceEdges}
+                onReady={handleGraphReady}
+                reduceMotion={reduceMotion ?? false}
+              />
+            )}
+        </motion.div>
 
         {/* Vignette overlay — pulls attention to center text */}
         <div className="absolute inset-0 z-10 pointer-events-none"
@@ -68,16 +113,40 @@ export default function Home() {
         />
 
         {/* Hero text content — center-aligned, above graph */}
+        <AnimatePresence>
+          {!bootComplete && (
+            <motion.div
+              className="absolute inset-0 z-30 flex items-center justify-center bg-bg-dark/70 px-4"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0.08 : 0.28, ease: [0.16, 1, 0.3, 1] }}
+              aria-live="polite"
+              aria-label="Workspace is initializing"
+            >
+              <motion.p
+                key={bootStates[bootStateIndex]}
+                initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
+                transition={{ duration: reduceMotion ? 0.05 : 0.18 }}
+                className="font-mono text-xs uppercase tracking-widest text-text-secondary"
+              >
+                {bootStates[bootStateIndex]}
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: bootComplete ? 1 : 0, y: bootComplete ? 0 : 8 }}
+            transition={{ duration: reduceMotion ? 0.08 : 0.36, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-3xl space-y-6"
           >
             {/* Status badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/25 bg-accent/5 text-accent text-xs font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
               Systems Workspace
             </div>
 

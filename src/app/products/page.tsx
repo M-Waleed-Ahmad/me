@@ -107,7 +107,7 @@ export default function ProductsPage() {
             {/* Top band */}
             <div className="bg-bg-dark/60 border-b border-border-muted px-8 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-accent" />
                 <span className="font-mono text-[10px] text-accent tracking-widest uppercase">{featured.status}</span>
               </div>
               <span className="font-mono text-[10px] text-text-muted">FEATURED CASE STUDY</span>

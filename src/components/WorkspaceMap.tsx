@@ -14,7 +14,7 @@ const PILLARS = [
     icon: Layers,
     description: 'User-facing software built to solve real human problems and ship at production scale.',
     expandedDescription: 'From mental health therapy platforms to luxury real estate portals — the work here centers on business outcomes, full lifecycle involvement, and real users who depend on the system.',
-    color: 'emerald',
+    color: 'accent',
     href: '/products',
   },
   {
@@ -24,7 +24,7 @@ const PILLARS = [
     icon: Code2,
     description: 'Scalable backends, automation pipelines, and CI/CD infrastructure that runs without hand-holding.',
     expandedDescription: 'Backend architecture, data pipelines, webhook integrations, and zero-downtime deployment systems. This is where things break at 3am — and where design decisions matter most.',
-    color: 'sky',
+    color: 'accent',
     href: '/systems',
   },
   {
@@ -34,29 +34,17 @@ const PILLARS = [
     icon: Cpu,
     description: 'Applied AI, computer vision research, and robotics skill composition architectures.',
     expandedDescription: 'Technical depth over hype. Computer vision pipelines, deepfake detection models, LLM safety testing, and hierarchical robotic behavior trees — built to understand, not just to use.',
-    color: 'violet',
+    color: 'accent',
     href: '/intelligence',
   },
 ];
 
 const colorMap: Record<string, { border: string; text: string; bg: string; badge: string }> = {
-  emerald: {
-    border: 'hover:border-emerald-500/30 group-hover:border-emerald-500/30',
-    text:   'group-hover:text-emerald-400',
-    bg:     'group-hover:bg-emerald-500/5',
-    badge:  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  },
-  sky: {
-    border: 'hover:border-sky-500/30 group-hover:border-sky-500/30',
-    text:   'group-hover:text-sky-400',
-    bg:     'group-hover:bg-sky-500/5',
-    badge:  'bg-sky-500/10 text-sky-400 border-sky-500/20',
-  },
-  violet: {
-    border: 'hover:border-violet-500/30 group-hover:border-violet-500/30',
-    text:   'group-hover:text-violet-400',
-    bg:     'group-hover:bg-violet-500/5',
-    badge:  'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  accent: {
+    border: 'hover:border-accent/30 group-hover:border-accent/30',
+    text:   'group-hover:text-accent',
+    bg:     'group-hover:bg-accent/5',
+    badge:  'bg-accent/10 text-accent border-accent/20',
   },
 };
 
@@ -102,7 +90,7 @@ export default function WorkspaceMap() {
 
               {/* Number badge + icon */}
               <div className="flex items-start justify-between mb-8">
-                <div className={`p-3 rounded-lg bg-bg-dark border border-border-muted transition-colors duration-300 ${isHovered ? `border-${pillar.color}-500/20` : ''}`}>
+                <div className={`p-3 rounded-lg bg-bg-dark border border-border-muted transition-colors duration-300 ${isHovered ? 'border-accent/20' : ''}`}>
                   <Icon className={`w-5 h-5 text-text-secondary transition-colors duration-300 ${colors.text}`} />
                 </div>
                 <span className="font-mono text-[10px] text-text-muted tracking-widest">
