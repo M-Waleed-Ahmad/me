@@ -55,30 +55,30 @@ const automationStages: Stage[] = [
   {
     label: 'Trigger',
     eyebrow: 'Webhook, schedule, or form event',
-    problem: '{{PLACEHOLDER: Describe the manual event that used to start this workflow, such as a client upload, CRM update, or intake form submission.}}',
-    solution: '{{PLACEHOLDER: Explain the trigger source, validation boundary, and how duplicate events are detected.}}',
-    result: '{{PLACEHOLDER: Replace with the real time saved or reliability improvement once measured.}}',
+    problem: 'Bulk or repeated operational events are easy to mishandle when the process starts with manual copying.',
+    solution: 'Use an explicit trigger, then validate the incoming record before it can change trusted application data.',
+    result: 'Used in work such as Arabia Hills listing ingestion, where automation made the import path inspectable.',
   },
   {
     label: 'Processing',
     eyebrow: 'Normalize and enrich',
-    problem: '{{PLACEHOLDER: Describe the messy input shape: inconsistent fields, missing values, or third-party API variance.}}',
-    solution: '{{PLACEHOLDER: Explain the normalization layer, API calls, retry policy, and logging approach.}}',
-    result: '{{PLACEHOLDER: Replace with the real reduction in manual clean-up or error rate.}}',
+    problem: 'Imported records rarely arrive in the exact shape the product needs.',
+    solution: 'Normalize fields, reject incomplete records, and keep transformation rules visible instead of burying them in one opaque step.',
+    result: 'Reduced operational ambiguity by making data cleanup part of the workflow rather than an afterthought.',
   },
   {
     label: 'Decision',
     eyebrow: 'Rules before action',
-    problem: '{{PLACEHOLDER: Describe where the workflow needs human judgment, routing logic, or approval checks.}}',
-    solution: '{{PLACEHOLDER: Explain the branching rules and what stays intentionally human-reviewed.}}',
-    result: '{{PLACEHOLDER: Replace with the real approval speed or exception handling outcome.}}',
+    problem: 'Some records should not be pushed forward automatically just because a tool can do it.',
+    solution: 'Keep approval rules, exception paths, and human review points explicit in the workflow.',
+    result: 'Preserves accountability while still removing repetitive manual work.',
   },
   {
     label: 'Output',
     eyebrow: 'Write, notify, sync',
-    problem: '{{PLACEHOLDER: Describe the final handoff problem: missed notifications, stale records, or duplicate entry.}}',
-    solution: '{{PLACEHOLDER: Explain the destination systems and how successful writes are confirmed.}}',
-    result: '{{PLACEHOLDER: Replace with the real operational impact.}}',
+    problem: 'The last step is where teams often lose track of whether the automation actually changed the destination system.',
+    solution: 'Write to the destination, confirm success, and make failed writes visible for follow-up.',
+    result: 'Turns automation into an auditable system rather than a hopeful shortcut.',
   },
 ];
 
@@ -86,30 +86,30 @@ const pipelineStages: Stage[] = [
   {
     label: 'Code Push',
     eyebrow: 'Branch protection starts here',
-    problem: '{{PLACEHOLDER: What used to make changes risky before CI existed?}}',
-    solution: '{{PLACEHOLDER: Describe branch rules, required reviews, and commit checks.}}',
-    result: '{{PLACEHOLDER: Replace with the real merge confidence improvement.}}',
+    problem: 'Changes become risky when feedback arrives only after manual testing or deployment.',
+    solution: 'GitHub Actions pipelines provide an immediate check after code changes enter the workflow.',
+    result: 'Raised merge confidence by making automated checks part of the normal delivery path.',
   },
   {
     label: 'Tests',
     eyebrow: 'Fast feedback loop',
-    problem: '{{PLACEHOLDER: Which regressions were most expensive to catch manually?}}',
-    solution: '{{PLACEHOLDER: Describe unit, integration, and smoke checks that run automatically.}}',
-    result: '{{PLACEHOLDER: Replace with the real defect catch rate or escaped bug reduction.}}',
+    problem: 'Hybrid system testing was too slow when large parts of it stayed manual.',
+    solution: 'Playwright and Cypress automated test frameworks run inside CI to catch browser and workflow regressions earlier.',
+    result: 'Estimated reduction from 2-3 days of hybrid testing to about 2 hours, based on Waleed\'s measured-in-practice account.',
   },
   {
     label: 'Build',
     eyebrow: 'Reproducible artifact',
-    problem: '{{PLACEHOLDER: What environment drift or packaging issue caused deployment risk?}}',
-    solution: '{{PLACEHOLDER: Describe container build, environment validation, and artifact versioning.}}',
-    result: '{{PLACEHOLDER: Replace with the real build stability or rollback speed.}}',
+    problem: 'Slow builds delay feedback and make teams less likely to trust the pipeline.',
+    solution: 'Parallelize GitHub Actions jobs where the dependency graph allows independent work.',
+    result: 'Improved build times and deployment reliability in Axelliant pipeline work.',
   },
   {
     label: 'Deploy',
     eyebrow: 'Controlled release',
-    problem: '{{PLACEHOLDER: What made manual deployment fragile or slow?}}',
-    solution: '{{PLACEHOLDER: Describe automated deploy, health checks, and rollback criteria.}}',
-    result: '{{PLACEHOLDER: Replace with the real deployment frequency or recovery time.}}',
+    problem: 'Deployment should not depend on a person remembering a fragile sequence of steps.',
+    solution: 'Move release work into repeatable CI/CD stages with visible success and failure states.',
+    result: 'Made deployment behavior more consistent and easier to reason about after changes.',
   },
 ];
 
@@ -119,11 +119,11 @@ const architectureViews: ArchitectureView[] = [
     label: 'Product Backend',
     note: 'A typical product architecture view: user actions move through an API boundary, domain rules, storage, and async workers.',
     nodes: [
-      { title: 'Client App', detail: '{{PLACEHOLDER: Describe the frontend surface and primary user actions.}}', icon: Blocks },
-      { title: 'API Boundary', detail: '{{PLACEHOLDER: Describe auth, request validation, and rate limiting.}}', icon: Route },
-      { title: 'Domain Services', detail: '{{PLACEHOLDER: Describe the business logic layer and why it is isolated.}}', icon: Braces },
-      { title: 'PostgreSQL', detail: '{{PLACEHOLDER: Describe relational data shape, constraints, and indexes.}}', icon: Database },
-      { title: 'Workers', detail: '{{PLACEHOLDER: Describe background tasks such as notifications, sync, or reporting.}}', icon: Repeat2 },
+      { title: 'Client App', detail: 'Flutter or React surfaces collect user actions and keep the workflow understandable.', icon: Blocks },
+      { title: 'Auth Boundary', detail: 'Supabase Auth or app-level checks decide who can read, write, or approve sensitive records.', icon: Route },
+      { title: 'Domain Rules', detail: 'Compliance, listing, and workflow rules stay explicit instead of being scattered across screens.', icon: Braces },
+      { title: 'PostgreSQL', detail: 'Structured tables hold the canonical state used by exports, admin surfaces, and search.', icon: Database },
+      { title: 'Reports', detail: 'PDF exports and operational outputs turn stored state into reviewable artifacts.', icon: Repeat2 },
     ],
   },
   {
@@ -131,11 +131,11 @@ const architectureViews: ArchitectureView[] = [
     label: 'Integration Flow',
     note: 'A systems integration view: external events are treated as unreliable until validated, logged, and confirmed.',
     nodes: [
-      { title: 'External System', detail: '{{PLACEHOLDER: Name the source system or integration category.}}', icon: Webhook },
-      { title: 'Ingestion Guard', detail: '{{PLACEHOLDER: Describe signature checks, schema validation, and replay protection.}}', icon: ShieldCheck },
-      { title: 'Queue / Buffer', detail: '{{PLACEHOLDER: Describe buffering, retries, and poison-event handling.}}', icon: Split },
-      { title: 'Transform', detail: '{{PLACEHOLDER: Describe mapping from third-party payload to internal model.}}', icon: Settings2 },
-      { title: 'Destination Sync', detail: '{{PLACEHOLDER: Describe write confirmation and reconciliation.}}', icon: Server },
+      { title: 'Bulk Source', detail: 'Listing files, form data, or client records arrive from outside the product boundary.', icon: Webhook },
+      { title: 'Ingestion Guard', detail: 'Required fields and record shape are checked before anything becomes trusted state.', icon: ShieldCheck },
+      { title: 'Exception Path', detail: 'Bad or ambiguous records stay reviewable instead of silently corrupting the destination.', icon: Split },
+      { title: 'Transform', detail: 'Make.com or app logic maps the input into the internal schema.', icon: Settings2 },
+      { title: 'Destination Sync', detail: 'Successful writes update Supabase/PostgreSQL and become visible in the app surface.', icon: Server },
     ],
   },
   {
@@ -143,11 +143,11 @@ const architectureViews: ArchitectureView[] = [
     label: 'Data Pipeline',
     note: 'A data movement view: raw inputs become trusted, queryable state only after normalization and auditability.',
     nodes: [
-      { title: 'Raw Input', detail: '{{PLACEHOLDER: Describe imported files, events, or API responses.}}', icon: GitCommit },
-      { title: 'Normalizer', detail: '{{PLACEHOLDER: Describe cleaning, coercion, and rejected-record handling.}}', icon: Workflow },
-      { title: 'Validation', detail: '{{PLACEHOLDER: Describe required checks before data becomes trusted.}}', icon: CheckCircle2 },
-      { title: 'Stored State', detail: '{{PLACEHOLDER: Describe tables, materialized views, or cache.}}', icon: Database },
-      { title: 'Consumer', detail: '{{PLACEHOLDER: Describe dashboards, apps, or APIs consuming the data.}}', icon: Code2 },
+      { title: 'Raw Input', detail: 'Media, listing data, CPD records, or test results start as untrusted inputs.', icon: GitCommit },
+      { title: 'Normalizer', detail: 'The system reshapes records into the structure later stages expect.', icon: Workflow },
+      { title: 'Validation', detail: 'Required checks happen before data becomes exportable, searchable, or reviewable.', icon: CheckCircle2 },
+      { title: 'Stored State', detail: 'PostgreSQL or result artifacts hold the canonical record of what happened.', icon: Database },
+      { title: 'Consumer', detail: 'Users, admins, supervisors, or reviewers inspect the result through a product surface.', icon: Code2 },
     ],
   },
 ];
@@ -240,7 +240,8 @@ function AutomationShowcase() {
           </p>
         </div>
         <EngineeringNote title="Engineering Note: why rules before output?">
-          {'{{PLACEHOLDER: Short first-person note on why Waleed keeps decision logic explicit instead of hiding it inside one large automation scenario.}}'}
+          A workflow is easier to trust when its decision points are visible. The goal is not to
+          hide judgment inside automation, but to remove repetition while preserving review.
         </EngineeringNote>
       </div>
 
@@ -300,7 +301,8 @@ function CicdShowcase() {
           </p>
         </div>
         <EngineeringNote title="Engineering Note: deployment confidence">
-          {'{{PLACEHOLDER: Short first-person note on the smallest CI check that prevented the biggest category of failures.}}'}
+          The most useful CI check is the one that changes team behavior. At Axelliant, browser
+          automation inside CI turned slow hybrid testing into a much tighter feedback loop.
         </EngineeringNote>
       </div>
 
@@ -358,12 +360,13 @@ function ArchitectureShowcase() {
           </div>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight">System maps that make data movement visible</h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-secondary">
-            These maps are placeholders for real project diagrams, but the interaction model is the point:
-            inspect the flow, then inspect the reasoning behind each boundary.
+            These maps generalize patterns from the portfolio: compliance records, listing ingestion,
+            forensic media analysis, and CI feedback loops all depend on visible data movement.
           </p>
         </div>
         <EngineeringNote title="Engineering Note: boundary-first design">
-          {'{{PLACEHOLDER: Short first-person note on why Waleed sketches boundaries and data ownership before choosing frameworks.}}'}
+          Before choosing frameworks, Waleed looks for ownership boundaries: who creates the data,
+          who can change it, who can review it, and what artifact proves the system did the right thing.
         </EngineeringNote>
       </div>
 

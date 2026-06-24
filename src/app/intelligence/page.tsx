@@ -62,51 +62,51 @@ const fadeUp = {
 
 const deepShieldStages: PipelineStage[] = [
   {
-    label: 'Video Input',
+    label: 'Media Intake',
     eyebrow: 'Source quality first',
-    question: '{{PLACEHOLDER: What kind of input does DeepShield receive, and what makes the input hard to trust?}}',
-    method: '{{PLACEHOLDER: Describe frame sampling, face detection, normalization, and any rejected-input rules.}}',
-    signal: '{{PLACEHOLDER: Replace with real input-quality checks or dataset constraints.}}',
+    question: 'What kind of media is being inspected, and how much evidence can the system safely extract?',
+    method: 'Images move directly into the image path. Video is sampled with OpenCV using 8 evenly spaced frames so review is not based on one convenient moment.',
+    signal: 'The pipeline treats the media as evidence to inspect, not a file to label instantly.',
     icon: Play,
   },
   {
-    label: 'Dual Encoder',
-    eyebrow: 'Compare visual evidence',
-    question: '{{PLACEHOLDER: Why does the model need more than a single visual representation?}}',
-    method: '{{PLACEHOLDER: Describe the two encoder paths at a high level without inventing unpublished architecture specifics.}}',
-    signal: '{{PLACEHOLDER: Replace with real model-inspection notes or ablation findings.}}',
+    label: 'UCF Encoder',
+    eyebrow: 'Primary separation model',
+    question: 'Can the primary model separate real-looking media from manipulated media strongly enough to guide review?',
+    method: 'The UCF dual-encoder is the primary model path. In Waleed\'s notes, real samples generally separated around 0.45-0.60 and fake samples around 0.80-0.95.',
+    signal: 'The output is treated as a score band, not a single absolute truth.',
     icon: Layers3,
   },
   {
     label: 'Xception Analysis',
     eyebrow: 'Feature-level anomaly search',
-    question: '{{PLACEHOLDER: What artifact patterns was Xception expected to detect in manipulated frames?}}',
-    method: '{{PLACEHOLDER: Explain why this backbone was considered and what alternatives were compared.}}',
-    signal: '{{PLACEHOLDER: Replace with real validation metric, marked clearly if still pending.}}',
+    question: 'What happens when the supporting video-frame model sees a stronger alarm than the primary path?',
+    method: 'Xception inspects video frames as supporting evidence. Fusion normally weights UCF/Xception at 0.80/0.20, shifting toward 0.55/0.45 when Xception raises a strong alarm.',
+    signal: 'The second model can change confidence without hiding which path influenced the result.',
     icon: BrainCircuit,
   },
   {
     label: 'GradCAM++',
     eyebrow: 'Make the model inspectable',
-    question: '{{PLACEHOLDER: What would a user or reviewer need to see before trusting the model output?}}',
-    method: '{{PLACEHOLDER: Explain heatmap generation and how it supports review rather than pretending to be proof.}}',
-    signal: '{{PLACEHOLDER: Replace with real examples of useful or misleading heatmaps.}}',
+    question: 'What would a reviewer need to see before trusting the model output?',
+    method: 'Grad-CAM++ heatmaps are generated from encoder_f.block12 for images or the peak-frame Xception block for video, then resized back to the original media.',
+    signal: 'The heatmap shows where the model looked, which supports review without pretending to prove intent.',
     icon: Eye,
   },
   {
-    label: 'Confidence Score',
+    label: 'Confidence Bands',
     eyebrow: 'Communicate uncertainty',
-    question: '{{PLACEHOLDER: How should the system express confidence without overstating certainty?}}',
-    method: '{{PLACEHOLDER: Describe score calibration, thresholds, and what lands in a review band.}}',
-    signal: '{{PLACEHOLDER: Replace with real threshold logic or calibration notes.}}',
+    question: 'How should the system express confidence without overstating certainty?',
+    method: 'Bands are explicit: Real <= 0.30, Unsure 0.30-0.65, Likely Fake 0.65-0.85, and Strong Fake > 0.85.',
+    signal: 'A 51% finding and a 99% finding are not presented as the same kind of conclusion.',
     icon: SlidersHorizontal,
   },
   {
-    label: 'Result',
+    label: 'Forensic Result',
     eyebrow: 'Decision support, not magic',
-    question: '{{PLACEHOLDER: What decision does DeepShield help a user make, and where does human review remain necessary?}}',
-    method: '{{PLACEHOLDER: Describe the result format, explanation layer, and failure-state messaging.}}',
-    signal: '{{PLACEHOLDER: Replace with real output examples or review workflow.}}',
+    question: 'How does the result remain reviewable after the model has made a prediction?',
+    method: 'DeepShield packages the verdict, confidence band, heatmap evidence, blockchain tamper-evident result data, and a forensic PDF with QR verification.',
+    signal: 'The output is built for audit and human review rather than blind trust.',
     icon: ShieldCheck,
   },
 ];
@@ -115,31 +115,31 @@ const roboticsNodes: SkillNode[] = [
   {
     label: 'Goal',
     level: 'Intent layer',
-    detail: '{{PLACEHOLDER: Describe a high-level behavior the robot should achieve.}}',
+    detail: 'The interface starts from a behavior such as navigating, avoiding obstacles, or completing a composed task inside a controlled arena.',
     icon: Target,
   },
   {
     label: 'Planner',
     level: 'Task decomposition',
-    detail: '{{PLACEHOLDER: Explain how the goal splits into smaller skills or checkpoints.}}',
+    detail: 'Rule-based structure breaks the behavior into checkpoints so learned components do not have to own the entire control problem.',
     icon: GitBranch,
   },
   {
     label: 'Skill Library',
     level: 'Reusable actions',
-    detail: '{{PLACEHOLDER: Describe reusable primitives such as pick, place, inspect, or navigate.}}',
+    detail: 'Reusable skills combine rule-based behavior with learned ML behavior, making the system easier to inspect than one monolithic policy.',
     icon: Network,
   },
   {
     label: 'Policy',
     level: 'State-aware choice',
-    detail: '{{PLACEHOLDER: Explain how state, confidence, and constraints select the next action.}}',
+    detail: 'An imitation-learning pipeline generates training data through automated expert rollouts, avoiding manual teleoperation as the only data source.',
     icon: Route,
   },
   {
     label: 'Feedback',
     level: 'Closed-loop correction',
-    detail: '{{PLACEHOLDER: Describe sensor feedback and recovery when the world does not match the plan.}}',
+    detail: 'Navigation and obstacle avoidance compose reliably, while larger maze-scale arenas exposed harder reactive-control tuning still being resolved.',
     icon: Radar,
   },
 ];
@@ -147,30 +147,30 @@ const roboticsNodes: SkillNode[] = [
 const researchCards: ResearchCard[] = [
   {
     label: 'Threat Model',
-    prompt: '{{PLACEHOLDER: What failure mode or attack class is being evaluated?}}',
-    evidence: '{{PLACEHOLDER: What evidence would prove the system is vulnerable or resilient?}}',
-    response: '{{PLACEHOLDER: What mitigation or guardrail would be considered?}}',
+    prompt: 'What failure mode is the model or agent most likely to miss under adversarial wording?',
+    evidence: 'Logs, failed examples, and repeated prompts that show whether the behavior is stable or brittle.',
+    response: 'Turn the failure into a named eval case before choosing a mitigation.',
     icon: AlertTriangle,
   },
   {
     label: 'Evaluation Set',
-    prompt: '{{PLACEHOLDER: What prompts, tasks, or scenarios belong in the test set?}}',
-    evidence: '{{PLACEHOLDER: How are ambiguous cases labeled or reviewed?}}',
-    response: '{{PLACEHOLDER: What gets measured beyond pass/fail?}}',
+    prompt: 'Which prompt families, edge cases, or tool-use scenarios belong in the test set?',
+    evidence: 'Ambiguous cases need review notes, not just pass/fail labels.',
+    response: 'Measure refusal quality, instruction hierarchy, data access behavior, and recovery from unsafe requests.',
     icon: FileSearch,
   },
   {
     label: 'Attack Surface',
-    prompt: '{{PLACEHOLDER: Where can instructions, data, tools, or user inputs conflict?}}',
-    evidence: '{{PLACEHOLDER: What traces or logs make the failure observable?}}',
-    response: '{{PLACEHOLDER: How does the system constrain tool use or data access?}}',
+    prompt: 'Where can user input, tool output, retrieved data, or system instructions conflict?',
+    evidence: 'The useful trace shows which instruction source won and why.',
+    response: 'Constrain tool use, isolate untrusted content, and make conflicting instructions visible.',
     icon: ScanFace,
   },
   {
     label: 'Defense Pattern',
-    prompt: '{{PLACEHOLDER: Which defensive pattern was considered and why?}}',
-    evidence: '{{PLACEHOLDER: What would show this defense is working without blocking valid use?}}',
-    response: '{{PLACEHOLDER: What tradeoff does this defense introduce?}}',
+    prompt: 'Which defense reduces the failure without blocking legitimate work?',
+    evidence: 'A defense is useful only if it improves the eval set while preserving normal user tasks.',
+    response: 'Prefer proportional guardrails and document the tradeoff they introduce.',
     icon: CheckCircle2,
   },
 ];
@@ -212,7 +212,8 @@ function DeepShieldPipeline() {
           </p>
         </div>
         <ThinkingNote title="Thinking note: why inspectability matters">
-          {'{{PLACEHOLDER: Short first-person note on why Waleed cares about evidence and reviewability in applied ML systems.}}'}
+          Most detection tools hand you a verdict and ask you to trust it. DeepShield is designed
+          around the opposite idea: show the score, the uncertainty band, and the evidence trail.
         </ThinkingNote>
       </div>
 
@@ -298,7 +299,8 @@ function RoboticsSkillArchitecture() {
           </p>
         </div>
         <ThinkingNote title="Thinking note: composition over scripts">
-          {'{{PLACEHOLDER: Short first-person note on why Waleed thinks reusable skill boundaries matter more than one-off robot routines.}}'}
+          Reusable skill boundaries make the robot easier to debug. When a composed behavior fails,
+          you can inspect the planner, the learned skill, or the feedback loop instead of guessing.
         </ThinkingNote>
       </div>
 
@@ -376,7 +378,8 @@ function RedTeamingResearch() {
           </p>
         </div>
         <ThinkingNote title="Thinking note: evaluations before opinions">
-          {'{{PLACEHOLDER: Short first-person note on why Waleed prefers explicit eval cases over vibes-based claims about model safety.}}'}
+          Red teaming is still an exploration area here, so the honest version is a research board:
+          define the risk, collect evidence, and avoid pretending general interest is production proof.
         </ThinkingNote>
       </div>
 
@@ -459,8 +462,8 @@ export default function IntelligencePage() {
                 Applied intelligence, shown as systems of evidence.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-                This pillar focuses on technical curiosity without AI theater: model inspectability,
-                modular skill design, safety evaluation, and the judgment needed to decide where automation helps.
+                This pillar focuses on technical curiosity without AI theater: DeepShield&apos;s forensic
+                media pipeline, a robotics skill-composition interface, and early red-teaming research.
               </p>
             </div>
             <div className="border border-border-muted bg-bg-panel p-5">

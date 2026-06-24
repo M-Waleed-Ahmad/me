@@ -3,7 +3,6 @@
 import React from 'react';
 import {
   ArrowRight,
-  Calendar,
   FileText,
   Github,
   Linkedin,
@@ -23,22 +22,22 @@ type ContactLink = {
 const contactLinks: ContactLink[] = [
   {
     label: 'Email',
-    value: '{{PLACEHOLDER: waleed@example.com}}',
-    href: 'mailto:{{PLACEHOLDER: waleed@example.com}}',
-    note: 'Best for project conversations, role outreach, and longer context.',
+    value: 'waleed.ahmadmunir@gmail.com',
+    href: 'mailto:waleed.ahmadmunir@gmail.com',
+    note: 'Best for roles, project conversations, and longer technical context.',
     icon: Mail,
   },
   {
     label: 'LinkedIn',
-    value: '{{PLACEHOLDER: linkedin.com/in/waleed-ahmad}}',
-    href: 'https://linkedin.com/in/{{PLACEHOLDER: username}}',
+    value: '{{PLACEHOLDER: confirm Waleed LinkedIn URL}}',
+    href: '{{PLACEHOLDER: confirm Waleed LinkedIn URL}}',
     note: 'Professional history, mutual context, and recruiter conversations.',
     icon: Linkedin,
   },
   {
     label: 'GitHub',
-    value: '{{PLACEHOLDER: github.com/waleed}}',
-    href: 'https://github.com/{{PLACEHOLDER: username}}',
+    value: '{{PLACEHOLDER: confirm Waleed GitHub URL}}',
+    href: '{{PLACEHOLDER: confirm Waleed GitHub URL}}',
     note: 'Code, experiments, public repositories, and technical artifacts.',
     icon: Github,
   },
@@ -87,14 +86,18 @@ export default function ContactPage() {
         <section className="grid gap-4 md:grid-cols-3">
           {contactLinks.map((link) => {
             const Icon = link.icon;
+            const isPlaceholder = link.href.includes('{{PLACEHOLDER');
 
             return (
               <a
                 key={link.label}
-                href={link.href}
-                target={link.href.startsWith('mailto:') ? undefined : '_blank'}
-                rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
-                className="group border border-border-muted bg-bg-panel p-5 transition-all hover:border-accent/35 hover:bg-bg-panel-hover"
+                href={isPlaceholder ? undefined : link.href}
+                target={!isPlaceholder && !link.href.startsWith('mailto:') ? '_blank' : undefined}
+                rel={!isPlaceholder && !link.href.startsWith('mailto:') ? 'noopener noreferrer' : undefined}
+                aria-disabled={isPlaceholder}
+                className={`group border border-border-muted bg-bg-panel p-5 transition-all ${
+                  isPlaceholder ? 'cursor-not-allowed opacity-75' : 'hover:border-accent/35 hover:bg-bg-panel-hover'
+                }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex h-10 w-10 items-center justify-center border border-border-muted bg-bg-dark text-text-secondary transition-colors group-hover:border-accent/25 group-hover:text-accent">
@@ -110,36 +113,20 @@ export default function ContactPage() {
           })}
         </section>
 
-        <section className="grid gap-4 border-t border-border-muted pt-8 sm:grid-cols-2">
+        <section className="border-t border-border-muted pt-8">
           <a
-            href="{{PLACEHOLDER: resume link}}"
+            href="{{PLACEHOLDER: add latest resume file or public resume URL}}"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center justify-between gap-4 border border-border-muted bg-bg-panel p-5 transition-all hover:border-accent/35"
           >
             <div className="flex items-center gap-3">
-                <FileText className="h-4 w-4 text-accent" />
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">Resume</p>
+              <FileText className="h-4 w-4 text-accent" />
+              <div>
+                <p className="text-sm font-semibold text-text-primary">Resume</p>
                 <p className="mt-1 text-xs text-text-muted">{'{{PLACEHOLDER: attach or link latest resume}}'}</p>
-                </div>
               </div>
-            <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-accent" />
-          </a>
-
-          <a
-            href="https://calendly.com/{{PLACEHOLDER: username}}"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center justify-between gap-4 border border-border-muted bg-bg-panel p-5 transition-all hover:border-accent/35"
-          >
-            <div className="flex items-center gap-3">
-                <Calendar className="h-4 w-4 text-accent" />
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">Calendar</p>
-                <p className="mt-1 text-xs text-text-muted">{'{{PLACEHOLDER: confirm Calendly or remove this link}}'}</p>
-                </div>
-              </div>
+            </div>
             <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-accent" />
           </a>
         </section>

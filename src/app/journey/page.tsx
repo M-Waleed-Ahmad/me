@@ -6,12 +6,12 @@ import {
   ArrowRight,
   BookOpen,
   Briefcase,
-  Code2,
   Compass,
   Database,
   GraduationCap,
   Layers,
   Network,
+  ShieldCheck,
 } from 'lucide-react';
 
 type JourneyNode = {
@@ -29,79 +29,96 @@ type JourneyNode = {
 
 const journeyNodes: JourneyNode[] = [
   {
-    id: 'fast',
-    company: 'FAST-NUCES',
-    role: 'Computer Science Education',
-    period: '{{PLACEHOLDER: confirm dates e.g. 2016 - 2020}}',
-    angle: 'Fundamentals',
-    description: '{{PLACEHOLDER: Confirm academic background and the systems fundamentals that shaped Waleed early: algorithms, data structures, operating systems, networks, or databases.}}',
+    id: 'gcl',
+    company: 'Government College Lahore',
+    role: 'FSC',
+    period: '08/2020 - 06/2022',
+    angle: 'Foundations',
+    description: 'Early academic foundation before moving into computer science and product engineering.',
     lessons: [
-      '{{PLACEHOLDER: Lesson from CS fundamentals that still affects how Waleed designs systems.}}',
-      '{{PLACEHOLDER: Lesson about modeling problems before choosing implementation tools.}}',
+      'Built the discipline for technical study before the work became product-shaped.',
+      'Created the base that later made CS fundamentals and implementation work easier to connect.',
     ],
-    projects: ['{{PLACEHOLDER: Academic or early project to confirm}}'],
-    skills: ['Algorithms', 'Data Structures', 'C++', 'Python'],
+    projects: ['Academic foundation'],
+    skills: ['Mathematics', 'Science foundations'],
     icon: GraduationCap,
   },
   {
-    id: 'ashtex',
-    company: 'Ashtex Solutions',
-    role: '{{PLACEHOLDER: confirm role title}}',
-    period: '{{PLACEHOLDER: confirm dates e.g. 2020 - 2022}}',
-    angle: 'Production software',
-    description: '{{PLACEHOLDER: Summarize Waleed impact at Ashtex, especially full-stack delivery, APIs, healthcare workflows, and production ownership.}}',
+    id: 'fast',
+    company: 'FAST NUCES',
+    role: 'Bachelor of Computer Science',
+    period: '09/2022 - 06/2026',
+    angle: 'CS fundamentals',
+    description: 'Computer science training in Lahore, still in progress, grounding the portfolio in algorithms, data structures, databases, and system thinking.',
     lessons: [
-      '{{PLACEHOLDER: Lesson from shipping real software for users or clients.}}',
-      '{{PLACEHOLDER: Lesson about separating domain logic, API boundaries, and background work.}}',
+      'Model the problem before choosing the implementation tool.',
+      'Use fundamentals to make product decisions easier to reason about under constraints.',
     ],
-    projects: ['WePsych', '{{PLACEHOLDER: confirm additional Ashtex project}}'],
-    skills: ['FastAPI', 'React', 'Docker', 'REST APIs'],
-    icon: Layers,
+    projects: ['DeepShield', 'Robotics skill architecture'],
+    skills: ['Algorithms', 'Data Structures', 'Databases', 'Python'],
+    icon: GraduationCap,
   },
   {
     id: 'arrivy',
     company: 'Arrivy',
-    role: '{{PLACEHOLDER: confirm role title}}',
-    period: '{{PLACEHOLDER: confirm dates e.g. 2022 - 2023}}',
-    angle: 'Frontend systems',
-    description: '{{PLACEHOLDER: Summarize Waleed impact at Arrivy, with emphasis on responsive interfaces, performance, and polished product surfaces.}}',
+    role: 'QA Engineer Intern',
+    period: '06/2023 - 08/2023',
+    angle: 'Quality systems',
+    description: 'Worked on QA for an employee management system and an automation tool, both shipped to production, while helping maintain quality and schedules in a seven-member intern team.',
     lessons: [
-      '{{PLACEHOLDER: Lesson about performance budgets, interaction feel, or mobile-first UX.}}',
-      '{{PLACEHOLDER: Lesson about turning design intent into reliable UI implementation.}}',
+      'Shipping is not only writing features; it is keeping quality visible enough for a team to trust the release.',
+      'Testing work teaches where product assumptions break before users find the breakage.',
     ],
-    projects: ['ALFA Club', '{{PLACEHOLDER: confirm additional Arrivy project}}'],
-    skills: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    icon: Code2,
+    projects: ['Employee management system', 'Automation tool'],
+    skills: ['QA', 'Release discipline', 'Team coordination'],
+    icon: ShieldCheck,
+  },
+  {
+    id: 'ashtex',
+    company: 'Ashtex Solutions',
+    role: 'Software Engineer & Assistant Project Manager',
+    period: '06/2024 - 10/2024',
+    angle: 'Client delivery',
+    description: 'Built React and automation tooling for client-facing products while managing documentation, sprint delivery, and cross-team coordination.',
+    lessons: [
+      'Client work rewards clear communication as much as implementation speed.',
+      'Automation only helps when the people using it can understand what it is doing.',
+    ],
+    projects: ['Client-facing products', 'Automation tooling'],
+    skills: ['React', 'Automation tooling', 'Laravel', 'Make.com'],
+    icon: Layers,
   },
   {
     id: 'axelliant',
     company: 'Axelliant',
-    role: '{{PLACEHOLDER: confirm role title}}',
-    period: '{{PLACEHOLDER: confirm dates e.g. 2023 - Present}}',
-    angle: 'Systems and scale',
-    description: '{{PLACEHOLDER: Summarize Waleed impact at Axelliant, especially database design, system architecture, automation, and delivery under real constraints.}}',
+    role: 'Automation & CI/CD Engineer',
+    period: '04/2025 - 02/2026',
+    angle: 'Systems delivery',
+    description: 'Worked on GitHub Actions parallel pipelines, deployment reliability, and automated test frameworks using Playwright and Cypress in CI.',
     lessons: [
-      '{{PLACEHOLDER: Lesson about database constraints, data movement, or architecture boundaries.}}',
-      '{{PLACEHOLDER: Lesson about making systems observable and maintainable after launch.}}',
+      'A pipeline is a product for engineers: it has users, failure states, feedback loops, and trust requirements.',
+      'Measured-in-practice automation can change team behavior when it compresses multi-day testing into hours.',
     ],
-    projects: ['Arabia Hills', '{{PLACEHOLDER: confirm additional Axelliant project}}'],
-    skills: ['PostgreSQL', 'Supabase', 'Next.js', 'System Design'],
+    projects: ['CI/CD pipelines', 'Playwright/Cypress test automation'],
+    skills: ['GitHub Actions', 'Playwright', 'Cypress', 'CI/CD'],
     icon: Database,
   },
 ];
 
 const adjacent: Record<string, string[]> = {
-  fast: ['ashtex', 'arrivy'],
+  gcl: ['fast'],
+  fast: ['gcl', 'arrivy', 'ashtex'],
+  arrivy: ['fast', 'ashtex'],
   ashtex: ['fast', 'arrivy', 'axelliant'],
-  arrivy: ['fast', 'ashtex', 'axelliant'],
-  axelliant: ['ashtex', 'arrivy'],
+  axelliant: ['ashtex'],
 };
 
 const positions: Record<string, string> = {
-  fast: 'md:col-start-1 md:row-start-2',
-  ashtex: 'md:col-start-2 md:row-start-1',
-  arrivy: 'md:col-start-3 md:row-start-2',
-  axelliant: 'md:col-start-2 md:row-start-3',
+  gcl: 'md:col-start-1 md:row-start-1',
+  fast: 'md:col-start-2 md:row-start-2',
+  arrivy: 'md:col-start-3 md:row-start-1',
+  ashtex: 'md:col-start-1 md:row-start-3',
+  axelliant: 'md:col-start-3 md:row-start-3',
 };
 
 export default function JourneyPage() {
@@ -126,14 +143,15 @@ export default function JourneyPage() {
                 A career map organized by lessons, not dates.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-                The Journey page is intentionally non-linear. It shows how each workspace contributed
-                a different way of thinking: fundamentals, production ownership, interface craft, and systems design.
+                The Journey page shows how education, QA, client delivery, and CI/CD work each
+                shaped a different part of Waleed&apos;s engineering judgment.
               </p>
             </div>
             <aside className="border border-border-muted bg-bg-panel p-5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Waleed to confirm</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Sanity check</p>
               <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                {'{{PLACEHOLDER: Confirm exact roles, dates, company ordering, and which projects belong to each node before launch.}}'}
+                The through-line is ownership: quality, delivery, automation, and systems thinking
+                all point back to building software that can survive real users and real teams.
               </p>
             </aside>
           </div>
@@ -250,7 +268,7 @@ export default function JourneyPage() {
 
         <section className="border-t border-border-muted pt-8">
           <div className="flex flex-col gap-3 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
-            <p>Each node should eventually be backed by a real story, not a date range.</p>
+            <p>Each node answers the same question: what did this stage teach Waleed about building reliable software?</p>
             <a href="/explorer" className="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-accent-bright">
               Open Relationship Explorer
               <ArrowRight className="h-3.5 w-3.5" />

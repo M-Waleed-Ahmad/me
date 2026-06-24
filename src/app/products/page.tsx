@@ -10,18 +10,18 @@ const PRODUCTS = [
   {
     id: 'wepsych',
     href: '/products/wepsych',
-    status: 'Production · International',
+    status: 'Production',
     name: 'WePsych',
-    role: 'Full-Stack Architect & Lead Engineer',
-    tagline: 'Digital mental health platform for real patients, at international scale.',
-    description: '{{PLACEHOLDER: 1–2 sentences on what WePsych does, who uses it, and the problem space it addresses.}}',
+    role: 'Product Engineer',
+    tagline: 'AHPRA-aligned CPD compliance and peer-support platform for Australian psychologists.',
+    description: 'Flutter and Supabase platform for CPD logs, peer consultation, supervision records, pathway tracking, and audit-ready exports.',
     impact: [
-      { label: 'Users', value: '{{PLACEHOLDER: N}}' },
-      { label: 'Uptime', value: '{{PLACEHOLDER: 99.x%}}' },
-      { label: 'Countries', value: '{{PLACEHOLDER: N}}' },
+      { label: 'Tracks', value: '3 roles' },
+      { label: 'Model', value: 'AHPRA' },
+      { label: 'Estimate', value: '~30%' },
     ],
-    tech: ['FastAPI', 'React', 'Supabase', 'PostgreSQL'],
-    pillarTag: 'Healthcare · Full-Lifecycle',
+    tech: ['Flutter', 'Supabase', 'PostgreSQL', 'Supabase Storage'],
+    pillarTag: 'Compliance · Product Systems',
     featured: true,
   },
   {
@@ -29,15 +29,15 @@ const PRODUCTS = [
     href: '/products/arabia-hills',
     status: 'Production',
     name: 'Arabia Hills',
-    role: 'Platform Engineer',
-    tagline: 'High-performance real estate portal with spatial search and complex data pipelines.',
-    description: '{{PLACEHOLDER: 1–2 sentences on Arabia Hills property search and the engineering problem addressed.}}',
+    role: 'Product Engineer',
+    tagline: 'Real estate platform built by a two-person team with CMS and Make.com listing ingestion.',
+    description: 'End-to-end platform where non-technical agents can manage listings and bulk imports flow through Make.com before reaching Supabase.',
     impact: [
-      { label: 'Query Speed', value: '{{PLACEHOLDER: Xms}}' },
-      { label: 'Listings', value: '{{PLACEHOLDER: N+}}' },
+      { label: 'Catalog', value: '20+ est.' },
+      { label: 'Team', value: '2 people' },
     ],
-    tech: ['Next.js', 'Supabase', 'PostgreSQL', 'PostGIS'],
-    pillarTag: 'Real Estate · Platform Engineering',
+    tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Make.com'],
+    pillarTag: 'Real Estate · Platform Delivery',
     featured: false,
   },
   {
@@ -46,14 +46,14 @@ const PRODUCTS = [
     status: 'Production',
     name: 'ALFA Club',
     role: 'Frontend Engineer',
-    tagline: 'Luxury membership platform engineered for craftsmanship and near-perfect performance scores.',
-    description: '{{PLACEHOLDER: 1–2 sentences on ALFA Club and the frontend optimization focus.}}',
+    tagline: 'React ecommerce storefront for alfaclub.ca focused on performance and checkout UX.',
+    description: 'Frontend work centered on ecommerce polish, Lighthouse performance, and mobile checkout optimization.',
     impact: [
-      { label: 'Lighthouse', value: '{{PLACEHOLDER: 9X}}' },
-      { label: 'Bounce ↓', value: '{{PLACEHOLDER: X%}}' },
+      { label: 'Lighthouse', value: '90s est.' },
+      { label: 'Focus', value: 'Checkout' },
     ],
     tech: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    pillarTag: 'Membership · UX Craftsmanship',
+    pillarTag: 'Ecommerce · UX Craftsmanship',
     featured: false,
   },
 ];
@@ -79,8 +79,6 @@ export default function ProductsPage() {
   return (
     <div className="flex-1 flex flex-col">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-12">
-
-        {/* Pillar header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,18 +91,16 @@ export default function ProductsPage() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">The Workspace Shelf</h1>
           <p className="text-text-secondary text-sm max-w-2xl leading-relaxed">
-            Production software built to solve human problems — not demos, not side projects.
-            Each entry is a story: a real problem, real constraints, real users, real outcomes.
+            Production software built to solve human problems. Each entry is a story:
+            the problem, constraints, decisions, tradeoffs, and what Waleed learned by shipping it.
           </p>
         </motion.div>
 
-        {/* ── Featured: WePsych ──────────────────────────────────────────────── */}
         <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
           <Link
             href={featured.href}
             className="group block rounded-xl border border-border-muted bg-bg-panel hover:border-accent/30 transition-all duration-300 overflow-hidden"
           >
-            {/* Top band */}
             <div className="bg-bg-dark/60 border-b border-border-muted px-8 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-accent" />
@@ -114,7 +110,6 @@ export default function ProductsPage() {
             </div>
 
             <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left: info */}
               <div className="lg:col-span-2 space-y-5">
                 <div>
                   <p className="text-[10px] font-mono text-text-muted mb-1">{featured.pillarTag}</p>
@@ -135,7 +130,6 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              {/* Right: metrics + CTA */}
               <div className="space-y-5">
                 <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
                   {featured.impact.map(m => (
@@ -154,7 +148,6 @@ export default function ProductsPage() {
           </Link>
         </motion.div>
 
-        {/* ── Secondary grid ─────────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {secondary.map((product, i) => (
             <motion.div key={product.id} custom={i + 1} variants={fadeUp} initial="hidden" animate="visible">
@@ -194,7 +187,6 @@ export default function ProductsPage() {
           ))}
         </div>
 
-        {/* Other Work */}
         <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible">
           <Link
             href="/products/other"
@@ -205,14 +197,13 @@ export default function ProductsPage() {
                 Other Work
               </p>
               <p className="text-xs text-text-muted font-mono mt-0.5">
-                Freelance builds, experiments, and internal tools
+                Freelance builds, media-heavy sites, and smaller delivery work
               </p>
             </div>
             <ArrowUpRight className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" />
           </Link>
         </motion.div>
 
-        {/* Navigator CTA */}
         <div className="border-t border-border-muted pt-8 flex items-center justify-between">
           <p className="text-xs font-mono text-text-muted">
             Looking for Systems or Intelligence work?

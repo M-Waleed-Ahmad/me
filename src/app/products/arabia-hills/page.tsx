@@ -2,22 +2,25 @@
 
 import React from 'react';
 import CaseStudyLayout, {
-  EngineeringNote, Tradeoff, MetricCard, ArchDiagramPlaceholder,
-  CaseStudySection, ProjectMeta
+  EngineeringNote,
+  Tradeoff,
+  MetricCard,
+  ImplementationTimeline,
+  CaseStudySection,
+  ProjectMeta,
 } from '@/components/CaseStudyLayout';
 
 const meta: ProjectMeta = {
   name: 'Arabia Hills',
-  tagline: '{{PLACEHOLDER: One sentence — real estate portal, scale of listings, the engineering problem that defined the build.}}',
+  tagline: 'A real estate platform built by a two-person team with a CMS and Make.com-powered listing ingestion.',
   pillar: 'Products',
   pillarHref: '/products',
   status: 'Production',
-  tech: ['Next.js', 'Supabase', 'PostgreSQL', 'PostGIS', 'TypeScript'],
+  tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Make.com', 'TypeScript'],
   metrics: [
-    { label: 'Listings',     value: '{{PLACEHOLDER: N+}}' },
-    { label: 'Query Latency', value: '{{PLACEHOLDER: <Xms}}' },
-    { label: 'Monthly Searches', value: '{{PLACEHOLDER: N+}}' },
-    { label: 'DB Size',      value: '{{PLACEHOLDER: NGB}}' },
+    { label: 'Team', value: '2 people' },
+    { label: 'Catalog', value: '20+ est.' },
+    { label: 'Search', value: 'Responsive' },
   ],
 };
 
@@ -28,10 +31,20 @@ const sections: CaseStudySection[] = [
     title: 'The Problem',
     children: (
       <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: Describe the listing search performance problem. E.g. users searching by polygon, radius, price band, and custom attributes were hitting 8–12s query times on a 200k-row listings table.}}'}</p>
-        <p>{'{{PLACEHOLDER: What was the business consequence of slow search? e.g. 70% of property search sessions timed out before results loaded.}}'}</p>
+        <p>
+          Arabia Hills needed a property platform that a small team could actually operate.
+          The hard part was not only building listing pages; it was making bulk listing data,
+          agent-facing edits, and public search feel like one maintainable product.
+        </p>
+        <p>
+          The team was only two people, with no hard frontend/backend split. That forced the
+          architecture to stay practical: one schema, clear admin workflows, and automation that
+          could be inspected when listing data changed shape.
+        </p>
         <EngineeringNote>
-          {'{{PLACEHOLDER: Was the root cause bad queries, missing indexes, data model design, or all three? What did the first diagnostic show?}}'}
+          The strongest decision was keeping the data tools visible. For a two-person build,
+          inspectable ingestion and a simple CMS mattered more than maximizing infrastructure
+          flexibility.
         </EngineeringNote>
       </div>
     ),
@@ -43,14 +56,14 @@ const sections: CaseStudySection[] = [
     children: (
       <ul className="space-y-2.5 text-sm text-text-secondary">
         {[
-          '{{PLACEHOLDER: Constraint 1 — e.g. No budget for Elasticsearch or Algolia; solution had to live in the existing PostgreSQL instance.}}',
-          '{{PLACEHOLDER: Constraint 2 — e.g. Listing data updated by non-technical agents via CSV import; schema had to be migration-safe.}}',
-          '{{PLACEHOLDER: Constraint 3 — e.g. Peak load during marketing campaigns: 10x normal traffic for 24-hour windows.}}',
-          '{{PLACEHOLDER: Constraint 4 — e.g. Geospatial filtering required polygon drawing on the frontend — no lat/lng radius was sufficient.}}',
-        ].map((c, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="text-accent font-mono text-[10px] mt-0.5 flex-shrink-0">→</span>
-            <span className="font-mono text-[11px]">{c}</span>
+          'Bulk listing data had to be validated and transformed before it reached the database.',
+          'Non-technical agents needed an admin CMS that matched the same listing schema.',
+          'Search was attribute and filter based, not a geospatial or map-search system.',
+          'The delivery model required both product implementation and operational tooling from the same small team.',
+        ].map((constraint) => (
+          <li key={constraint} className="flex items-start gap-2">
+            <span className="text-accent font-mono text-[10px] mt-0.5 flex-shrink-0">-&gt;</span>
+            <span className="font-mono text-[11px]">{constraint}</span>
           </li>
         ))}
       </ul>
@@ -62,13 +75,17 @@ const sections: CaseStudySection[] = [
     title: 'Architecture Decision',
     children: (
       <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: Describe the PostGIS spatial indexing approach. Why was a native PostgreSQL extension chosen over an external search engine?}}'}</p>
-        <ArchDiagramPlaceholder label="Arabia Hills — Database Architecture & Query Flow" />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <p>
+          The platform used Next.js for the product surface and Supabase/PostgreSQL for auth,
+          structured listing data, and admin-facing state. Make.com handled bulk ingestion so
+          imported listing data could be checked and reshaped before becoming trusted app data.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           {[
-            { label: 'Spatial Index', desc: '{{PLACEHOLDER: PostGIS GiST index on geometry column — what queries does it accelerate and how?}}' },
-            { label: 'Materialized Views', desc: '{{PLACEHOLDER: What aggregations are pre-computed? When do they refresh? What triggers invalidation?}}' },
-            { label: 'Edge Caching', desc: '{{PLACEHOLDER: How are Next.js route handlers used to cache common search responses at the edge?}}' },
+            { label: 'Bulk Source', desc: 'Incoming listing data enters through an automation pipeline rather than direct manual database edits.' },
+            { label: 'Make.com', desc: 'Records are validated, transformed, and prepared before insertion into the app schema.' },
+            { label: 'Supabase', desc: 'PostgreSQL stores the canonical listing model used by both the CMS and public site.' },
+            { label: 'Next.js App', desc: 'Agents manage listings through the CMS while visitors filter and inspect the same structured data.' },
           ].map(({ label, desc }) => (
             <div key={label} className="p-4 rounded-lg border border-border-muted bg-bg-dark space-y-1.5">
               <p className="text-[10px] font-mono text-accent uppercase tracking-wider">{label}</p>
@@ -86,18 +103,17 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-3">
         <Tradeoff
-          decision="{{PLACEHOLDER: PostgreSQL + PostGIS vs. dedicated search engine (Elasticsearch / Typesense)}}"
-          pro="{{PLACEHOLDER: No additional infrastructure, leverages existing DB expertise, spatial queries are first-class citizens.}}"
-          con="{{PLACEHOLDER: Text-match relevance scoring is weaker than dedicated FTS; required manual synonym handling.}}"
+          decision="Make.com ingestion vs. custom backend importer"
+          summary="The automation layer kept the pipeline visible and easier to adjust."
+          pro="Faster to ship, easier for a small team to inspect, and useful for changing listing formats without a full backend release."
+          con="Less control than a custom importer, so validation rules had to stay explicit and easy to audit."
         />
         <Tradeoff
-          decision="{{PLACEHOLDER: Materialized views vs. real-time aggregation}}"
-          pro="{{PLACEHOLDER: Sub-5ms stat lookups; no aggregate computed on read path.}}"
-          con="{{PLACEHOLDER: Stale data window during refresh; required a careful invalidation trigger strategy to avoid missed updates.}}"
+          decision="Simple filters vs. map/geospatial search"
+          summary="The project stayed aligned with its real search requirements."
+          pro="Reduced complexity and kept the user experience focused on listing attributes that mattered for the catalog."
+          con="It left advanced map-based discovery out of scope rather than pretending the platform had a spatial search engine."
         />
-        <EngineeringNote>
-          {'{{PLACEHOLDER: The specific index configuration that had the biggest performance impact and why it was non-obvious to get right.}}'}
-        </EngineeringNote>
       </div>
     ),
   },
@@ -106,21 +122,25 @@ const sections: CaseStudySection[] = [
     number: '05',
     title: 'Implementation',
     children: (
-      <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: Walk through the implementation sequence. What was built first? Why?}}'}</p>
-        <div className="rounded-lg border border-border-muted bg-bg-dark p-5 space-y-2">
-          <p className="text-[10px] font-mono text-accent uppercase tracking-widest mb-3">Data Flow — Listing Search</p>
-          <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] text-text-secondary">
-            {['User Draws Polygon', 'GeoJSON → API', 'PostGIS ST_Within', 'Filter + Sort', 'Paginated Response', 'Edge Cache Hit'].map((step, i, arr) => (
-              <React.Fragment key={step}>
-                <span className="px-2 py-1 rounded border border-border-muted bg-bg-panel">{step}</span>
-                {i < arr.length - 1 && <span className="text-text-muted">→</span>}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-        <p>{'{{PLACEHOLDER: What was the hardest part? E.g. The CSV import had inconsistent coordinate formats; building a fault-tolerant normaliser was unexpectedly complex.}}'}</p>
-      </div>
+      <ImplementationTimeline
+        phases={[
+          {
+            phase: 'Schema and listing model',
+            duration: 'Foundation',
+            note: 'Defined the listing fields that would be shared by the public site, admin CMS, and ingestion pipeline.',
+          },
+          {
+            phase: 'Automation pipeline',
+            duration: 'Ingestion',
+            note: 'Built the Make.com flow to validate and transform bulk data before writing to Supabase.',
+          },
+          {
+            phase: 'CMS and search surface',
+            duration: 'Product',
+            note: 'Implemented agent-facing listing management and public filtering against the same canonical data.',
+          },
+        ]}
+      />
     ),
   },
   {
@@ -130,13 +150,15 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-5">
         <p className="text-sm text-text-secondary leading-relaxed">
-          {'{{PLACEHOLDER: Frame the outcome — query latency improvement, user session improvement, business expansion enabled by the platform.}}'}
+          Arabia Hills became a complete real estate delivery rather than a static catalog:
+          the same system supported public browsing, agent updates, and bulk listing ingestion.
+          The catalog was in the 20+ listing range during the measured build period, with
+          responsive filtering in practice rather than a benchmarked latency claim.
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <MetricCard value="{{PLACEHOLDER: X%}}"  label="Query Speed Gain"   note="{{PLACEHOLDER: baseline vs. optimised}}" />
-          <MetricCard value="{{PLACEHOLDER: <Xms}}" label="P95 Search Latency" note="{{PLACEHOLDER: production measured}}" />
-          <MetricCard value="{{PLACEHOLDER: N+}}"   label="Monthly Searches"   note="Sustained peak" />
-          <MetricCard value="{{PLACEHOLDER: X%}}"   label="Session Completion"  note="{{PLACEHOLDER: before vs. after}}" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <MetricCard value="2" label="Person Team" note="End-to-end delivery" />
+          <MetricCard value="20+ est." label="Listings" note="Rough catalog range" />
+          <MetricCard value="CMS + Pipeline" label="Operations" note="Agent editing and bulk ingestion" />
         </div>
       </div>
     ),
@@ -147,10 +169,15 @@ const sections: CaseStudySection[] = [
     title: 'Reflection',
     children: (
       <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: What would you do differently with PostGIS or the data model knowing what you know now?}}'}</p>
-        <p>{'{{PLACEHOLDER: What does Arabia Hills prove about your engineering judgment? What would you point to in this project to show a senior engineer your systems thinking?}}'}</p>
+        <p>
+          The project shows Waleed thinking like a product owner, not only an implementer:
+          the public website, the admin workflow, and the ingestion path all had to make sense
+          together.
+        </p>
         <EngineeringNote>
-          {'{{PLACEHOLDER: The one decision that the client questioned at the time and that turned out to be exactly right.}}'}
+          The lesson was that small teams need tools they can understand under pressure.
+          A clever architecture is less valuable than one where the data path is visible when
+          a listing import goes wrong.
         </EngineeringNote>
       </div>
     ),

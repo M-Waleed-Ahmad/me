@@ -231,10 +231,12 @@ export default function Home() {
               Identity // Engineering Philosophy
             </span>
             <p className="text-xl sm:text-2xl text-text-primary leading-relaxed font-light tracking-tight">
-              {'{{PLACEHOLDER: "I enjoy building products that solve real problems, designing systems that scale, and exploring where applied AI can create meaningful leverage."}}'}
+              I build products that solve real operational problems, systems that make delivery
+              more reliable, and applied AI workflows that stay honest about evidence.
             </p>
             <p className="text-sm text-text-secondary leading-relaxed max-w-lg">
-              {'{{PLACEHOLDER: One more sentence — something personal about how you approach problems or what draws you to this work.}}'}
+              The common thread is making hidden complexity visible: data movement, user trust,
+              automation boundaries, and the places where human review still matters.
             </p>
           </motion.div>
 

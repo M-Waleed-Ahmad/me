@@ -8,17 +8,11 @@ import CaseStudyLayout, {
 
 const meta: ProjectMeta = {
   name: 'WePsych',
-  tagline: '{{PLACEHOLDER: One sentence on WePsych — what it is, who uses it, the scale.}}',
+  tagline: 'A CPD compliance and peer-support platform for Australian psychologists working against AHPRA and PsyBA requirements.',
   pillar: 'Products',
   pillarHref: '/products',
-  status: 'Production · International',
-  tech: ['FastAPI', 'React', 'Supabase', 'PostgreSQL', 'Docker', 'GitHub Actions'],
-  metrics: [
-    { label: 'Active Users', value: '{{PLACEHOLDER: N+}}' },
-    { label: 'Uptime SLA', value: '{{PLACEHOLDER: 99.x%}}' },
-    { label: 'Countries',   value: '{{PLACEHOLDER: N}}' },
-    { label: 'Appointments', value: '{{PLACEHOLDER: N+}}' },
-  ],
+  status: 'Production',
+  tech: ['Flutter', 'Supabase', 'PostgreSQL', 'Supabase Auth', 'Supabase Storage'],
 };
 
 const sections: CaseStudySection[] = [
@@ -29,13 +23,13 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
         <p>
-          {'{{PLACEHOLDER: Describe the core user pain — what was broken or missing in the mental health access space for this client\'s market? E.g. fragmented scheduling, no secure digital records, therapist availability gaps.}}'}
+          Australian psychologists need to maintain CPD records for registration renewal, but the rules are not the same for every practitioner. Provisional psychologists, registrar psychologists, endorsed psychologists, and supervisors each carry different compliance responsibilities.
         </p>
         <p>
-          {'{{PLACEHOLDER: Why did this problem require a purpose-built platform rather than an off-the-shelf solution? What made it non-trivial?}}'}
+          The hardest workflows were not simply &quot;log an activity.&quot; Provisional and registrar pathways require practice-hour tracking, supervision ratios, case reports, peer consultation evidence, and audit-ready exports. Without a dedicated tool, that becomes a manual compliance system spread across notes, files, and spreadsheets.
         </p>
         <EngineeringNote>
-          {'{{PLACEHOLDER: What was the specific signal that the status quo was failing? E.g. therapists managing 100+ appointments manually in spreadsheets, zero audit trail.}}'}
+          The domain logic mattered more than the UI surface. Modeling 4+2, 5+1, and registrar pathways correctly was the difference between a helpful tracker and a tool that could quietly mislead a user.
         </EngineeringNote>
       </div>
     ),
@@ -46,17 +40,17 @@ const sections: CaseStudySection[] = [
     title: 'Constraints',
     children: (
       <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: Describe the hard constraints: regulatory, budget, technical, timeline, team size.}}'}</p>
+        <p>The platform had to support three distinct user groups without splitting into three separate products.</p>
         <ul className="space-y-2.5 pl-1">
           {[
-            '{{PLACEHOLDER: Constraint 1 — e.g. HIPAA-equivalent data residency requirements in target market.}}',
-            '{{PLACEHOLDER: Constraint 2 — e.g. Zero budget for managed ML services; all inference must run on a $X/month server.}}',
-            '{{PLACEHOLDER: Constraint 3 — e.g. Client required weekly demos; architecture had to be iteratively deployable.}}',
-            '{{PLACEHOLDER: Constraint 4 — e.g. Therapist onboarding had to be zero-technical — no app installs.}}',
-          ].map((c, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <span className="text-accent font-mono text-[10px] mt-0.5 flex-shrink-0">→</span>
-              <span className="font-mono text-[11px]">{c}</span>
+            'Support provisional psychologists, registrar psychologists, registered or endorsed psychologists, and board-approved supervisors from one account system.',
+            'Represent AHPRA pathway requirements accurately, including 4+2 at 3,000 hours, 5+1 at 1,400 hours, registrar at 1,760 hours, and 1 hour of supervision per 17.5 practice hours.',
+            'Keep personal reflection notes private even when a peer consultation session is shared between participants.',
+            'Track supervisor status independently from registration or endorsement stage, because a supervisor badge can apply across different user contexts.',
+          ].map((constraint) => (
+            <li key={constraint} className="flex items-start gap-2">
+              <span className="text-accent font-mono text-[10px] mt-0.5 flex-shrink-0">-</span>
+              <span className="font-mono text-[11px]">{constraint}</span>
             </li>
           ))}
         </ul>
@@ -70,15 +64,15 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
         <p>
-          {'{{PLACEHOLDER: Describe the top-level architecture decision. E.g. decoupled FastAPI service layer + Supabase for auth/storage + React SPA + background worker pool for notification handling.}}'}
+          WePsych was built as a Flutter application talking directly to Supabase for authentication, Postgres-backed data, and storage for certificates, signed forms, and audit documents. There was no separate custom backend API layer; the hard part was encoding the compliance model and access boundaries cleanly.
         </p>
-        <ArchDiagramPlaceholder label="WePsych System Architecture — Data Flow Diagram" />
+        <ArchDiagramPlaceholder label="WePsych System Architecture - Flutter, Supabase, Storage, and Audit Export Flow" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
           {[
-            { layer: 'API Layer', desc: '{{PLACEHOLDER: FastAPI async handlers — why async? What concurrency requirements made this necessary?}}' },
-            { layer: 'Auth & Sessions', desc: '{{PLACEHOLDER: Supabase Auth — JWT flows, session expiry, therapist vs patient role separation.}}' },
-            { layer: 'Database', desc: '{{PLACEHOLDER: PostgreSQL schema — how is the appointment/notes/user data structured? Any normalisation decisions?}}' },
-            { layer: 'Background Workers', desc: '{{PLACEHOLDER: How are reminders, notifications, and async tasks handled without blocking main API thread?}}' },
+            { layer: 'Flutter App', desc: 'The primary product surface for logging CPD activities, peer consultations, practice hours, supervision records, and exports.' },
+            { layer: 'Supabase Auth', desc: 'Authentication and role-aware access for psychologists, supervisors, and admin workflows.' },
+            { layer: 'Postgres Data Model', desc: 'Compliance records, shared sessions, supervision logs, pathway progress, and exportable audit metadata.' },
+            { layer: 'Storage + Exports', desc: 'Certificate uploads, signed forms, and audit-ready PDF exports for CPD, peer consultation, and supervision logs.' },
           ].map(({ layer, desc }) => (
             <div key={layer} className="p-4 rounded-lg border border-border-muted bg-bg-dark space-y-1.5">
               <p className="text-[10px] font-mono text-accent uppercase tracking-wider">{layer}</p>
@@ -96,26 +90,26 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-3">
         <p className="text-sm text-text-secondary leading-relaxed mb-4">
-          {'{{PLACEHOLDER: Brief framing — what were the key fork-in-the-road architectural moments on this project?}}'}
+          The most important decisions were about access boundaries and delivery speed, not novelty in the stack.
         </p>
         <Tradeoff
-          decision="{{PLACEHOLDER: Decision 1 — e.g. Supabase Auth vs. building custom auth}}"
-          pro="{{PLACEHOLDER: What was gained — e.g. weeks of saved development time, immediate MFA support, battle-tested security.}}"
-          con="{{PLACEHOLDER: What was accepted — e.g. limited customisation of session tokens, vendor lock-in for auth flows.}}"
+          decision="Shared peer-session model with per-user private reflections"
+          summary="Session metadata is shared; each participant's reflection stays isolated."
+          pro="Participants can see shared details like attendance, date, duration, and topic, while still keeping personal reflective notes private from peers, supervisors, and admins."
+          con="The data model needs stricter access boundaries than a simpler fully shared session record."
         />
         <Tradeoff
-          decision="{{PLACEHOLDER: Decision 2 — e.g. FastAPI vs. Django REST Framework}}"
-          pro="{{PLACEHOLDER: What was gained — e.g. async-native, 60% lower server cost under load, clean OpenAPI schema generation.}}"
-          con="{{PLACEHOLDER: What was accepted — e.g. smaller ecosystem, had to build own pagination helpers and background job wiring.}}"
+          decision="Flutter directly against Supabase"
+          summary="Skip a custom API layer so effort goes into regulatory workflow modeling."
+          pro="Faster delivery for a domain-heavy product: auth, database, and storage are handled through Supabase while the app focuses on pathway rules and user workflows."
+          con="Some backend flexibility is traded away; future custom business logic may need edge functions or a dedicated API if requirements grow."
         />
         <Tradeoff
-          decision="{{PLACEHOLDER: Decision 3 — e.g. React SPA vs. Next.js SSR}}"
-          pro="{{PLACEHOLDER: What was gained — e.g. near-zero cold start on client, fully decoupled frontend deployments.}}"
-          con="{{PLACEHOLDER: What was accepted — e.g. SEO is irrelevant for this app, so trade was acceptable; initial bundle size needed pruning.}}"
+          decision="One profile system for multiple professional roles"
+          summary="A user can hold multiple roles where the regulatory model allows it."
+          pro="The platform can represent real professional overlap, such as a practitioner who is both a registrar and a supervisor."
+          con="Role logic becomes more complex than a single fixed user type per account."
         />
-        <EngineeringNote>
-          {'{{PLACEHOLDER: The decision that surprised you most in hindsight — why was it harder or easier than expected?}}'}
-        </EngineeringNote>
       </div>
     ),
   },
@@ -125,16 +119,20 @@ const sections: CaseStudySection[] = [
     title: 'Implementation',
     children: (
       <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: High-level implementation narrative — phases, team, approach. How did you go from spec to production?}}'}</p>
+        <p>
+          The implementation centered on turning AHPRA-aligned requirements into product workflows: CPD activity logging, peer consultation, internship and registrar tracking, supervisor review, admin verification, and audit export.
+        </p>
         <ImplementationTimeline
           phases={[
-            { phase: '{{PLACEHOLDER: Phase name e.g. Discovery & Schema}}', duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
-            { phase: '{{PLACEHOLDER: Phase name e.g. Core API + Auth}}',    duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
-            { phase: '{{PLACEHOLDER: Phase name e.g. Frontend Sprint}}',    duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
-            { phase: '{{PLACEHOLDER: Phase name e.g. Testing & Launch}}',   duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
+            { phase: 'Compliance model', duration: 'Domain-first', note: 'Mapped CPD, 4+2, 5+1, registrar, and supervision requirements into product states and records.' },
+            { phase: 'Core logging', duration: 'Product build', note: 'Built CPD logs, peer consultation logs, certificates, practice-hour tracking, case reports, and supervision entries.' },
+            { phase: 'Supervisor and admin workflows', duration: 'Access-control build', note: 'Added supervisee review, approve/reject flows, AHPRA verification, and audit oversight without exposing private reflections.' },
+            { phase: 'Audit export', duration: 'Submission support', note: 'Generated PDF exports for CPD logs, shared peer consultation details, and supervision records.' },
           ]}
         />
-        <p>{'{{PLACEHOLDER: What was the hardest part of implementation that didn\'t show up in any spec? E.g. webhook retry logic, appointment conflict resolution, session expiry UX edge cases.}}'}</p>
+        <p>
+          The platform also includes a clear disclaimer: it helps users track compliance, but it does not guarantee the user&apos;s actual compliance with AHPRA requirements.
+        </p>
       </div>
     ),
   },
@@ -145,18 +143,17 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-6">
         <p className="text-sm text-text-secondary leading-relaxed">
-          {'{{PLACEHOLDER: Frame the outcome — who is using it, how is it being used, what changed for the client or users?}}'}
+          WePsych was built and used to track real AHPRA-aligned compliance workflows for Australian psychologists across CPD, peer consultation, internship or registrar progress, supervision, and audit export.
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <MetricCard value="{{PLACEHOLDER: N+}}" label="Active Patients" note="{{PLACEHOLDER: clarify — monthly active? total registered?}}" />
-          <MetricCard value="{{PLACEHOLDER: 99.x%}}" label="Appointment Delivery" note="Webhook success rate" />
-          <MetricCard value="{{PLACEHOLDER: Xms}}" label="API P95 Latency" note="{{PLACEHOLDER: measured where? staging? prod?}}" />
-          <MetricCard value="{{PLACEHOLDER: N}}" label="Countries" note="{{PLACEHOLDER: confirm deployment regions}}" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <MetricCard value="AHPRA-aligned" label="Compliance model" note="CPD, peer consultation, practice hours, supervision, and audit export" />
+          <MetricCard value="3 user groups" label="Role coverage" note="Provisional/registrar, registered/endorsed, and supervisors" />
+          <MetricCard value="~30%" label="Admin overhead estimate" note="Waleed's rough estimate from observing the workflow shift" />
         </div>
         <div className="p-5 rounded-lg border border-border-muted bg-bg-dark space-y-2">
-          <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Client Outcome</p>
+          <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Qualitative outcome</p>
           <p className="text-sm text-text-secondary leading-relaxed">
-            {'{{PLACEHOLDER: What did the platform enable for the business? E.g. expanded to N new cities, onboarded X therapists, reduced admin overhead by Y hours/week.}}'}
+            By Waleed&apos;s estimate, moving users from manual logging into structured tracking cut administrative overhead by roughly 30%. That figure is an estimate, not an audited KPI.
           </p>
         </div>
       </div>
@@ -168,13 +165,12 @@ const sections: CaseStudySection[] = [
     title: 'Reflection',
     children: (
       <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
-        <p>{'{{PLACEHOLDER: What would you do differently if you started this today? No blame — honest engineering retrospective.}}'}</p>
-        <p>{'{{PLACEHOLDER: What did WePsych teach you that you now carry into every project? E.g. design for offline recovery state early, separate domain logic from transport layer from day one.}}'}</p>
-        <div className="p-4 rounded-lg border-l-2 border-accent/40 bg-bg-dark mt-2">
-          <p className="text-xs font-mono text-text-muted italic">
-            {'{{PLACEHOLDER: One honest sentence about the messiest part — the thing that didn\'t show up in any post-mortem but shaped how you work now.}}'}
-          </p>
-        </div>
+        <p>
+          The hardest part was not drawing screens in Flutter. It was translating Australia&apos;s psychologist registration and endorsement pathways into a coherent data model that could handle multiple roles, hour thresholds, supervision ratios, and audit needs without becoming confusing.
+        </p>
+        <p>
+          The strongest lesson from WePsych is that compliance software succeeds or fails at the boundary between domain accuracy and user trust. A clean interface matters, but accurate rules and private-by-design records matter more.
+        </p>
       </div>
     ),
   },
