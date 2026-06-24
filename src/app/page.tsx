@@ -91,9 +91,9 @@ export default function Home() {
   }, []);
 
   const graphOpacity = useMemo(() => {
-    if (reduceMotion) return 0.8;
-    if (bootComplete) return 0.8;
-    return isMobile ? 0.18 : 0.32;
+    if (reduceMotion) return 0.92;
+    if (bootComplete) return isMobile ? 0.86 : 0.96;
+    return isMobile ? 0.26 : 0.42;
   }, [bootComplete, isMobile, reduceMotion]);
 
   return (
@@ -126,7 +126,7 @@ export default function Home() {
 
         {/* Vignette overlay — pulls attention to center text */}
         <div className="absolute inset-0 z-10 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 60% 60% at 50% 50%, transparent 30%, rgba(3,3,3,0.65) 100%)' }}
+          style={{ background: 'radial-gradient(ellipse 66% 66% at 50% 50%, transparent 34%, rgba(3,3,3,0.5) 100%)' }}
         />
 
         {/* Hero text content — center-aligned, above graph */}
@@ -157,13 +157,21 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
+        <div className="pointer-events-none relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: bootComplete ? 1 : 0, y: bootComplete ? 0 : 8 }}
             transition={{ duration: reduceMotion ? 0.08 : 0.36, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-3xl space-y-6"
+            className="pointer-events-none relative max-w-3xl space-y-6 px-5 py-7 sm:px-8 sm:py-8"
           >
+            <div
+              aria-hidden
+              className="absolute inset-[-1.75rem] -z-10 rounded-[2rem] bg-bg-dark/60 backdrop-blur-[1px]"
+              style={{
+                background:
+                  'radial-gradient(ellipse 78% 64% at 50% 48%, rgba(3,3,3,0.82) 0%, rgba(3,3,3,0.62) 46%, rgba(3,3,3,0.22) 74%, rgba(3,3,3,0) 100%)',
+              }}
+            />
             {/* Status badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/25 bg-accent/5 text-accent text-xs font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -183,7 +191,7 @@ export default function Home() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <div className="pointer-events-auto flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <Link
                 href="/products"
                 className="w-full sm:w-auto group px-7 py-3.5 rounded-lg bg-accent hover:bg-accent-bright text-bg-dark font-mono text-sm font-semibold tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(16,185,129,0.18)] hover:shadow-[0_0_32px_rgba(52,211,153,0.32)] flex items-center justify-center gap-2"
@@ -209,7 +217,7 @@ export default function Home() {
               transition={{ delay: 1.5, duration: 1 }}
               className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-mono text-text-muted tracking-widest"
             >
-              ↓ drag nodes · scroll to zoom · click to navigate
+              drag nodes / scroll to zoom / click to navigate
             </motion.p>
           )}
         </div>

@@ -12,6 +12,7 @@ import {
   Layers,
   Network,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 type JourneyNode = {
@@ -27,7 +28,7 @@ type JourneyNode = {
   icon: React.ElementType;
 };
 
-const journeyNodes: JourneyNode[] = [
+const educationNodes: JourneyNode[] = [
   {
     id: 'gcl',
     company: 'Government College Lahore',
@@ -58,6 +59,9 @@ const journeyNodes: JourneyNode[] = [
     skills: ['Algorithms', 'Data Structures', 'Databases', 'Python'],
     icon: GraduationCap,
   },
+];
+
+const experienceNodes: JourneyNode[] = [
   {
     id: 'arrivy',
     company: 'Arrivy',
@@ -103,28 +107,29 @@ const journeyNodes: JourneyNode[] = [
     skills: ['GitHub Actions', 'Playwright', 'Cypress', 'CI/CD'],
     icon: Database,
   },
+  {
+    id: 'future',
+    company: 'Future',
+    role: 'Next product and systems chapter',
+    period: 'Next',
+    angle: 'Direction',
+    description: 'The forward-looking node keeps the map open: more product ownership, deeper systems work, and applied intelligence that earns trust through evidence.',
+    lessons: [
+      'The next step should compound the same pattern: own real problems, expose the system, and ship with accountability.',
+      'Future work belongs here only if it strengthens the proof that Waleed can own a product or feature end to end.',
+    ],
+    projects: ['Product ownership', 'Systems architecture', 'Applied AI workflows'],
+    skills: ['Ownership', 'System design', 'Applied AI'],
+    icon: Sparkles,
+  },
 ];
 
-const adjacent: Record<string, string[]> = {
-  gcl: ['fast'],
-  fast: ['gcl', 'arrivy', 'ashtex'],
-  arrivy: ['fast', 'ashtex'],
-  ashtex: ['fast', 'arrivy', 'axelliant'],
-  axelliant: ['ashtex'],
-};
-
-const positions: Record<string, string> = {
-  gcl: 'md:col-start-1 md:row-start-1',
-  fast: 'md:col-start-2 md:row-start-2',
-  arrivy: 'md:col-start-3 md:row-start-1',
-  ashtex: 'md:col-start-1 md:row-start-3',
-  axelliant: 'md:col-start-3 md:row-start-3',
-};
+const journeyNodes = [...educationNodes, ...experienceNodes];
 
 export default function JourneyPage() {
   const [activeId, setActiveId] = useState('axelliant');
   const activeNode = useMemo(
-    () => journeyNodes.find((node) => node.id === activeId) ?? journeyNodes[0],
+    () => journeyNodes.find((node) => node.id === activeId) ?? experienceNodes[0],
     [activeId]
   );
   const ActiveIcon = activeNode.icon;
@@ -143,8 +148,8 @@ export default function JourneyPage() {
                 A career map organized by lessons, not dates.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-                The Journey page shows how education, QA, client delivery, and CI/CD work each
-                shaped a different part of Waleed&apos;s engineering judgment.
+                Education sets the foundation. Experience carries the main narrative: quality,
+                client delivery, CI/CD ownership, and the next systems-oriented chapter.
               </p>
             </div>
             <aside className="border border-border-muted bg-bg-panel p-5">
@@ -158,45 +163,97 @@ export default function JourneyPage() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1fr_390px] lg:items-start">
-          <div className="border border-border-muted bg-bg-panel p-4 sm:p-6">
-            <div className="mb-5 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Workspace map</p>
-                <p className="mt-1 text-xs text-text-muted">Select any node to inspect how the lesson connects.</p>
+          <div className="space-y-6">
+            <div className="border border-border-muted bg-bg-panel/70 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-muted pb-3">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Foundations</p>
+                  <p className="mt-1 text-xs text-text-muted">Education, shown as supporting context.</p>
+                </div>
+                <GraduationCap className="h-4 w-4 text-accent" />
               </div>
-              <Network className="h-4 w-4 text-accent" />
+
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch">
+                {educationNodes.map((node, index) => {
+                  const Icon = node.icon;
+                  const selected = node.id === activeId;
+
+                  return (
+                    <React.Fragment key={node.id}>
+                      <button
+                        id={node.id}
+                        onClick={() => setActiveId(node.id)}
+                        className={`min-h-24 border px-4 py-3 text-left transition-all ${
+                          selected
+                            ? 'border-accent/45 bg-accent/10'
+                            : 'border-border-muted bg-bg-dark/70 hover:border-accent/25'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <Icon className={`h-4 w-4 ${selected ? 'text-accent' : 'text-text-muted'}`} />
+                          <span className="font-mono text-[10px] text-text-muted">{node.period}</span>
+                        </div>
+                        <h2 className="mt-3 text-sm font-semibold text-text-primary">{node.company}</h2>
+                        <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
+                      </button>
+                      {index < educationNodes.length - 1 && (
+                        <div className="hidden items-center justify-center text-text-muted sm:flex">
+                          <ArrowRight className="h-4 w-4" />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3 md:grid-rows-3">
-              {journeyNodes.map((node) => {
-                const Icon = node.icon;
-                const selected = node.id === activeId;
-                const connected = adjacent[activeId]?.includes(node.id);
+            <div className="border border-border-muted bg-bg-panel p-4 sm:p-6">
+              <div className="mb-5 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Experience track</p>
+                  <p className="mt-1 text-xs text-text-muted">Chronological, left to right on desktop.</p>
+                </div>
+                <Network className="h-4 w-4 text-accent" />
+              </div>
 
-                return (
-                  <button
-                    key={node.id}
-                    id={node.id}
-                    onClick={() => setActiveId(node.id)}
-                    className={`min-h-36 border px-4 py-4 text-left transition-all ${positions[node.id]} ${
-                      selected
-                        ? 'border-accent/50 bg-accent/10'
-                        : connected
-                          ? 'border-accent/20 bg-bg-dark'
-                          : 'border-border-muted bg-bg-dark hover:border-accent/25'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
-                        {node.angle}
-                      </span>
-                    </div>
-                    <h2 className="mt-5 text-base font-semibold text-text-primary">{node.company}</h2>
-                    <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
-                  </button>
-                );
-              })}
+              <div className="grid gap-3 xl:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] xl:items-stretch">
+                {experienceNodes.map((node, index) => {
+                  const Icon = node.icon;
+                  const selected = node.id === activeId;
+                  const isFuture = node.id === 'future';
+
+                  return (
+                    <React.Fragment key={node.id}>
+                      <button
+                        id={node.id}
+                        onClick={() => setActiveId(node.id)}
+                        className={`min-h-44 border px-4 py-4 text-left transition-all ${
+                          selected
+                            ? 'border-accent/50 bg-accent/10'
+                            : isFuture
+                              ? 'border-border-muted border-dashed bg-bg-dark/60 hover:border-accent/25'
+                              : 'border-border-muted bg-bg-dark hover:border-accent/25'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
+                          <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                            {node.angle}
+                          </span>
+                        </div>
+                        <p className="mt-5 font-mono text-[10px] uppercase tracking-widest text-accent">{node.period}</p>
+                        <h2 className="mt-2 text-base font-semibold text-text-primary">{node.company}</h2>
+                        <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
+                      </button>
+                      {index < experienceNodes.length - 1 && (
+                        <div className="hidden items-center justify-center text-text-muted xl:flex">
+                          <ArrowRight className="h-4 w-4" />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
