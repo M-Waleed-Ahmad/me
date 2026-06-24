@@ -1,173 +1,262 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Briefcase, ArrowRight, BookOpen, KeyRound, Award } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  ArrowRight,
+  BookOpen,
+  Briefcase,
+  Code2,
+  Compass,
+  Database,
+  GraduationCap,
+  Layers,
+  Network,
+} from 'lucide-react';
 
-interface JourneyNode {
+type JourneyNode = {
   id: string;
   company: string;
   role: string;
   period: string;
-  tagline: string;
+  angle: string;
   description: string;
   lessons: string[];
+  projects: string[];
   skills: string[];
-}
+  icon: React.ElementType;
+};
+
+const journeyNodes: JourneyNode[] = [
+  {
+    id: 'fast',
+    company: 'FAST-NUCES',
+    role: 'Computer Science Education',
+    period: '{{PLACEHOLDER: confirm dates e.g. 2016 - 2020}}',
+    angle: 'Fundamentals',
+    description: '{{PLACEHOLDER: Confirm academic background and the systems fundamentals that shaped Waleed early: algorithms, data structures, operating systems, networks, or databases.}}',
+    lessons: [
+      '{{PLACEHOLDER: Lesson from CS fundamentals that still affects how Waleed designs systems.}}',
+      '{{PLACEHOLDER: Lesson about modeling problems before choosing implementation tools.}}',
+    ],
+    projects: ['{{PLACEHOLDER: Academic or early project to confirm}}'],
+    skills: ['Algorithms', 'Data Structures', 'C++', 'Python'],
+    icon: GraduationCap,
+  },
+  {
+    id: 'ashtex',
+    company: 'Ashtex Solutions',
+    role: '{{PLACEHOLDER: confirm role title}}',
+    period: '{{PLACEHOLDER: confirm dates e.g. 2020 - 2022}}',
+    angle: 'Production software',
+    description: '{{PLACEHOLDER: Summarize Waleed impact at Ashtex, especially full-stack delivery, APIs, healthcare workflows, and production ownership.}}',
+    lessons: [
+      '{{PLACEHOLDER: Lesson from shipping real software for users or clients.}}',
+      '{{PLACEHOLDER: Lesson about separating domain logic, API boundaries, and background work.}}',
+    ],
+    projects: ['WePsych', '{{PLACEHOLDER: confirm additional Ashtex project}}'],
+    skills: ['FastAPI', 'React', 'Docker', 'REST APIs'],
+    icon: Layers,
+  },
+  {
+    id: 'arrivy',
+    company: 'Arrivy',
+    role: '{{PLACEHOLDER: confirm role title}}',
+    period: '{{PLACEHOLDER: confirm dates e.g. 2022 - 2023}}',
+    angle: 'Frontend systems',
+    description: '{{PLACEHOLDER: Summarize Waleed impact at Arrivy, with emphasis on responsive interfaces, performance, and polished product surfaces.}}',
+    lessons: [
+      '{{PLACEHOLDER: Lesson about performance budgets, interaction feel, or mobile-first UX.}}',
+      '{{PLACEHOLDER: Lesson about turning design intent into reliable UI implementation.}}',
+    ],
+    projects: ['ALFA Club', '{{PLACEHOLDER: confirm additional Arrivy project}}'],
+    skills: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+    icon: Code2,
+  },
+  {
+    id: 'axelliant',
+    company: 'Axelliant',
+    role: '{{PLACEHOLDER: confirm role title}}',
+    period: '{{PLACEHOLDER: confirm dates e.g. 2023 - Present}}',
+    angle: 'Systems and scale',
+    description: '{{PLACEHOLDER: Summarize Waleed impact at Axelliant, especially database design, system architecture, automation, and delivery under real constraints.}}',
+    lessons: [
+      '{{PLACEHOLDER: Lesson about database constraints, data movement, or architecture boundaries.}}',
+      '{{PLACEHOLDER: Lesson about making systems observable and maintainable after launch.}}',
+    ],
+    projects: ['Arabia Hills', '{{PLACEHOLDER: confirm additional Axelliant project}}'],
+    skills: ['PostgreSQL', 'Supabase', 'Next.js', 'System Design'],
+    icon: Database,
+  },
+];
+
+const adjacent: Record<string, string[]> = {
+  fast: ['ashtex', 'arrivy'],
+  ashtex: ['fast', 'arrivy', 'axelliant'],
+  arrivy: ['fast', 'ashtex', 'axelliant'],
+  axelliant: ['ashtex', 'arrivy'],
+};
+
+const positions: Record<string, string> = {
+  fast: 'md:col-start-1 md:row-start-2',
+  ashtex: 'md:col-start-2 md:row-start-1',
+  arrivy: 'md:col-start-3 md:row-start-2',
+  axelliant: 'md:col-start-2 md:row-start-3',
+};
 
 export default function JourneyPage() {
-  const [activeNode, setActiveNode] = useState<string>('axelliant');
-
-  const journeyNodes: JourneyNode[] = [
-    {
-      id: 'axelliant',
-      company: 'Axelliant',
-      role: '{{PLACEHOLDER: confirm role title}}',
-      period: '{{PLACEHOLDER: confirm dates e.g. 2023 - Present}}',
-      tagline: 'Scale-up engineering and database operations',
-      description: '{{PLACEHOLDER: Summarize your impact at Axelliant. Focus on system scalability, database tuning (e.g. Arabia Hills), and cloud operations.}}',
-      lessons: [
-        '{{PLACEHOLDER: Lesson 1 e.g., Spatial database optimization requires strict boundary indexing}}',
-        '{{PLACEHOLDER: Lesson 2 e.g., Asynchronous API designs are only as good as their telemetry reporting}}'
-      ],
-      skills: ['PostgreSQL', 'Next.js', 'System Design', 'Supabase']
-    },
-    {
-      id: 'arrivy',
-      company: 'Arrivy',
-      role: '{{PLACEHOLDER: confirm role title}}',
-      period: '{{PLACEHOLDER: confirm dates e.g. 2022 - 2023}}',
-      tagline: 'High-craftsmanship client interfaces & performance',
-      description: '{{PLACEHOLDER: Summarize your impact at Arrivy. Focus on frontend loading speeds (e.g. ALFA Club), styling standards, and fluid mobile UX.}}',
-      lessons: [
-        '{{PLACEHOLDER: Lesson 1 e.g., Smooth animations directly impact user session lengths}}',
-        '{{PLACEHOLDER: Lesson 2 e.g., Keep client-side caching thin to avoid runtime leaks}}'
-      ],
-      skills: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion']
-    },
-    {
-      id: 'ashtex',
-      company: 'Ashtex Solutions',
-      role: '{{PLACEHOLDER: confirm role title}}',
-      period: '{{PLACEHOLDER: confirm dates e.g. 2020 - 2022}}',
-      tagline: 'Full-stack software development & mental health platforms',
-      description: '{{PLACEHOLDER: Summarize your impact at Ashtex Solutions. Focus on full-stack application lifecycle, API development (e.g. WePsych), and patient-doctor scheduling systems.}}',
-      lessons: [
-        '{{PLACEHOLDER: Lesson 1 e.g., Healthcare apps demand early modularity for data security compliance}}',
-        '{{PLACEHOLDER: Lesson 2 e.g., Decoupling backend workers prevents appointment webhook drops}}'
-      ],
-      skills: ['FastAPI', 'React', 'Docker', 'REST APIs']
-    },
-    {
-      id: 'fast',
-      company: 'FAST-NUCES',
-      role: 'Computer Science Education',
-      period: '{{PLACEHOLDER: confirm dates e.g. 2016 - 2020}}',
-      tagline: 'Computer science principles and systems fundamentals',
-      description: '{{PLACEHOLDER: Summarize academic achievements. Focus on data structures, algorithms, operating systems, and core mathematical models.}}',
-      lessons: [
-        '{{PLACEHOLDER: Lesson 1 e.g., Memory management rules remain true even in high-level runtimes}}',
-        '{{PLACEHOLDER: Lesson 2 e.g., Graph representations are the core of system data mapping}}'
-      ],
-      skills: ['C++', 'Python', 'Algorithms', 'Data Structures']
-    }
-  ];
-
-  const activeData = journeyNodes.find(node => node.id === activeNode) || journeyNodes[0];
+  const [activeId, setActiveId] = useState('axelliant');
+  const activeNode = useMemo(
+    () => journeyNodes.find((node) => node.id === activeId) ?? journeyNodes[0],
+    [activeId]
+  );
+  const ActiveIcon = activeNode.icon;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 space-y-12">
-      {/* Page Header */}
-      <div className="border-b border-border-muted pb-8">
-        <div className="flex items-center gap-2 text-accent font-mono text-xs tracking-widest uppercase mb-3">
-          <Briefcase className="w-4 h-4" />
-          Journey
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">Non-Linear Workspace Map</h1>
-        <p className="text-text-secondary text-sm sm:text-base max-w-2xl leading-relaxed">
-          Waleed's professional career represented as an interactive graph of experience. Click a company node on the
-          left map to inspect key projects, architectural lessons, and skills gained in that workspace.
-        </p>
-      </div>
-
-      {/* Journey Map Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-        {/* Left Side: Map List */}
-        <div className="space-y-3">
-          <span className="font-mono text-[10px] text-text-muted uppercase tracking-wider block mb-2">Workspace Nodes</span>
-          {journeyNodes.map((node) => (
-            <button
-              key={node.id}
-              onClick={() => setActiveNode(node.id)}
-              className={`w-full text-left p-5 rounded-lg border transition-all flex items-center justify-between group ${
-                activeNode === node.id
-                  ? 'bg-bg-panel border-accent/40 shadow-[0_0_15px_rgba(16,185,129,0.05)]'
-                  : 'bg-bg-panel/40 border-border-muted hover:border-accent/20 hover:bg-bg-panel'
-              }`}
-            >
-              <div>
-                <h3 className={`font-bold transition-colors ${activeNode === node.id ? 'text-accent' : 'text-text-primary'}`}>
-                  {node.company}
-                </h3>
-                <span className="text-xs font-mono text-text-secondary">{node.role}</span>
-              </div>
-              <ArrowRight className={`w-4 h-4 transition-all ${
-                activeNode === node.id ? 'text-accent translate-x-1' : 'text-text-muted group-hover:text-text-secondary'
-              }`} />
-            </button>
-          ))}
-        </div>
-
-        {/* Right Side: Details Inspector */}
-        <div className="md:col-span-2 p-8 rounded-lg bg-bg-panel border border-border-muted space-y-6">
-          {/* Header */}
-          <div className="border-b border-border-muted pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="flex-1">
+      <div className="mx-auto w-full max-w-7xl space-y-12 px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+        <section className="border-b border-border-muted pb-8">
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
+            <Briefcase className="h-4 w-4" />
+            Journey
+          </div>
+          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
             <div>
-              <span className="font-mono text-xs text-accent">{activeData.period}</span>
-              <h2 className="text-2xl font-bold mt-1 text-text-primary">{activeData.company}</h2>
-              <p className="text-xs text-text-secondary font-mono mt-1">{activeData.role}</p>
+              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+                A career map organized by lessons, not dates.
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
+                The Journey page is intentionally non-linear. It shows how each workspace contributed
+                a different way of thinking: fundamentals, production ownership, interface craft, and systems design.
+              </p>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono bg-bg-dark border border-border-muted text-text-secondary px-3 py-1 rounded">
-                Node: {activeData.id.toUpperCase()}_ENV
-              </span>
+            <aside className="border border-border-muted bg-bg-panel p-5">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Waleed to confirm</p>
+              <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                {'{{PLACEHOLDER: Confirm exact roles, dates, company ordering, and which projects belong to each node before launch.}}'}
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-[1fr_390px] lg:items-start">
+          <div className="border border-border-muted bg-bg-panel p-4 sm:p-6">
+            <div className="mb-5 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Workspace map</p>
+                <p className="mt-1 text-xs text-text-muted">Select any node to inspect how the lesson connects.</p>
+              </div>
+              <Network className="h-4 w-4 text-accent" />
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3 md:grid-rows-3">
+              {journeyNodes.map((node) => {
+                const Icon = node.icon;
+                const selected = node.id === activeId;
+                const connected = adjacent[activeId]?.includes(node.id);
+
+                return (
+                  <button
+                    key={node.id}
+                    id={node.id}
+                    onClick={() => setActiveId(node.id)}
+                    className={`min-h-36 border px-4 py-4 text-left transition-all ${positions[node.id]} ${
+                      selected
+                        ? 'border-accent/50 bg-accent/10'
+                        : connected
+                          ? 'border-accent/20 bg-bg-dark'
+                          : 'border-border-muted bg-bg-dark hover:border-accent/25'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        {node.angle}
+                      </span>
+                    </div>
+                    <h2 className="mt-5 text-base font-semibold text-text-primary">{node.company}</h2>
+                    <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <h4 className="text-xs font-mono text-text-muted uppercase tracking-wider">Mission Statement</h4>
-            <p className="text-sm text-text-secondary leading-relaxed font-sans">{activeData.description}</p>
-          </div>
-
-          {/* Lessons */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-accent" /> Architectural Lessons Learned
-            </h4>
-            <ul className="space-y-2 font-mono text-xs text-text-secondary list-disc pl-4 leading-relaxed">
-              {activeData.lessons.map((lesson, idx) => (
-                <li key={idx}>{lesson}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Skills */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5 text-accent" /> Skills Acquired
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {activeData.skills.map((skill) => (
-                <span 
-                  key={skill}
-                  className="font-mono text-[10px] bg-bg-dark border border-border-muted text-text-primary px-2.5 py-1 rounded hover:border-accent/25 hover:text-accent transition-colors"
-                >
-                  {skill}
-                </span>
-              ))}
+          <motion.aside
+            key={activeNode.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22 }}
+            className="border border-border-muted bg-bg-panel p-5"
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-border-muted pb-5">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{activeNode.period}</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight">{activeNode.company}</h2>
+                <p className="mt-1 text-xs font-mono text-text-secondary">{activeNode.role}</p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center border border-accent/25 bg-accent/10">
+                <ActiveIcon className="h-5 w-5 text-accent" />
+              </div>
             </div>
+
+            <div className="mt-5 space-y-5">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">What this reveals</p>
+                <p className="mt-2 text-sm leading-relaxed text-text-secondary">{activeNode.description}</p>
+              </div>
+
+              <div>
+                <p className="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  <BookOpen className="h-3.5 w-3.5 text-accent" />
+                  Lessons carried forward
+                </p>
+                <div className="space-y-2">
+                  {activeNode.lessons.map((lesson) => (
+                    <div key={lesson} className="border border-border-muted bg-bg-dark p-3 text-xs leading-relaxed text-text-secondary">
+                      {lesson}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  <Compass className="h-3.5 w-3.5 text-accent" />
+                  Connected work
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {activeNode.projects.map((project) => (
+                    <span key={project} className="border border-border-muted bg-bg-dark px-2.5 py-1 font-mono text-[10px] text-text-secondary">
+                      {project}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted">Skills gained</p>
+                <div className="flex flex-wrap gap-2">
+                  {activeNode.skills.map((skill) => (
+                    <span key={skill} className="border border-accent/15 bg-accent/5 px-2.5 py-1 font-mono text-[10px] text-accent">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.aside>
+        </section>
+
+        <section className="border-t border-border-muted pt-8">
+          <div className="flex flex-col gap-3 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
+            <p>Each node should eventually be backed by a real story, not a date range.</p>
+            <a href="/explorer" className="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-accent-bright">
+              Open Relationship Explorer
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

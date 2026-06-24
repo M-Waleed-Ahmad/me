@@ -48,13 +48,14 @@ export default function Search() {
   // Focus input when opened
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 60);
-      setActiveIndex(0);
+      const timer = window.setTimeout(() => {
+        inputRef.current?.focus();
+        setActiveIndex(0);
+      }, 60);
+
+      return () => window.clearTimeout(timer);
     }
   }, [isOpen]);
-
-  // Reset active index when query changes
-  useEffect(() => { setActiveIndex(0); }, [query]);
 
   // Filtered + scored results
   const results = useMemo(() => {
@@ -122,7 +123,7 @@ export default function Search() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: -8 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed left-1/2 top-[18%] z-[70] -translate-x-1/2 w-full max-w-xl"
+            className="fixed left-1/2 top-[12%] z-[70] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 sm:top-[18%]"
             role="dialog"
             aria-modal="true"
             aria-label="Workspace search"
@@ -136,7 +137,10 @@ export default function Search() {
                   ref={inputRef}
                   type="text"
                   value={query}
-                  onChange={e => setQuery(e.target.value)}
+                  onChange={e => {
+                    setActiveIndex(0);
+                    setQuery(e.target.value);
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder="Search projects, technologies, concepts..."
                   className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none font-mono"
@@ -145,7 +149,13 @@ export default function Search() {
                   spellCheck={false}
                 />
                 {query && (
-                  <button onClick={() => setQuery('')} className="text-text-muted hover:text-text-secondary transition-colors">
+                  <button
+                    onClick={() => {
+                      setActiveIndex(0);
+                      setQuery('');
+                    }}
+                    className="text-text-muted hover:text-text-secondary transition-colors"
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}

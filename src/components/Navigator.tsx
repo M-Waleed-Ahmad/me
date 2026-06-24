@@ -30,7 +30,14 @@ const BUILT_ROUTES = new Set([
   '/products/alfa-club',
   '/products/other',
   '/systems',
+  '/systems#automation',
+  '/systems#cicd',
+  '/systems#architecture',
   '/intelligence',
+  '/intelligence#deepshield',
+  '/intelligence#robotics',
+  '/intelligence#red-teaming',
+  '/explorer',
   '/journey',
   '/contact',
 ]);
@@ -170,7 +177,7 @@ export default function Navigator() {
                     className="p-5 space-y-5"
                   >
                     <p className="text-xs font-mono text-text-muted leading-relaxed">
-                      You've entered Waleed's workspace.<br />
+                      You&apos;ve entered Waleed&apos;s workspace.<br />
                       What would you like to explore?
                     </p>
 
@@ -208,6 +215,7 @@ export default function Navigator() {
                     {/* Global links */}
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       {[
+                        { label: 'Explorer', href: '/explorer', icon: Compass },
                         { label: 'Journey',  href: '/journey',  icon: Briefcase },
                         { label: 'Contact',  href: '/contact',  icon: Mail },
                       ].map(({ label, href, icon: Icon }) => (

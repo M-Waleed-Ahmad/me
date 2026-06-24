@@ -70,7 +70,7 @@ export default function CaseStudyLayout({ meta, sections, headerExtra }: CaseStu
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 flex-1">
 
       {/* Back link */}
       <Link
@@ -82,7 +82,7 @@ export default function CaseStudyLayout({ meta, sections, headerExtra }: CaseStu
       </Link>
 
       {/* ── Project header ─────────────────────────────────────────────────── */}
-      <div className="border-b border-border-muted pb-10 mb-12 space-y-6">
+      <div className="border-b border-border-muted pb-8 sm:pb-10 mb-8 sm:mb-12 space-y-5 sm:space-y-6">
         <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
           <span className="text-accent tracking-widest uppercase">Pillar // {meta.pillar}</span>
           <span className="text-text-muted">·</span>
@@ -91,8 +91,8 @@ export default function CaseStudyLayout({ meta, sections, headerExtra }: CaseStu
           </span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">{meta.name}</h1>
-        <p className="text-lg text-text-secondary max-w-2xl leading-relaxed font-light">{meta.tagline}</p>
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight">{meta.name}</h1>
+        <p className="text-base sm:text-lg text-text-secondary max-w-2xl leading-relaxed font-light">{meta.tagline}</p>
 
         {/* Tech tags */}
         <div className="flex flex-wrap gap-2">
@@ -162,7 +162,7 @@ export default function CaseStudyLayout({ meta, sections, headerExtra }: CaseStu
                   </h2>
                 </div>
                 {/* Section content */}
-                <div className="px-6 py-6">
+                <div className="px-4 py-5 sm:px-6 sm:py-6">
                   {s.children}
                 </div>
               </section>

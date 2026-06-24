@@ -70,7 +70,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'systems',
     description: 'No-code and custom API automation pipelines for enterprise process optimization.',
-    url: '/systems/automation'
+    url: '/systems#automation'
   },
   {
     id: 'cicd',
@@ -78,7 +78,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'systems',
     description: 'Reliable and fast builds, tests, and auto-deployments using GitHub Actions and Docker.',
-    url: '/systems/cicd'
+    url: '/systems#cicd'
   },
   {
     id: 'testing',
@@ -86,7 +86,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'systems',
     description: 'Comprehensive test suites ensuring software reliability across backend and frontend stacks.',
-    url: '/systems/testing'
+    url: '/systems#cicd'
   },
   {
     id: 'architecture',
@@ -94,7 +94,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'systems',
     description: 'Scalable, multi-tenant system blueprints and robust API designs.',
-    url: '/systems/architecture'
+    url: '/systems#architecture'
   },
 
   // Projects - Intelligence
@@ -104,7 +104,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'intelligence',
     description: 'Computer vision pipeline for deepfake detection using convolutional models and GradCAM++ heatmaps.',
-    url: '/intelligence/deepshield'
+    url: '/intelligence#deepshield'
   },
   {
     id: 'robotics',
@@ -112,7 +112,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'intelligence',
     description: 'Hierarchical and modular skill-composition framework for robotic action planning.',
-    url: '/intelligence/robotics'
+    url: '/intelligence#robotics'
   },
   {
     id: 'red-teaming',
@@ -120,7 +120,7 @@ export const workspaceNodes: WorkspaceNode[] = [
     type: 'project',
     pillar: 'intelligence',
     description: 'Evaluating LLM safety, security vulnerabilities, and defensive prompt engineering.',
-    url: '/intelligence/red-teaming'
+    url: '/intelligence#red-teaming'
   },
 
   // Technologies
@@ -142,6 +142,13 @@ export const workspaceNodes: WorkspaceNode[] = [
   { id: 'applied-ai', label: 'Applied AI', type: 'concept' },
   { id: 'automation-flows', label: 'Process Automation', type: 'concept' },
   { id: 'ux-craft', label: 'UX Craftsmanship', type: 'concept' },
+  {
+    id: 'relationship-explorer',
+    label: 'Relationship Explorer',
+    type: 'concept',
+    description: 'Interactive map for inspecting project, technology, concept, and experience relationships.',
+    url: '/explorer'
+  },
 
   // Experience Nodes (Journey)
   { id: 'fast', label: 'FAST-NUCES', type: 'experience', url: '/journey#fast' },
@@ -208,7 +215,13 @@ export const workspaceEdges: WorkspaceEdge[] = [
   { source: 'ashtex', target: 'wepsych' },
   { source: 'arrivy', target: 'alfa-club' },
   { source: 'axelliant', target: 'arabia-hills' },
-  { source: 'axelliant', target: 'system-design' }
+  { source: 'axelliant', target: 'system-design' },
+
+  // Global feature connections
+  { source: 'relationship-explorer', target: 'products' },
+  { source: 'relationship-explorer', target: 'systems' },
+  { source: 'relationship-explorer', target: 'intelligence' },
+  { source: 'relationship-explorer', target: 'system-design' }
 ];
 
 export interface WorkspaceGraph {

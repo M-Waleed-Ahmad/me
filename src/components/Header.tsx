@@ -16,6 +16,7 @@ export default function Header() {
     { label: 'Products',     href: '/products' },
     { label: 'Systems',      href: '/systems' },
     { label: 'Intelligence', href: '/intelligence' },
+    { label: 'Explorer',     href: '/explorer' },
     { label: 'Journey',      href: '/journey' },
   ];
 
@@ -34,11 +35,11 @@ export default function Header() {
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
           <span className="font-semibold hidden sm:inline">WALEED AHMAD</span>
           <span className="font-semibold sm:hidden">WA</span>
-          <span className="text-text-muted font-normal hidden md:inline">// WORKSPACE</span>
+          <span className="text-text-muted font-normal hidden md:inline">{'// WORKSPACE'}</span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
+        <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
           {navLinks.map((link) => (
             <Link
               key={link.href}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import CaseStudyLayout, {
-  EngineeringNote, Tradeoff, MetricCard, Placeholder, ArchDiagramPlaceholder,
+  EngineeringNote, Tradeoff, MetricCard, ArchDiagramPlaceholder,
   CaseStudySection, ProjectMeta
 } from '@/components/CaseStudyLayout';
 

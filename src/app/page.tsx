@@ -51,7 +51,7 @@ export default function Home() {
     <div className="flex-1 flex flex-col">
 
       {/* ─── SECTION 1: Living Network Hero ─────────────────────────────────── */}
-      <section className="relative h-[85vh] min-h-[600px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark">
+      <section className="relative h-[82vh] min-h-[560px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark sm:h-[85vh] sm:min-h-[600px]">
 
         {/* Network graph layer — fills the whole section */}
         <div className="absolute inset-0 z-0 opacity-80">
@@ -193,10 +193,11 @@ export default function Home() {
           <span className="font-mono text-[11px] text-text-muted">
             Designed with restraint. Engineered in systems.
           </span>
-          <div className="flex items-center gap-6 font-mono text-[11px] text-text-secondary">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] text-text-secondary">
             <Link href="/journey" className="hover:text-accent transition-colors">Journey</Link>
             <Link href="/contact" className="hover:text-accent transition-colors">Contact</Link>
             <Link href="/systems" className="hover:text-accent transition-colors">Systems</Link>
+            <Link href="/explorer" className="hover:text-accent transition-colors">Explorer</Link>
           </div>
         </div>
       </footer>
