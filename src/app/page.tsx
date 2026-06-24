@@ -37,9 +37,19 @@ const MOBILE_BOOT_STATES = [
   'Workspace ready.',
 ];
 
+const STATE_DURATION_MS = 650;
+const MIN_TOTAL_DURATION_MS = 1900;
+const CROSSFADE_DURATION_MS = 450;
+const MOBILE_STATE_DURATION_MS = 520;
+const MOBILE_MIN_TOTAL_DURATION_MS = 1200;
+const REDUCED_MOTION_DURATION_MS = 120;
+const REDUCED_MOTION_CROSSFADE_MS = 80;
+
 export default function Home() {
   const { openNavigator } = useNavigator();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth < 768
+  );
   const [graphReady, setGraphReady] = useState(false);
   const [minimumBootTimePassed, setMinimumBootTimePassed] = useState(false);
   const [bootStateIndex, setBootStateIndex] = useState(0);
@@ -55,7 +65,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const minimumDelay = reduceMotion ? 120 : isMobile ? 620 : 920;
+    const minimumDelay = reduceMotion
+      ? REDUCED_MOTION_DURATION_MS
+      : isMobile
+        ? MOBILE_MIN_TOTAL_DURATION_MS
+        : MIN_TOTAL_DURATION_MS;
     const readyTimer = window.setTimeout(() => setMinimumBootTimePassed(true), minimumDelay);
 
     if (reduceMotion) {
@@ -64,7 +78,7 @@ export default function Home() {
 
     const messageTimer = window.setInterval(() => {
       setBootStateIndex((index) => Math.min(index + 1, bootStates.length - 1));
-    }, isMobile ? 300 : 360);
+    }, isMobile ? MOBILE_STATE_DURATION_MS : STATE_DURATION_MS);
 
     return () => {
       window.clearTimeout(readyTimer);
@@ -93,7 +107,10 @@ export default function Home() {
           className="absolute inset-0 z-0"
           initial={false}
           animate={{ opacity: graphOpacity }}
-          transition={{ duration: reduceMotion ? 0.08 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+          transition={{
+            duration: (reduceMotion ? REDUCED_MOTION_CROSSFADE_MS : CROSSFADE_DURATION_MS) / 1000,
+            ease: [0.16, 1, 0.3, 1],
+          }}
         >
           {isMobile
             ? <NetworkGraphMobile nodes={workspaceNodes} onReady={handleGraphReady} />
@@ -119,7 +136,10 @@ export default function Home() {
               className="absolute inset-0 z-30 flex items-center justify-center bg-bg-dark/70 px-4"
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: reduceMotion ? 0.08 : 0.28, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: (reduceMotion ? REDUCED_MOTION_CROSSFADE_MS : CROSSFADE_DURATION_MS) / 1000,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               aria-live="polite"
               aria-label="Workspace is initializing"
             >

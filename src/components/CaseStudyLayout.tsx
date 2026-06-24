@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, AlertTriangle, Settings, GitBranch, Scale, Wrench, BarChart2, Lightbulb } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, AlertTriangle, Settings, GitBranch, Scale, Wrench, BarChart2, Lightbulb, ChevronDown, StickyNote } from 'lucide-react';
 
 export interface CaseStudySection {
   id: string;
@@ -178,30 +179,141 @@ export default function CaseStudyLayout({ meta, sections, headerExtra }: CaseStu
 
 /** Highlighted engineering note / marginalia */
 export function EngineeringNote({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="mt-4 p-4 rounded-lg border-l-2 border-accent bg-accent/5 font-mono text-xs space-y-1">
-      <span className="text-accent font-semibold text-[10px] uppercase tracking-wider">Engineering Note</span>
-      <div className="text-text-secondary leading-relaxed">{children}</div>
+    <div className="mt-4 rounded-lg border border-border-muted bg-bg-dark/60 font-mono text-xs">
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-accent transition-colors hover:text-accent-bright"
+      >
+        <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider">
+          <StickyNote className="h-3.5 w-3.5" />
+          Engineering Note
+        </span>
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-border-muted px-4 py-3 text-text-secondary leading-relaxed">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 /** Tradeoff comparison row */
-export function Tradeoff({ decision, pro, con }: { decision: string; pro: string; con: string }) {
+export function Tradeoff({
+  decision,
+  summary = '{{PLACEHOLDER: One-line summary of this decision.}}',
+  pro,
+  con,
+}: {
+  decision: string;
+  summary?: string;
+  pro: string;
+  con: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="rounded-lg border border-border-muted overflow-hidden mb-3">
-      <div className="px-4 py-2 bg-bg-dark border-b border-border-muted">
-        <p className="text-xs font-mono text-text-primary font-semibold">{decision}</p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border-muted">
-        <div className="px-4 py-3 space-y-1">
-          <span className="text-[10px] font-mono text-accent uppercase tracking-wider">↑ Gained</span>
-          <p className="text-xs text-text-secondary leading-relaxed">{pro}</p>
-        </div>
-        <div className="px-4 py-3 space-y-1">
-          <span className="text-[10px] font-mono text-text-muted uppercase tracking-wider">↓ Accepted</span>
-          <p className="text-xs text-text-secondary leading-relaxed">{con}</p>
-        </div>
+    <div className="rounded-lg border border-border-muted overflow-hidden mb-3 bg-bg-dark">
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+        className="flex w-full items-start justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-bg-panel"
+      >
+        <span className="min-w-0">
+          <span className="block text-xs font-mono text-text-primary font-semibold">{decision}</span>
+          <span className="mt-1 block text-[11px] text-text-muted leading-relaxed">{summary}</span>
+        </span>
+        <ChevronDown className={`mt-0.5 h-4 w-4 flex-shrink-0 text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-1 border-t border-border-muted sm:grid-cols-2 sm:divide-x divide-border-muted">
+              <div className="px-4 py-3 space-y-1">
+                <span className="text-[10px] font-mono text-accent uppercase tracking-wider">Gained</span>
+                <p className="text-xs text-text-secondary leading-relaxed">{pro}</p>
+              </div>
+              <div className="px-4 py-3 space-y-1 border-t border-border-muted sm:border-t-0">
+                <span className="text-[10px] font-mono text-text-muted uppercase tracking-wider">Accepted</span>
+                <p className="text-xs text-text-secondary leading-relaxed">{con}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function ImplementationTimeline({
+  phases,
+}: {
+  phases: { phase: string; duration: string; note: string }[];
+}) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <div className="rounded-lg border border-border-muted bg-bg-dark p-5 space-y-3">
+      <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Delivery Timeline</p>
+      <div className="space-y-2">
+        {phases.map((row, i) => {
+          const isOpen = openIndex === i;
+
+          return (
+            <div key={`${row.phase}-${i}`} className="rounded border border-border-muted bg-bg-panel/40">
+              <button
+                type="button"
+                onClick={() => setOpenIndex((current) => current === i ? null : i)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center gap-4 px-4 py-3 text-left"
+              >
+                <span className="font-mono text-[10px] text-accent w-6 flex-shrink-0">{`0${i + 1}`}</span>
+                <span className="flex-1 min-w-0 text-xs font-mono text-text-primary">{row.phase}</span>
+                <span className="hidden sm:inline text-[10px] font-mono text-text-muted flex-shrink-0">{row.duration}</span>
+                <ChevronDown className={`h-3.5 w-3.5 text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.18 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="border-t border-border-muted px-4 py-3 pl-14">
+                      <p className="text-[10px] text-text-muted leading-relaxed">{row.note}</p>
+                      <p className="mt-2 sm:hidden text-[10px] font-mono text-text-muted">{row.duration}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -232,7 +344,9 @@ export function ArchDiagramPlaceholder({ label }: { label: string }) {
   return (
     <div className="mt-4 rounded-lg border border-dashed border-border-muted bg-bg-dark p-8 text-center space-y-2">
       <p className="text-[10px] font-mono text-accent uppercase tracking-widest">{label}</p>
-      <p className="text-[10px] font-mono text-text-muted">Interactive diagram — Phase 4 visual build</p>
+      <p className="text-[10px] font-mono text-text-muted">
+        {'{{PLACEHOLDER: Architecture diagram — describe the real data flow here}}'}
+      </p>
     </div>
   );
 }

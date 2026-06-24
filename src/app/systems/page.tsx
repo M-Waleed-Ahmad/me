@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Blocks,
   Braces,
+  ChevronDown,
   CheckCircle2,
   Code2,
   Database,
@@ -17,6 +18,7 @@ import {
   Settings2,
   ShieldCheck,
   Split,
+  StickyNote,
   Webhook,
   Workflow,
 } from 'lucide-react';
@@ -157,10 +159,37 @@ function EngineeringNote({
   title: string;
   children: React.ReactNode;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <aside className="border-l-2 border-accent bg-accent/5 px-4 py-3 font-mono text-xs leading-relaxed">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-accent">{title}</p>
-      <div className="mt-1 text-text-secondary">{children}</div>
+    <aside className="border border-border-muted bg-bg-panel font-mono text-xs">
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-accent transition-colors hover:text-accent-bright"
+      >
+        <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest">
+          <StickyNote className="h-3.5 w-3.5" />
+          {title}
+        </span>
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-border-muted px-4 py-3 text-text-secondary leading-relaxed">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </aside>
   );
 }

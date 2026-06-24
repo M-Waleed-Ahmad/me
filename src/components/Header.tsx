@@ -12,10 +12,13 @@ export default function Header() {
   const { toggleNavigator } = useNavigator();
   const { openSearch } = useSearch();
 
-  const navLinks = [
+  const primaryNavLinks = [
     { label: 'Products',     href: '/products' },
     { label: 'Systems',      href: '/systems' },
     { label: 'Intelligence', href: '/intelligence' },
+  ];
+
+  const secondaryNavLinks = [
     { label: 'Explorer',     href: '/explorer' },
     { label: 'Journey',      href: '/journey' },
   ];
@@ -39,20 +42,38 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-xs font-mono tracking-wider transition-all pb-0.5 border-b ${
-                isActive(link.href)
-                  ? 'text-accent border-accent'
-                  : 'text-text-secondary border-transparent hover:text-text-primary hover:border-border-muted'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden lg:flex items-center gap-5" aria-label="Main navigation">
+          <div className="flex items-center gap-6">
+            {primaryNavLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-xs font-mono tracking-wider transition-all pb-0.5 border-b ${
+                  isActive(link.href)
+                    ? 'text-accent border-accent'
+                    : 'text-text-secondary border-transparent hover:text-text-primary hover:border-border-muted'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <span className="h-4 w-px bg-border-muted" aria-hidden="true" />
+          <div className="flex items-center gap-5">
+            {secondaryNavLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-[11px] font-mono tracking-wider transition-all pb-0.5 border-b ${
+                  isActive(link.href)
+                    ? 'text-accent border-accent/70'
+                    : 'text-text-muted border-transparent hover:text-text-secondary hover:border-border-muted'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </nav>
 
         {/* Right controls */}

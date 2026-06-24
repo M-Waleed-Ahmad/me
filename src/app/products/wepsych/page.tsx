@@ -2,7 +2,7 @@
 
 import React from 'react';
 import CaseStudyLayout, {
-  EngineeringNote, Tradeoff, MetricCard, ArchDiagramPlaceholder,
+  EngineeringNote, Tradeoff, MetricCard, ArchDiagramPlaceholder, ImplementationTimeline,
   CaseStudySection, ProjectMeta
 } from '@/components/CaseStudyLayout';
 
@@ -126,25 +126,14 @@ const sections: CaseStudySection[] = [
     children: (
       <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
         <p>{'{{PLACEHOLDER: High-level implementation narrative — phases, team, approach. How did you go from spec to production?}}'}</p>
-        {/* Process timeline placeholder */}
-        <div className="rounded-lg border border-border-muted bg-bg-dark p-6 space-y-3">
-          <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Delivery Timeline</p>
-          {[
+        <ImplementationTimeline
+          phases={[
             { phase: '{{PLACEHOLDER: Phase name e.g. Discovery & Schema}}', duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
             { phase: '{{PLACEHOLDER: Phase name e.g. Core API + Auth}}',    duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
             { phase: '{{PLACEHOLDER: Phase name e.g. Frontend Sprint}}',    duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
             { phase: '{{PLACEHOLDER: Phase name e.g. Testing & Launch}}',   duration: '{{PLACEHOLDER: N weeks}}', note: '{{PLACEHOLDER: Key output of this phase.}}' },
-          ].map((row, i) => (
-            <div key={i} className="flex items-start gap-4 py-2.5 border-b border-border-muted last:border-0">
-              <span className="font-mono text-[10px] text-accent w-6 flex-shrink-0">{`0${i + 1}`}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-mono text-text-primary">{row.phase}</p>
-                <p className="text-[10px] text-text-muted mt-0.5">{row.note}</p>
-              </div>
-              <span className="text-[10px] font-mono text-text-muted flex-shrink-0">{row.duration}</span>
-            </div>
-          ))}
-        </div>
+          ]}
+        />
         <p>{'{{PLACEHOLDER: What was the hardest part of implementation that didn\'t show up in any spec? E.g. webhook retry logic, appointment conflict resolution, session expiry UX edge cases.}}'}</p>
       </div>
     ),
