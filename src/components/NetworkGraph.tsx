@@ -117,6 +117,12 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
       .on('zoom', (event) => { g.attr('transform', event.transform); });
     svg.call(zoom);
 
+    const initialScale = width >= 1024 ? 1.28 : 1.08;
+    const initialTransform = d3.zoomIdentity
+      .translate((width - width * initialScale) / 2, (height - height * initialScale) / 2)
+      .scale(initialScale);
+    svg.call(zoom.transform, initialTransform);
+
     // Links
     const link = g.append('g').attr('class', 'links')
       .selectAll('line')
