@@ -1,65 +1,205 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ArrowRight, Compass, Zap, GitBranch, Cpu, Package } from 'lucide-react';
+import { useNavigator } from '@/context/NavigatorContext';
+import { workspaceNodes, workspaceEdges } from '@/data/workspaceData';
+import WorkspaceMap from '@/components/WorkspaceMap';
+
+// Dynamic imports — NetworkGraph loads only on client, avoiding SSR issues with D3
+const NetworkGraph = dynamic(() => import('@/components/NetworkGraph'), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-1 h-1 rounded-full bg-accent animate-ping" />
+    </div>
+  ),
+});
+
+const NetworkGraphMobile = dynamic(() => import('@/components/NetworkGraphMobile'), {
+  ssr: false,
+});
+
+const FOCUS_ITEMS = [
+  { icon: Package, label: 'Production software' },
+  { icon: GitBranch, label: 'System design' },
+  { icon: Zap, label: 'Automation & workflows' },
+  { icon: Cpu, label: 'Applied AI / LLMs' },
+];
 
 export default function Home() {
+  const { openNavigator } = useNavigator();
+  const [isMobile, setIsMobile] = useState(false);
+  const [graphLoaded, setGraphLoaded] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setGraphLoaded(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex-1 flex flex-col">
+
+      {/* ─── SECTION 1: Living Network Hero ─────────────────────────────────── */}
+      <section className="relative h-[85vh] min-h-[600px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark">
+
+        {/* Network graph layer — fills the whole section */}
+        <div className="absolute inset-0 z-0 opacity-80">
+          {graphLoaded && (
+            isMobile
+              ? <NetworkGraphMobile nodes={workspaceNodes} />
+              : <NetworkGraph nodes={workspaceNodes} edges={workspaceEdges} />
+          )}
+        </div>
+
+        {/* Vignette overlay — pulls attention to center text */}
+        <div className="absolute inset-0 z-10 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 60% 60% at 50% 50%, transparent 30%, rgba(3,3,3,0.65) 100%)' }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Hero text content — center-aligned, above graph */}
+        <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-3xl space-y-6"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {/* Status badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/25 bg-accent/5 text-accent text-xs font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
+              Systems Workspace
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.6rem] font-bold tracking-tight leading-[1.08] text-text-primary">
+              Building products, systems,
+              <br className="hidden sm:block" />
+              {' '}and intelligent workflows.
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-base sm:text-lg text-text-secondary max-w-xl mx-auto leading-relaxed font-light">
+              A systems-focused engineer exploring the intersection of software, automation, and applied AI.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <Link
+                href="/products"
+                className="w-full sm:w-auto group px-7 py-3.5 rounded-lg bg-accent hover:bg-accent-bright text-bg-dark font-mono text-sm font-semibold tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(16,185,129,0.18)] hover:shadow-[0_0_32px_rgba(52,211,153,0.32)] flex items-center justify-center gap-2"
+              >
+                Explore Workspace
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <button
+                onClick={openNavigator}
+                className="w-full sm:w-auto px-7 py-3.5 rounded-lg border border-border-muted hover:border-accent/35 bg-bg-panel/70 backdrop-blur-sm hover:bg-bg-panel text-text-secondary hover:text-text-primary font-mono text-sm tracking-wide transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Compass className="w-4 h-4" />
+                Open Navigator
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Graph hint */}
+          {!isMobile && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5, duration: 1 }}
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-mono text-text-muted tracking-widest"
+            >
+              ↓ drag nodes · scroll to zoom · click to navigate
+            </motion.p>
+          )}
         </div>
-      </main>
+      </section>
+
+      {/* ─── SECTION 2: Identity ────────────────────────────────────────────── */}
+      <section className="border-b border-border-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
+
+          {/* Philosophy paragraph */}
+          <motion.div
+            initial={{ opacity: 0, x: -12 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="md:col-span-3 space-y-5"
+          >
+            <span className="font-mono text-[10px] text-accent tracking-widest uppercase block">
+              Identity // Engineering Philosophy
+            </span>
+            <p className="text-xl sm:text-2xl text-text-primary leading-relaxed font-light tracking-tight">
+              {'{{PLACEHOLDER: "I enjoy building products that solve real problems, designing systems that scale, and exploring where applied AI can create meaningful leverage."}}'}
+            </p>
+            <p className="text-sm text-text-secondary leading-relaxed max-w-lg">
+              {'{{PLACEHOLDER: One more sentence — something personal about how you approach problems or what draws you to this work.}}'}
+            </p>
+          </motion.div>
+
+          {/* Current Focus list */}
+          <motion.div
+            initial={{ opacity: 0, x: 12 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="md:col-span-2 bg-bg-panel border border-border-muted rounded-xl p-6 space-y-4"
+          >
+            <span className="font-mono text-[10px] text-text-muted tracking-widest uppercase block">
+              Current Focus
+            </span>
+            <ul className="space-y-3">
+              {FOCUS_ITEMS.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <motion.li
+                    key={item.label}
+                    initial={{ opacity: 0, x: 8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
+                    className="flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 rounded bg-bg-dark border border-border-muted group-hover:border-accent/25 transition-colors">
+                      <Icon className="w-3.5 h-3.5 text-accent" />
+                    </div>
+                    <span className="text-sm font-mono text-text-primary">{item.label}</span>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 3: Workspace Map ────────────────────────────────────────── */}
+      <WorkspaceMap />
+
+      {/* ─── FOOTER ─────────────────────────────────────────────────────────── */}
+      <footer className="border-t border-border-muted bg-bg-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="font-mono text-[11px] text-text-muted">
+            Designed with restraint. Engineered in systems.
+          </span>
+          <div className="flex items-center gap-6 font-mono text-[11px] text-text-secondary">
+            <Link href="/journey" className="hover:text-accent transition-colors">Journey</Link>
+            <Link href="/contact" className="hover:text-accent transition-colors">Contact</Link>
+            <Link href="/systems" className="hover:text-accent transition-colors">Systems</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
