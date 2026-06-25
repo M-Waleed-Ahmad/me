@@ -402,18 +402,13 @@ export default function ArabiaHillsPage() {
     navAct === 'i'   ? 'i' :
     navAct === 'iii' ? 'iii' :
     activeBeat;
+  void stageAct;
+  void handleNodeClick;
+  void Stage;
 
   return (
     <div className="flex-1">
-      <div className="lg:grid lg:grid-cols-[42%_58%]">
-
-        {/* ── LEFT: Sticky visual stage (desktop) ─────────────────────────── */}
-        <div className="hidden lg:block w-1/2">
-          <div className="fixed top-14 w-1/3 h-[calc(100vh-3.5rem)] border-r border-border-muted">
-            <Stage stageAct={stageAct} onNodeClick={handleNodeClick} />
-          </div>
-        </div>
-        {/* ── RIGHT: Narrative ──────────────────────────────────────────────── */}
+      <div className="mx-auto w-full max-w-5xl border-x border-border-muted/60">
         <div>
 
           {/* Page header — always visible, not part of act switching */}
@@ -424,13 +419,32 @@ export default function ArabiaHillsPage() {
             >
               <ArrowLeft className="w-3 h-3" /> Back to Products
             </Link>
+            <div className="mb-7 flex flex-wrap gap-2">
+              {[
+                ['Arabia Hills', '/products/arabia-hills'],
+                ['WePsych', '/products/wepsych'],
+                ['ALFA Club', '/products/alfa-club'],
+              ].map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`border px-3 py-1.5 font-mono text-[10px] transition-colors ${
+                    href === '/products/arabia-hills'
+                      ? 'border-accent/45 bg-accent/10 text-accent'
+                      : 'border-border-muted bg-bg-panel text-text-secondary hover:border-accent/30 hover:text-text-primary'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
             <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] mb-5">
               <span className="text-accent tracking-widest uppercase">Pillar // Products</span>
               <span className="text-text-muted">·</span>
               <span className="px-2 py-0.5 rounded border border-accent/20 bg-accent/5 text-accent">Production</span>
             </div>
             <h1 className="text-3xl sm:text-[2.75rem] font-bold tracking-tight leading-[1.08] mb-4">Arabia Hills</h1>
-            <p className="max-w-md text-base sm:text-lg leading-relaxed text-text-secondary font-light mb-6">
+            <p className="max-w-3xl text-base sm:text-lg leading-relaxed text-text-secondary font-light mb-6">
               A real estate platform built by a two-person team — bulk listing ingestion,
               agent CMS, and public search all sharing one schema.
             </p>
@@ -439,9 +453,9 @@ export default function ArabiaHillsPage() {
                 <span key={t} className="font-mono text-[10px] px-2.5 py-1 rounded border border-border-muted bg-bg-panel text-text-secondary">{t}</span>
               ))}
             </div>
-            <div className="flex gap-8 pt-5 border-t border-border-muted">
+            <div className="grid gap-4 pt-5 border-t border-border-muted sm:grid-cols-3">
               {[{ l: 'Team', v: '2 people' }, { l: 'Catalog', v: '20+ est.' }, { l: 'Search', v: 'Responsive' }].map(m => (
-                <div key={m.l}>
+                <div key={m.l} className="min-w-0">
                   <p className="text-xl font-bold font-mono text-accent">{m.v}</p>
                   <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mt-0.5">{m.l}</p>
                 </div>
@@ -479,10 +493,6 @@ export default function ArabiaHillsPage() {
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
                 {/* Mobile stage */}
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct="i" onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-12 sm:py-16 space-y-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase">Act I · The Bet</p>
 
@@ -573,13 +583,9 @@ export default function ArabiaHillsPage() {
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
                 {/* Mobile stage (shows current beat's highlight) */}
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct={stageAct} onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase mb-2">Act II · The System</p>
-                  <p className="text-[11px] font-mono text-text-muted">Three beats — scroll or click a diagram node to jump.</p>
+                  <p className="text-[11px] font-mono text-text-muted">Three beats in the product system, from schema to delivery.</p>
                 </div>
 
                 {/* Beat 1 — The Foundation */}
@@ -602,7 +608,7 @@ export default function ArabiaHillsPage() {
                     </p>
                   </div>
                   <p className="font-mono text-[10px] text-text-muted italic">
-                    ↑ Supabase (Postgres) highlighted in the diagram — the schema it holds is the platform&apos;s single source of truth.
+                    Foundation: Supabase (Postgres) holds the shared schema that becomes the platform&apos;s single source of truth.
                   </p>
                 </div>
 
@@ -697,10 +703,6 @@ export default function ArabiaHillsPage() {
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
                 {/* Mobile stage */}
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct="iii" onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-12 sm:py-16 space-y-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase">Act III · What Held Up</p>
 
@@ -763,3 +765,5 @@ export default function ArabiaHillsPage() {
     </div>
   );
 }
+
+

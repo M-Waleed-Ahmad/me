@@ -331,19 +331,13 @@ export default function AlfaClubPage() {
     navAct === 'i'   ? 'i' :
     navAct === 'iii' ? 'iii' :
     activeBeat;
+  void stageAct;
+  void handleNodeClick;
+  void Stage;
 
   return (
     <div className="flex-1">
-      <div className="lg:grid lg:grid-cols-[42%_58%]">
-
-        {/* LEFT: Sticky visual stage */}
-        <div className="hidden lg:block w-1/2">
-          <div className="fixed top-14 w-1/3 h-[calc(100vh-3.5rem)] border-r border-border-muted">
-            <Stage stageAct={stageAct} onNodeClick={handleNodeClick} />
-          </div>
-        </div>
-
-        {/* RIGHT: Narrative */}
+      <div className="mx-auto w-full max-w-5xl border-x border-border-muted/60">
         <div>
 
           {/* Page header */}
@@ -354,13 +348,32 @@ export default function AlfaClubPage() {
             >
               <ArrowLeft className="w-3 h-3" /> Back to Products
             </Link>
+            <div className="mb-7 flex flex-wrap gap-2">
+              {[
+                ['Arabia Hills', '/products/arabia-hills'],
+                ['WePsych', '/products/wepsych'],
+                ['ALFA Club', '/products/alfa-club'],
+              ].map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`border px-3 py-1.5 font-mono text-[10px] transition-colors ${
+                    href === '/products/alfa-club'
+                      ? 'border-accent/45 bg-accent/10 text-accent'
+                      : 'border-border-muted bg-bg-panel text-text-secondary hover:border-accent/30 hover:text-text-primary'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
             <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] mb-5">
               <span className="text-accent tracking-widest uppercase">Pillar // Products</span>
               <span className="text-text-muted">·</span>
               <span className="px-2 py-0.5 rounded border border-accent/20 bg-accent/5 text-accent">Production</span>
             </div>
             <h1 className="text-3xl sm:text-[2.75rem] font-bold tracking-tight leading-[1.08] mb-4">ALFA Club</h1>
-            <p className="max-w-md text-base sm:text-lg leading-relaxed text-text-secondary font-light mb-6">
+            <p className="max-w-3xl text-base sm:text-lg leading-relaxed text-text-secondary font-light mb-6">
               React ecommerce storefront work for alfaclub.ca — performance, polish, and
               a mobile checkout experience that earns trust before the first tap.
             </p>
@@ -369,13 +382,13 @@ export default function AlfaClubPage() {
                 <span key={t} className="font-mono text-[10px] px-2.5 py-1 rounded border border-border-muted bg-bg-panel text-text-secondary">{t}</span>
               ))}
             </div>
-            <div className="flex gap-8 pt-5 border-t border-border-muted">
+            <div className="grid gap-4 pt-5 border-t border-border-muted sm:grid-cols-3">
               {[
                 { l: 'Lighthouse', v: '90s est.' },
                 { l: 'Surface',    v: 'Ecommerce' },
                 { l: 'Focus',      v: 'Checkout UX' },
               ].map(m => (
-                <div key={m.l}>
+                <div key={m.l} className="min-w-0">
                   <p className="text-xl font-bold font-mono text-accent">{m.v}</p>
                   <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mt-0.5">{m.l}</p>
                 </div>
@@ -412,10 +425,6 @@ export default function AlfaClubPage() {
                 initial="enter" animate="center" exit="exit"
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct="i" onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-12 sm:py-16 space-y-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase">Act I · The Bet</p>
 
@@ -501,13 +510,9 @@ export default function AlfaClubPage() {
                 initial="enter" animate="center" exit="exit"
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct={stageAct} onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase mb-2">Act II · The Build</p>
-                  <p className="text-[11px] font-mono text-text-muted">Three beats — scroll or click a diagram node to jump.</p>
+                  <p className="text-[11px] font-mono text-text-muted">Three beats in the storefront build, from React surface to checkout polish.</p>
                 </div>
 
                 {/* Beat 1 — The Storefront Layer */}
@@ -530,7 +535,7 @@ export default function AlfaClubPage() {
                     </p>
                   </div>
                   <p className="font-mono text-[10px] text-text-muted italic">
-                    ↑ React node highlighted in the diagram — the storefront layer that connects performance work to the shopper.
+                    Foundation: the React storefront layer connects performance work directly to the shopper experience.
                   </p>
                 </div>
 
@@ -626,10 +631,6 @@ export default function AlfaClubPage() {
                 initial="enter" animate="center" exit="exit"
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               >
-                <div className="lg:hidden h-52 border-b border-border-muted">
-                  <Stage stageAct="iii" onNodeClick={handleNodeClick} />
-                </div>
-
                 <div className="px-6 sm:px-10 py-12 sm:py-16 space-y-10">
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase">Act III · What Held Up</p>
 
@@ -691,3 +692,5 @@ export default function AlfaClubPage() {
     </div>
   );
 }
+
+
