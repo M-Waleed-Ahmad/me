@@ -540,17 +540,24 @@ export default function IntelligencePage() {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="border-t border-border-muted pt-10"
+          className="border-t border-border-muted pt-8"
         >
-          <div className="space-y-7">
+          <div className="grid gap-0 border-y border-border-muted md:grid-cols-3 md:divide-x md:divide-border-muted">
             {[
               ['Recruiter lens', 'This pillar supports the broader product story by showing technical depth behind shipped work.'],
               ['Engineer lens', 'The sections expose pipelines, boundaries, uncertainty, and evaluation logic.'],
               ['Founder lens', 'The framing shows judgment: when to automate, when to review, and how to manage risk.'],
             ].map(([label, text]) => (
-              <div key={label} className="border-b border-border-muted pb-7 last:border-b-0 last:pb-0">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{label}</p>
-                <p className="mt-3 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-text-primary sm:text-3xl">{text}</p>
+              <div key={label} className="group relative border-b border-border-muted py-6 md:border-b-0 md:px-6 first:md:pl-0 last:md:pr-0">
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent/35">
+                    <span className="h-4 w-4 rounded-full border border-accent/60" />
+                    <span className="absolute h-px w-5 bg-accent/35" />
+                    <span className="absolute h-5 w-px bg-accent/35" />
+                  </span>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{label}</p>
+                </div>
+                <p className="mt-5 max-w-sm text-base font-medium leading-relaxed text-text-primary">{text}</p>
               </div>
             ))}
           </div>
