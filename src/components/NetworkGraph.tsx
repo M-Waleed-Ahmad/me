@@ -23,17 +23,26 @@ interface NetworkGraphProps {
   edges: WorkspaceEdge[];
   onReady?: () => void;
   reduceMotion?: boolean;
+  isEngaged?: boolean;
+  onEngage?: () => void;
 }
 
 const NODE_CONFIG: Record<WorkspaceNode['type'], { radius: number; color: string; labelColor: string }> = {
   pillar:      { radius: 22, color: '#10b981', labelColor: '#34d399' },
-  project:     { radius: 14, color: '#1c1c1c', labelColor: '#f5f5f7' },
-  technology:  { radius: 8,  color: '#111111', labelColor: '#86868b' },
-  concept:     { radius: 9,  color: '#111111', labelColor: '#86868b' },
-  experience:  { radius: 10, color: '#111111', labelColor: '#86868b' },
+  project:     { radius: 14, color: '#25272b', labelColor: '#f5f5f7' },
+  technology:  { radius: 8,  color: '#111111', labelColor: '#b0b0b7' },
+  concept:     { radius: 9,  color: '#111111', labelColor: '#b0b0b7' },
+  experience:  { radius: 10, color: '#111111', labelColor: '#b0b0b7' },
 };
 
-export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = false }: NetworkGraphProps) {
+export default function NetworkGraph({
+  nodes,
+  edges,
+  onReady,
+  reduceMotion = false,
+  isEngaged = false,
+  onEngage,
+}: NetworkGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredNode, setHoveredNode] = useState<WorkspaceNode | null>(null);
@@ -59,7 +68,11 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
 
     const svg = d3.select(svgRef.current)
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('cursor', isEngaged ? 'grab' : 'pointer')
+      .on('click', (event) => {
+        if (event.target === svgRef.current) onEngage?.();
+      });
 
     // Defs: glow filter
     const defs = svg.append('defs');
@@ -82,6 +95,36 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
       })
       .filter(Boolean) as SimLink[];
 
+    const heroExclusionForce: d3.Force<SimNode, SimLink> = (alpha: number) => {
+      if (isEngaged || reduceMotion) return;
+
+      const left = width * 0.24;
+      const right = width * 0.76;
+      const top = height * 0.28;
+      const bottom = height * 0.72;
+
+      simNodes.forEach((node) => {
+        if (node.x == null || node.y == null) return;
+        if (node.x <= left || node.x >= right || node.y <= top || node.y >= bottom) return;
+
+        const distances = [
+          { axis: 'x' as const, direction: -1, value: node.x - left },
+          { axis: 'x' as const, direction: 1, value: right - node.x },
+          { axis: 'y' as const, direction: -1, value: node.y - top },
+          { axis: 'y' as const, direction: 1, value: bottom - node.y },
+        ].sort((a, b) => a.value - b.value);
+        const nearestExit = distances[0];
+        const strength = node.type === 'pillar' || node.type === 'project' ? 18 : 11;
+
+        if (nearestExit.axis === 'x') {
+          node.vx = (node.vx ?? 0) + nearestExit.direction * strength * alpha;
+        } else {
+          node.vy = (node.vy ?? 0) + nearestExit.direction * strength * alpha;
+        }
+      });
+    };
+    heroExclusionForce.initialize = () => {};
+
     // Simulation — intentionally slow and gentle
     const simulation = d3.forceSimulation<SimNode>(simNodes)
       .force('link', d3.forceLink<SimNode, SimLink>(simLinks)
@@ -101,6 +144,7 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
         return -80;
       }))
       .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('heroExclusion', heroExclusionForce)
       .force('collision', d3.forceCollide<SimNode>(d => {
         const n = d as SimNode;
         return NODE_CONFIG[n.type].radius + 18;
@@ -114,10 +158,17 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
     const g = svg.append('g');
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.4, 2.5])
+      .filter((event) => {
+        if (!isEngaged) return false;
+        if (event.type === 'dblclick') return false;
+        return !event.ctrlKey || event.type === 'wheel';
+      })
+      .on('start', () => svg.attr('cursor', 'grabbing'))
+      .on('end', () => svg.attr('cursor', isEngaged ? 'grab' : 'pointer'))
       .on('zoom', (event) => { g.attr('transform', event.transform); });
     svg.call(zoom);
 
-    const initialScale = width >= 1024 ? 1.28 : 1.08;
+    const initialScale = width >= 1024 ? 1.42 : 1.1;
     const initialTransform = d3.zoomIdentity
       .translate((width - width * initialScale) / 2, (height - height * initialScale) / 2)
       .scale(initialScale);
@@ -128,7 +179,7 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
       .selectAll('line')
       .data(simLinks)
       .join('line')
-      .attr('stroke', '#1c1c1c')
+      .attr('stroke', '#25272b')
       .attr('stroke-width', 1)
       .attr('stroke-opacity', 0.6);
 
@@ -157,12 +208,13 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
         d3.select(event.currentTarget).select('circle')
           .transition().duration(200)
           .attr('r', NODE_CONFIG[d.type].radius)
-          .attr('stroke', d.type === 'pillar' ? '#10b981' : '#1c1c1c')
+          .attr('stroke', d.type === 'pillar' ? '#10b981' : '#25272b')
           .attr('stroke-opacity', d.type === 'pillar' ? 0.8 : 0.5);
       })
       .on('click', (_, d) => handleNodeClick(d))
       .call(
         d3.drag<SVGGElement, SimNode>()
+          .filter(() => isEngaged)
           .on('start', (event, d) => {
             if (!event.active) simulation.alphaTarget(0.15).restart();
             d.fx = d.x; d.fy = d.y;
@@ -182,7 +234,7 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
         if (d.type === 'project') return 'rgba(22,22,22,0.9)';
         return 'rgba(13,13,13,0.9)';
       })
-      .attr('stroke', d => d.type === 'pillar' ? '#10b981' : '#1c1c1c')
+      .attr('stroke', d => d.type === 'pillar' ? '#10b981' : '#25272b')
       .attr('stroke-width', d => d.type === 'pillar' ? 1.5 : 1)
       .attr('stroke-opacity', d => d.type === 'pillar' ? 0.8 : 0.5)
       .attr('filter', d => d.type === 'pillar' ? 'url(#glow)' : '');
@@ -232,7 +284,7 @@ export default function NetworkGraph({ nodes, edges, onReady, reduceMotion = fal
       simulation.stop();
       ro.disconnect();
     };
-  }, [nodes, edges, handleNodeClick, onReady, reduceMotion]);
+  }, [nodes, edges, handleNodeClick, onReady, reduceMotion, isEngaged, onEngage]);
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full">
