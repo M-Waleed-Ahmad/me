@@ -110,7 +110,7 @@ export function useNeighborhoodGraph(focusId: string) {
     // 6-node fan-out starts wider than a 3-node one instead of always using
     // the same radius and relying on charge/collide to sort it out.
     const others = nodes.filter((n) => n.id !== focusId);
-    const ringRadius = Math.min(150, 70 + others.length * 12);
+    const ringRadius = Math.min(175, 92 + others.length * 14);
 
     const simNodes: SimNode[] = nodes.map((n) => {
       if (n.id === focusId) {
@@ -139,13 +139,13 @@ export function useNeighborhoodGraph(focusId: string) {
         'link',
         forceLink<SimNode, SimLink>(simLinks)
           .id((d) => d.id)
-          .distance(100)
-          .strength(0.5)
+          .distance(138)
+          .strength(0.38)
       )
-      .force('charge', forceManyBody().strength(-180))
+      .force('charge', forceManyBody().strength(-360))
       .force(
         'collide',
-        forceCollide<SimNode>((d) => sizeFor(d.id) + 14)
+        forceCollide<SimNode>((d) => sizeFor(d.id) + 34)
       )
       .force('center', forceCenter(WIDTH / 2, HEIGHT / 2))
       .alpha(1)

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
@@ -34,12 +34,19 @@ const PILLARS = [
 ];
 
 export default function WorkspaceMap() {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const activePillar = PILLARS.find((pillar) => pillar.id === activeId) ?? null;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activePillar = PILLARS[activeIndex];
   const activeProjects = useMemo(() => {
-    if (!activePillar) return [];
     return workspaceNodes.filter((node) => node.type === 'project' && node.pillar === activePillar.id);
   }, [activePillar]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % PILLARS.length);
+    }, 4200);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
@@ -56,16 +63,15 @@ export default function WorkspaceMap() {
       <div className="relative mx-auto max-w-6xl pb-14 pt-10">
         <div className="absolute left-0 right-0 top-[4.05rem] h-px bg-border-muted" />
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          {PILLARS.map((pillar) => {
-            const isActive = activeId === pillar.id;
+          {PILLARS.map((pillar, index) => {
+            const isActive = activeIndex === index;
 
             return (
               <Link
                 key={pillar.id}
                 href={pillar.href}
-                onMouseEnter={() => setActiveId(pillar.id)}
-                onFocus={() => setActiveId(pillar.id)}
-                onClick={() => setActiveId(pillar.id)}
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
                 className="group relative flex min-h-28 flex-col items-start justify-start gap-4 focus:outline-none"
               >
                 <span
@@ -76,11 +82,27 @@ export default function WorkspaceMap() {
                   }`}
                 >
                   {pillar.number}
+                  {isActive && (
+                    <motion.span
+                      aria-hidden
+                      className="absolute inset-[-7px] rounded-full border border-accent/35"
+                      initial={{ opacity: 0, scale: 0.72 }}
+                      animate={{ opacity: [0.2, 0.75, 0.2], scale: [0.88, 1.18, 0.88] }}
+                      transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
                 </span>
                 <span className="flex items-center gap-2 text-3xl font-semibold tracking-tight text-text-primary transition-colors group-hover:text-accent sm:text-4xl">
                   {pillar.label}
                   <ArrowUpRight className="h-4 w-4 text-text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
                 </span>
+                <motion.span
+                  aria-hidden
+                  className="h-0.5 bg-accent"
+                  initial={false}
+                  animate={{ width: isActive ? '72%' : '0%', opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: 0.32 }}
+                />
               </Link>
             );
           })}
@@ -88,43 +110,33 @@ export default function WorkspaceMap() {
 
         <div className="mt-10 min-h-48 border-t border-border-muted pt-8">
           <AnimatePresence mode="wait" initial={false}>
-            {activePillar ? (
-              <motion.div
-                key={activePillar.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-                className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px]"
-              >
-                <div className="space-y-4">
-                  <p className="max-w-3xl text-xl font-light leading-relaxed tracking-tight text-text-primary sm:text-2xl">
-                    {activePillar.description}
-                  </p>
-                  <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-                    {activePillar.expandedDescription}
-                  </p>
-                </div>
-                <div className="flex flex-wrap content-start gap-2 md:justify-end">
-                  {activeProjects.slice(0, 4).map((project) => (
-                    <span key={project.id} className="border border-accent/20 bg-accent/5 px-2 py-1 font-mono text-[9px] text-accent">
-                      {project.label}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.p
-                key="idle"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.16 }}
-                className="font-mono text-[10px] uppercase tracking-widest text-text-muted"
-              >
-                Focus a point on the line.
-              </motion.p>
-            )}
+            <motion.div
+              key={activePillar.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.24 }}
+              className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px]"
+            >
+              <div className="space-y-4">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">
+                  Active pillar / {activePillar.number}
+                </p>
+                <p className="max-w-3xl text-xl font-light leading-relaxed tracking-tight text-text-primary sm:text-2xl">
+                  {activePillar.description}
+                </p>
+                <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
+                  {activePillar.expandedDescription}
+                </p>
+              </div>
+              <div className="flex flex-wrap content-start gap-2 md:justify-end">
+                {activeProjects.slice(0, 4).map((project) => (
+                  <span key={project.id} className="border border-accent/20 bg-accent/5 px-2 py-1 font-mono text-[9px] text-accent">
+                    {project.label}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </AnimatePresence>
         </div>
       </div>

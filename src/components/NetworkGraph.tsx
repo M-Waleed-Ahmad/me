@@ -29,10 +29,10 @@ interface NetworkGraphProps {
 
 const NODE_CONFIG: Record<WorkspaceNode['type'], { radius: number; color: string; labelColor: string }> = {
   pillar:      { radius: 22, color: '#10b981', labelColor: '#34d399' },
-  project:     { radius: 14, color: '#1c1c1c', labelColor: '#f5f5f7' },
-  technology:  { radius: 8,  color: '#111111', labelColor: '#86868b' },
-  concept:     { radius: 9,  color: '#111111', labelColor: '#86868b' },
-  experience:  { radius: 10, color: '#111111', labelColor: '#86868b' },
+  project:     { radius: 14, color: '#25272b', labelColor: '#f5f5f7' },
+  technology:  { radius: 8,  color: '#111111', labelColor: '#b0b0b7' },
+  concept:     { radius: 9,  color: '#111111', labelColor: '#b0b0b7' },
+  experience:  { radius: 10, color: '#111111', labelColor: '#b0b0b7' },
 };
 
 export default function NetworkGraph({
@@ -179,7 +179,7 @@ export default function NetworkGraph({
       .selectAll('line')
       .data(simLinks)
       .join('line')
-      .attr('stroke', '#1c1c1c')
+      .attr('stroke', '#25272b')
       .attr('stroke-width', 1)
       .attr('stroke-opacity', 0.6);
 
@@ -208,7 +208,7 @@ export default function NetworkGraph({
         d3.select(event.currentTarget).select('circle')
           .transition().duration(200)
           .attr('r', NODE_CONFIG[d.type].radius)
-          .attr('stroke', d.type === 'pillar' ? '#10b981' : '#1c1c1c')
+          .attr('stroke', d.type === 'pillar' ? '#10b981' : '#25272b')
           .attr('stroke-opacity', d.type === 'pillar' ? 0.8 : 0.5);
       })
       .on('click', (_, d) => handleNodeClick(d))
@@ -234,7 +234,7 @@ export default function NetworkGraph({
         if (d.type === 'project') return 'rgba(22,22,22,0.9)';
         return 'rgba(13,13,13,0.9)';
       })
-      .attr('stroke', d => d.type === 'pillar' ? '#10b981' : '#1c1c1c')
+      .attr('stroke', d => d.type === 'pillar' ? '#10b981' : '#25272b')
       .attr('stroke-width', d => d.type === 'pillar' ? 1.5 : 1)
       .attr('stroke-opacity', d => d.type === 'pillar' ? 0.8 : 0.5)
       .attr('filter', d => d.type === 'pillar' ? 'url(#glow)' : '');
