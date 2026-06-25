@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   Briefcase,
@@ -18,6 +19,7 @@ import {
   workspaceNodes,
   WorkspaceNode,
 } from '@/data/workspaceData';
+import { GraphPreview } from './GraphPreview';
 
 const typeMeta: Record<WorkspaceNode['type'], { label: string; icon: React.ElementType; className: string }> = {
   pillar: { label: 'Pillar', icon: Hash, className: 'text-accent' },
@@ -96,7 +98,12 @@ export default function RelationshipExplorerPage() {
   return (
     <div className="flex-1">
       <div className="mx-auto w-full max-w-7xl space-y-10 px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-        <section className="border-b border-border-muted pb-8">
+        <motion.section
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="border-b border-border-muted pb-8"
+        >
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
             <Network className="h-4 w-4" />
             Relationship Explorer
@@ -107,21 +114,21 @@ export default function RelationshipExplorerPage() {
                 Inspect how projects, tools, concepts, and experience connect.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-                This explorer reuses the same shared graph data as the homepage network and search.
-                Pick a node to see where it appears and what decisions it touches.
+                The graph below isn&apos;t a map of everything — it&apos;s a lens. It re-settles
+                around whatever you select, showing only direct connections at a time.
               </p>
             </div>
             <aside className="border border-border-muted bg-bg-panel p-5">
               <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Source of truth</p>
               <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                Data comes from <span className="font-mono text-text-primary">workspaceData.ts</span>, so this page should evolve with the homepage graph rather than becoming a parallel content island.
+                Data comes from <span className="font-mono text-text-primary">workspaceData.ts</span>, so this page evolves with the homepage graph rather than becoming a parallel content island.
               </p>
             </aside>
           </div>
-        </section>
+        </motion.section>
 
         <section className="grid gap-6 lg:grid-cols-[340px_1fr] lg:items-start">
-          <aside className="border border-border-muted bg-bg-panel p-4">
+          <aside className="sticky border border-border-muted bg-bg-panel p-4">
             <div className="flex items-center gap-2 border-b border-border-muted pb-3">
               <Search className="h-4 w-4 text-text-muted" />
               <input
@@ -141,7 +148,7 @@ export default function RelationshipExplorerPage() {
                   <button
                     key={node.id}
                     onClick={() => setSelectedId(node.id)}
-                    className={`w-full border px-3 py-3 text-left transition-all ${
+                    className={`w-full border px-3 py-3 text-left transition-all duration-200 ${
                       selected
                         ? 'border-accent/50 bg-accent/10'
                         : 'border-transparent bg-bg-dark hover:border-accent/20'
@@ -164,84 +171,120 @@ export default function RelationshipExplorerPage() {
           </aside>
 
           <main className="space-y-5">
-            <section className="border border-border-muted bg-bg-panel p-5">
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center border border-accent/25 bg-accent/10">
-                      <SelectedIcon className="h-5 w-5 text-accent" />
-                    </div>
-                    <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-accent">
-                        {typeMeta[selectedNode.type].label}
-                      </p>
-                      <h2 className="text-2xl font-semibold tracking-tight">{selectedNode.label}</h2>
-                    </div>
-                  </div>
-                  {selectedNode.description && (
-                    <p className="mt-5 max-w-2xl text-sm leading-relaxed text-text-secondary">
-                      {selectedNode.description}
-                    </p>
-                  )}
-                </div>
-
-                {selectedNode.url && (
-                  <Link
-                    href={selectedNode.url}
-                    className="inline-flex items-center justify-center gap-2 border border-border-muted bg-bg-dark px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-accent/30 hover:text-accent"
-                  >
-                    Open node
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                )}
+            {/* Graph + focused-node header share one border/surface, so the
+                graph reads as "part of this node's detail" rather than a
+                separate widget sitting above an unrelated panel. */}
+            <div className="border border-border-muted bg-bg-panel">
+              <div className="flex items-center justify-between border-b border-border-muted px-5 py-3">
+                <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  Neighborhood view
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  {laidOutCountLabel(connections.length)}
+                </p>
               </div>
-            </section>
+              <GraphPreview focusId={selectedNode.id} onSelect={setSelectedId} />
 
-            <section className="grid gap-4 md:grid-cols-2">
-              {Object.entries(groupedConnections)
-                .filter(([, items]) => items.length > 0)
-                .map(([type, items]) => {
-                  const meta = typeMeta[type as WorkspaceNode['type']];
-                  const Icon = meta.icon;
-
-                  return (
-                    <div key={type} className="border border-border-muted bg-bg-panel p-5">
-                      <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-muted pb-3">
-                        <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
-                          <Icon className="h-3.5 w-3.5" />
-                          {meta.label}s
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedNode.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className="border-t border-border-muted p-5"
+                >
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center border border-accent/25 bg-accent/10">
+                          <SelectedIcon className="h-5 w-5 text-accent" />
+                        </div>
+                        <div>
+                          <p className="font-mono text-[10px] uppercase tracking-widest text-accent">
+                            {typeMeta[selectedNode.type].label}
+                          </p>
+                          <h2 className="text-2xl font-semibold tracking-tight">{selectedNode.label}</h2>
+                        </div>
+                      </div>
+                      {selectedNode.description && (
+                        <p className="mt-5 max-w-2xl text-sm leading-relaxed text-text-secondary">
+                          {selectedNode.description}
                         </p>
-                        <span className="font-mono text-[10px] text-text-muted">{items.length}</span>
-                      </div>
-                      <div className="space-y-2">
-                        {items.map(({ node, direction }) => (
-                          <button
-                            key={`${direction}-${node.id}`}
-                            onClick={() => setSelectedId(node.id)}
-                            className="group w-full border border-border-muted bg-bg-dark p-3 text-left transition-all hover:border-accent/25"
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <p className="text-sm font-semibold text-text-primary group-hover:text-accent">{node.label}</p>
-                                <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-muted">
-                                  {direction}
-                                </p>
-                              </div>
-                              <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-accent" />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
+                      )}
                     </div>
-                  );
-                })}
-            </section>
 
-            {connections.length === 0 && (
-              <section className="border border-border-muted bg-bg-panel p-6 text-sm text-text-secondary">
-                No direct relationships are defined for this node yet.
-              </section>
-            )}
+                    {selectedNode.url && (
+                      <Link
+                        href={selectedNode.url}
+                        className="inline-flex items-center justify-center gap-2 border border-border-muted bg-bg-dark px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-accent/30 hover:text-accent"
+                      >
+                        Open node
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${selectedNode.id}-sections`}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-5"
+              >
+                <section className="grid gap-4 md:grid-cols-2">
+                  {Object.entries(groupedConnections)
+                    .filter(([, items]) => items.length > 0)
+                    .map(([type, items]) => {
+                      const meta = typeMeta[type as WorkspaceNode['type']];
+                      const Icon = meta.icon;
+
+                      return (
+                        <div key={type} className="border border-border-muted bg-bg-panel p-5">
+                          <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-muted pb-3">
+                            <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
+                              <Icon className="h-3.5 w-3.5" />
+                              {meta.label}s
+                            </p>
+                            <span className="font-mono text-[10px] text-text-muted">{items.length}</span>
+                          </div>
+                          <div className="space-y-2">
+                            {items.map(({ node, direction }) => (
+                              <button
+                                key={`${direction}-${node.id}`}
+                                onClick={() => setSelectedId(node.id)}
+                                className="group w-full border border-border-muted bg-bg-dark p-3 text-left transition-all hover:border-accent/25"
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-semibold text-text-primary group-hover:text-accent">{node.label}</p>
+                                    <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                                      {direction}
+                                    </p>
+                                  </div>
+                                  <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-accent" />
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </section>
+
+                {connections.length === 0 && (
+                  <section className="border border-border-muted bg-bg-panel p-6 text-sm text-text-secondary">
+                    No direct relationships are defined for this node yet.
+                  </section>
+                )}
+              </motion.div>
+            </AnimatePresence>
 
             <section className="border border-border-muted bg-bg-panel p-5">
               <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
@@ -258,4 +301,8 @@ export default function RelationshipExplorerPage() {
       </div>
     </div>
   );
+}
+
+function laidOutCountLabel(count: number) {
+  return `${count} direct connection${count === 1 ? '' : 's'}`;
 }

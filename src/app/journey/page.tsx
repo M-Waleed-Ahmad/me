@@ -163,9 +163,9 @@ export default function JourneyPage() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1fr_390px] lg:items-start">
-          <div className="space-y-6">
-            <div className="border border-border-muted bg-bg-panel/70 p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-muted pb-3">
+          <div className="space-y-10">
+            <div className="border-y border-border-muted py-5">
+              <div className="mb-5 flex items-center justify-between gap-3">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Foundations</p>
                   <p className="mt-1 text-xs text-text-muted">Education, shown as supporting context.</p>
@@ -173,42 +173,40 @@ export default function JourneyPage() {
                 <GraduationCap className="h-4 w-4 text-accent" />
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch">
+              <div className="relative grid gap-8 sm:grid-cols-2 sm:items-start">
+                <div className="pointer-events-none absolute left-8 right-8 top-8 hidden h-px bg-border-muted sm:block" />
                 {educationNodes.map((node, index) => {
                   const Icon = node.icon;
                   const selected = node.id === activeId;
 
                   return (
-                    <React.Fragment key={node.id}>
-                      <button
-                        id={node.id}
-                        onClick={() => setActiveId(node.id)}
-                        className={`min-h-24 border px-4 py-3 text-left transition-all ${
+                    <button
+                      key={node.id}
+                      id={node.id}
+                      onClick={() => setActiveId(node.id)}
+                      className="group relative z-10 text-left"
+                    >
+                      <span
+                        className={`flex h-16 w-16 items-center justify-center rounded-full border transition-all ${
                           selected
-                            ? 'border-accent/45 bg-accent/10'
-                            : 'border-border-muted bg-bg-dark/70 hover:border-accent/25'
+                            ? 'border-accent/70 bg-accent/10 text-accent'
+                            : 'border-border-muted bg-bg-dark text-text-muted group-hover:border-accent/35 group-hover:text-accent'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <Icon className={`h-4 w-4 ${selected ? 'text-accent' : 'text-text-muted'}`} />
-                          <span className="font-mono text-[10px] text-text-muted">{node.period}</span>
-                        </div>
-                        <h2 className="mt-3 text-sm font-semibold text-text-primary">{node.company}</h2>
-                        <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
-                      </button>
-                      {index < educationNodes.length - 1 && (
-                        <div className="hidden items-center justify-center text-text-muted sm:flex">
-                          <ArrowRight className="h-4 w-4" />
-                        </div>
-                      )}
-                    </React.Fragment>
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="mt-4 block font-mono text-[10px] text-text-muted">{node.period}</span>
+                      <span className="mt-1 block text-sm font-semibold text-text-primary">{node.company}</span>
+                      <span className="mt-1 block text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</span>
+                      {index === 0 && <span className="sr-only">continues to FAST NUCES</span>}
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="border border-border-muted bg-bg-panel p-4 sm:p-6">
-              <div className="mb-5 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
+            <div className="py-2">
+              <div className="mb-6 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Experience track</p>
                   <p className="mt-1 text-xs text-text-muted">Chronological, left to right on desktop.</p>
@@ -216,41 +214,37 @@ export default function JourneyPage() {
                 <Network className="h-4 w-4 text-accent" />
               </div>
 
-              <div className="grid gap-3 xl:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] xl:items-stretch">
+              <div className="relative grid gap-8 md:grid-cols-4 md:items-start">
+                <div className="pointer-events-none absolute left-12 right-12 top-12 hidden h-px bg-border-muted md:block" />
                 {experienceNodes.map((node, index) => {
                   const Icon = node.icon;
                   const selected = node.id === activeId;
                   const isFuture = node.id === 'future';
 
                   return (
-                    <React.Fragment key={node.id}>
-                      <button
-                        id={node.id}
-                        onClick={() => setActiveId(node.id)}
-                        className={`min-h-44 border px-4 py-4 text-left transition-all ${
+                    <button
+                      key={node.id}
+                      id={node.id}
+                      onClick={() => setActiveId(node.id)}
+                      className="group relative z-10 text-left"
+                    >
+                      <span
+                        className={`flex h-24 w-24 items-center justify-center rounded-full border transition-all ${
                           selected
-                            ? 'border-accent/50 bg-accent/10'
+                            ? 'border-accent/75 bg-accent/10 text-accent shadow-[0_0_0_6px_rgba(16,185,129,0.04)]'
                             : isFuture
-                              ? 'border-border-muted border-dashed bg-bg-dark/60 hover:border-accent/25'
-                              : 'border-border-muted bg-bg-dark hover:border-accent/25'
+                              ? 'border-border-muted border-dashed bg-bg-dark/70 text-text-muted group-hover:border-accent/35 group-hover:text-accent'
+                              : 'border-border-muted bg-bg-dark text-text-muted group-hover:border-accent/35 group-hover:text-accent'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
-                          <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
-                            {node.angle}
-                          </span>
-                        </div>
-                        <p className="mt-5 font-mono text-[10px] uppercase tracking-widest text-accent">{node.period}</p>
-                        <h2 className="mt-2 text-base font-semibold text-text-primary">{node.company}</h2>
-                        <p className="mt-1 text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</p>
-                      </button>
-                      {index < experienceNodes.length - 1 && (
-                        <div className="hidden items-center justify-center text-text-muted xl:flex">
-                          <ArrowRight className="h-4 w-4" />
-                        </div>
-                      )}
-                    </React.Fragment>
+                        <Icon className="h-6 w-6" />
+                      </span>
+                      <span className="mt-5 block font-mono text-[10px] uppercase tracking-widest text-accent">{node.period}</span>
+                      <span className="mt-2 block text-base font-semibold text-text-primary">{node.company}</span>
+                      <span className="mt-1 block text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</span>
+                      <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted">{node.angle}</span>
+                      {index < experienceNodes.length - 1 && <span className="sr-only">continues to next experience</span>}
+                    </button>
                   );
                 })}
               </div>

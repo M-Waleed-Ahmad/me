@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, Code2, Cpu, ArrowUpRight } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import { workspaceNodes } from '@/data/workspaceData';
 
 const PILLARS = [
@@ -11,128 +11,122 @@ const PILLARS = [
     id: 'products',
     label: 'Products',
     number: '01',
-    icon: Layers,
     description: 'User-facing software built to solve real human problems and ship at production scale.',
-    expandedDescription: 'From mental health therapy platforms to luxury real estate portals — the work here centers on business outcomes, full lifecycle involvement, and real users who depend on the system.',
-    color: 'accent',
+    expandedDescription: 'This pillar reveals product judgment: compliance tools, real estate workflows, commerce surfaces, and decisions that balance user clarity with operational constraints.',
     href: '/products',
   },
   {
     id: 'systems',
     label: 'Systems',
     number: '02',
-    icon: Code2,
-    description: 'Scalable backends, automation pipelines, and CI/CD infrastructure that runs without hand-holding.',
-    expandedDescription: 'Backend architecture, data pipelines, webhook integrations, and zero-downtime deployment systems. This is where things break at 3am — and where design decisions matter most.',
-    color: 'accent',
+    description: 'Automation pipelines, CI/CD infrastructure, and system boundaries that keep delivery reliable.',
+    expandedDescription: 'This pillar makes invisible engineering visible: validation loops, release confidence, data movement, failure boundaries, and the notes behind tradeoff decisions.',
     href: '/systems',
   },
   {
     id: 'intelligence',
     label: 'Intelligence',
     number: '03',
-    icon: Cpu,
-    description: 'Applied AI, computer vision research, and robotics skill composition architectures.',
-    expandedDescription: 'Technical depth over hype. Computer vision pipelines, deepfake detection models, LLM safety testing, and hierarchical robotic behavior trees — built to understand, not just to use.',
-    color: 'accent',
+    description: 'Applied AI, forensic media analysis, robotics skill composition, and safety evaluation.',
+    expandedDescription: 'This pillar keeps AI grounded in evidence: uncertainty, review points, reusable skill architecture, red-team thinking, and systems that explain what they know.',
     href: '/intelligence',
   },
 ];
 
-const colorMap: Record<string, { border: string; text: string; bg: string; badge: string }> = {
-  accent: {
-    border: 'hover:border-accent/30 group-hover:border-accent/30',
-    text:   'group-hover:text-accent',
-    bg:     'group-hover:bg-accent/5',
-    badge:  'bg-accent/10 text-accent border-accent/20',
-  },
-};
-
 export default function WorkspaceMap() {
-  const [hovered, setHovered] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activePillar = PILLARS.find((pillar) => pillar.id === activeId) ?? null;
+  const activeProjects = useMemo(() => {
+    if (!activePillar) return [];
+    return workspaceNodes.filter((node) => node.type === 'project' && node.pillar === activePillar.id);
+  }, [activePillar]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 space-y-10">
-      {/* Section header */}
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-border-muted pb-8">
+    <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+      <div className="mb-16 grid gap-6 border-b border-border-muted pb-8 md:grid-cols-[1fr_420px] md:items-end">
         <div className="space-y-2">
-          <span className="font-mono text-xs text-accent tracking-widest uppercase">Workspace Map</span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">The Three Pillars</h2>
+          <span className="font-mono text-xs uppercase tracking-widest text-accent">Workspace Map</span>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">The Three Pillars</h2>
         </div>
-        <p className="text-text-secondary text-sm max-w-sm leading-relaxed">
-          Each pillar represents a distinct lens. Most work spans all three simultaneously.
+        <p className="text-sm leading-relaxed text-text-secondary">
+          A compact index of how the work is organized. The useful signal is not the categories themselves, but how a project moves between them.
         </p>
       </div>
 
-      {/* Pillar cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {PILLARS.map((pillar) => {
-          const Icon = pillar.icon;
-          const colors = colorMap[pillar.color];
-          const projects = workspaceNodes.filter(n => n.type === 'project' && n.pillar === pillar.id);
-          const isHovered = hovered === pillar.id;
+      <div className="relative mx-auto max-w-6xl pb-14 pt-10">
+        <div className="absolute left-0 right-0 top-[4.05rem] h-px bg-border-muted" />
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {PILLARS.map((pillar) => {
+            const isActive = activeId === pillar.id;
 
-          return (
-            <Link
-              key={pillar.id}
-              href={pillar.href}
-              onMouseEnter={() => setHovered(pillar.id)}
-              onMouseLeave={() => setHovered(null)}
-              className={`group relative block p-8 rounded-xl bg-bg-panel border border-border-muted transition-all duration-300 ${colors.border} ${colors.bg} overflow-hidden`}
-            >
-              {/* Background grid texture */}
-              <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-                style={{
-                  backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
-                  backgroundSize: '24px 24px'
-                }}
-              />
-
-              {/* Number badge + icon */}
-              <div className="flex items-start justify-between mb-8">
-                <div className={`p-3 rounded-lg bg-bg-dark border border-border-muted transition-colors duration-300 ${isHovered ? 'border-accent/20' : ''}`}>
-                  <Icon className={`w-5 h-5 text-text-secondary transition-colors duration-300 ${colors.text}`} />
-                </div>
-                <span className="font-mono text-[10px] text-text-muted tracking-widest">
-                  PILLAR_{pillar.number}
+            return (
+              <Link
+                key={pillar.id}
+                href={pillar.href}
+                onMouseEnter={() => setActiveId(pillar.id)}
+                onFocus={() => setActiveId(pillar.id)}
+                onClick={() => setActiveId(pillar.id)}
+                className="group relative flex min-h-28 flex-col items-start justify-start gap-4 focus:outline-none"
+              >
+                <span
+                  className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border font-mono text-[10px] transition-all ${
+                    isActive
+                      ? 'border-accent bg-accent text-bg-dark shadow-[0_0_24px_rgba(16,185,129,0.28)]'
+                      : 'border-border-muted bg-bg-dark text-text-muted group-hover:border-accent/60 group-hover:text-accent'
+                  }`}
+                >
+                  {pillar.number}
                 </span>
-              </div>
+                <span className="flex items-center gap-2 text-3xl font-semibold tracking-tight text-text-primary transition-colors group-hover:text-accent sm:text-4xl">
+                  {pillar.label}
+                  <ArrowUpRight className="h-4 w-4 text-text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                </span>
+              </Link>
+            );
+          })}
+        </div>
 
-              {/* Title */}
-              <h3 className={`text-xl font-bold mb-3 transition-colors duration-300 ${colors.text}`}>
-                {pillar.label}
-              </h3>
-
-              {/* Description — switches on hover */}
-              <div className="relative min-h-[60px]">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.p
-                    key={isHovered ? 'expanded' : 'collapsed'}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.18 }}
-                    className="text-sm text-text-secondary leading-relaxed absolute inset-0"
-                  >
-                    {isHovered ? pillar.expandedDescription : pillar.description}
-                  </motion.p>
-                </AnimatePresence>
-              </div>
-
-              {/* Footer row — projects + tech count */}
-              <div className="mt-10 pt-4 border-t border-border-muted flex items-center justify-between">
-                <div className="flex flex-wrap gap-1.5">
-                  {projects.slice(0, 3).map(p => (
-                    <span key={p.id} className={`text-[9px] font-mono px-2 py-0.5 rounded border ${colors.badge}`}>
-                      {p.label}
+        <div className="mt-10 min-h-48 border-t border-border-muted pt-8">
+          <AnimatePresence mode="wait" initial={false}>
+            {activePillar ? (
+              <motion.div
+                key={activePillar.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
+                className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px]"
+              >
+                <div className="space-y-4">
+                  <p className="max-w-3xl text-xl font-light leading-relaxed tracking-tight text-text-primary sm:text-2xl">
+                    {activePillar.description}
+                  </p>
+                  <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
+                    {activePillar.expandedDescription}
+                  </p>
+                </div>
+                <div className="flex flex-wrap content-start gap-2 md:justify-end">
+                  {activeProjects.slice(0, 4).map((project) => (
+                    <span key={project.id} className="border border-accent/20 bg-accent/5 px-2 py-1 font-mono text-[9px] text-accent">
+                      {project.label}
                     </span>
                   ))}
                 </div>
-                <ArrowUpRight className={`w-4 h-4 text-text-muted transition-all duration-300 ${isHovered ? `${colors.text} translate-x-0.5 -translate-y-0.5` : ''}`} />
-              </div>
-            </Link>
-          );
-        })}
+              </motion.div>
+            ) : (
+              <motion.p
+                key="idle"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.16 }}
+                className="font-mono text-[10px] uppercase tracking-widest text-text-muted"
+              >
+                Focus a point on the line.
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

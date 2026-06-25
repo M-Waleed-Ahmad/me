@@ -190,6 +190,17 @@ function ThinkingNote({
   );
 }
 
+function FlowConnector() {
+  return (
+    <div aria-hidden className="flex items-center justify-center text-accent/60 lg:px-1">
+      <div className="flex h-8 flex-col items-center justify-center lg:h-auto lg:flex-row">
+        <span className="h-5 w-px bg-border-muted lg:h-px lg:w-6" />
+        <ArrowRight className="h-3.5 w-3.5 rotate-90 lg:rotate-0" />
+      </div>
+    </div>
+  );
+}
+
 function DeepShieldPipeline() {
   const [active, setActive] = useState(0);
   const activeStage = deepShieldStages[active];
@@ -217,29 +228,31 @@ function DeepShieldPipeline() {
         </ThinkingNote>
       </div>
 
-      <div className="border border-border-muted bg-bg-panel p-4 sm:p-5">
-        <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-6">
+      <div className="bg-bg-panel/60 p-4 sm:p-5">
+        <div className="flex flex-col lg:flex-row lg:items-stretch">
           {deepShieldStages.map((stage, index) => {
             const Icon = stage.icon;
             const selected = index === active;
 
             return (
-              <button
-                key={stage.label}
-                onClick={() => setActive(index)}
-                className={`group min-h-32 border px-4 py-4 text-left transition-all ${
-                  selected
-                    ? 'border-accent/50 bg-accent/10'
-                    : 'border-border-muted bg-bg-dark hover:border-accent/25 hover:bg-bg-panel-hover'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <Icon className={`h-4 w-4 ${selected ? 'text-accent' : 'text-text-muted group-hover:text-accent'}`} />
-                  <span className="font-mono text-[10px] text-text-muted">0{index + 1}</span>
-                </div>
-                <p className="mt-5 text-sm font-semibold text-text-primary">{stage.label}</p>
-                <p className="mt-1 text-[11px] leading-relaxed text-text-muted">{stage.eyebrow}</p>
-              </button>
+              <React.Fragment key={stage.label}>
+                <button
+                  onClick={() => setActive(index)}
+                  className={`group min-h-32 flex-1 border px-4 py-4 text-left transition-all ${
+                    selected
+                      ? 'border-accent/45 bg-accent/10'
+                      : 'border-border-muted/70 bg-bg-dark/70 hover:border-accent/25 hover:bg-bg-panel-hover'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <Icon className={`h-4 w-4 ${selected ? 'text-accent' : 'text-text-muted group-hover:text-accent'}`} />
+                    <span className="font-mono text-[10px] text-text-muted">0{index + 1}</span>
+                  </div>
+                  <p className="mt-5 text-sm font-semibold text-text-primary">{stage.label}</p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-text-muted">{stage.eyebrow}</p>
+                </button>
+                {index < deepShieldStages.length - 1 && <FlowConnector />}
+              </React.Fragment>
             );
           })}
         </div>
@@ -250,9 +263,9 @@ function DeepShieldPipeline() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22 }}
-        className="grid gap-5 border border-border-muted bg-bg-panel p-5 lg:grid-cols-[260px_1fr]"
+        className="grid gap-5 border border-border-muted/80 bg-bg-panel p-5 lg:grid-cols-[260px_1fr]"
       >
-        <div className="border border-border-muted bg-bg-dark p-5">
+        <div className="border border-border-muted/70 bg-bg-dark/70 p-5">
           <div className="flex h-16 w-16 items-center justify-center border border-accent/30 bg-accent/10">
             <ActiveIcon className="h-7 w-7 text-accent" />
           </div>
@@ -305,26 +318,28 @@ function RoboticsSkillArchitecture() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
-        <div className="border border-border-muted bg-bg-panel p-5">
-          <div className="grid gap-3 md:grid-cols-5">
+        <div className="bg-bg-panel/60 p-5">
+          <div className="flex flex-col lg:flex-row lg:items-stretch">
             {roboticsNodes.map((node, index) => {
               const Icon = node.icon;
               const selected = index === active;
 
               return (
-                <button
-                  key={node.label}
-                  onClick={() => setActive(index)}
-                  className={`min-h-40 border px-4 py-4 text-left transition-all ${
-                    selected
-                      ? 'border-accent/50 bg-accent/10'
-                      : 'border-border-muted bg-bg-dark hover:border-accent/25'
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
-                  <p className="mt-5 text-sm font-semibold text-text-primary">{node.label}</p>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-muted">{node.level}</p>
-                </button>
+                <React.Fragment key={node.label}>
+                  <button
+                    onClick={() => setActive(index)}
+                    className={`min-h-40 flex-1 border px-4 py-4 text-left transition-all ${
+                      selected
+                        ? 'border-accent/45 bg-accent/10'
+                        : 'border-border-muted/70 bg-bg-dark/70 hover:border-accent/25'
+                    }`}
+                  >
+                    <Icon className={`h-5 w-5 ${selected ? 'text-accent' : 'text-text-muted'}`} />
+                    <p className="mt-5 text-sm font-semibold text-text-primary">{node.label}</p>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-muted">{node.level}</p>
+                  </button>
+                  {index < roboticsNodes.length - 1 && <FlowConnector />}
+                </React.Fragment>
               );
             })}
           </div>
@@ -344,7 +359,7 @@ function RoboticsSkillArchitecture() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.22 }}
-          className="border border-border-muted bg-bg-panel p-5"
+          className="border border-border-muted/80 bg-bg-panel p-5"
         >
           <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Inspector</p>
           <h3 className="mt-2 text-xl font-semibold tracking-tight">{activeNode.label}</h3>
@@ -395,8 +410,8 @@ function RedTeamingResearch() {
                 onClick={() => setActive(index)}
                 className={`flex min-h-20 items-center gap-3 border px-4 py-3 text-left transition-all ${
                   selected
-                    ? 'border-accent/50 bg-accent/10'
-                    : 'border-border-muted bg-bg-panel hover:border-accent/25'
+                    ? 'border-accent/45 bg-accent/10'
+                    : 'border-border-muted/70 bg-bg-panel/70 hover:border-accent/25'
                 }`}
               >
                 <Icon className={`h-4 w-4 ${selected ? 'text-accent' : 'text-text-muted'}`} />
@@ -411,7 +426,7 @@ function RedTeamingResearch() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.22 }}
-          className="border border-border-muted bg-bg-panel p-5"
+          className="border border-border-muted/80 bg-bg-panel p-5"
         >
           <div className="flex items-center gap-3 border-b border-border-muted pb-4">
             <div className="flex h-10 w-10 items-center justify-center border border-accent/25 bg-accent/10">
@@ -466,13 +481,13 @@ export default function IntelligencePage() {
                 media pipeline, a robotics skill-composition interface, and early red-teaming research.
               </p>
             </div>
-            <div className="border border-border-muted bg-bg-panel p-5">
+            <div className="bg-bg-panel/50 p-5">
               <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Intelligence Lens</p>
-              <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
                 {['Evidence', 'Uncertainty', 'Composition', 'Safety'].map((item) => (
-                  <div key={item} className="border border-border-muted bg-bg-dark px-3 py-3">
-                    <p className="font-mono text-[11px] text-text-secondary">{item}</p>
-                  </div>
+                  <span key={item} className="font-mono text-[11px] text-text-secondary underline decoration-border-focus underline-offset-4">
+                    {item}
+                  </span>
                 ))}
               </div>
             </div>
@@ -484,7 +499,7 @@ export default function IntelligencePage() {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="grid gap-4 md:grid-cols-3"
+          className="grid gap-0 border-y border-border-muted md:grid-cols-3 md:divide-x md:divide-border-muted"
           aria-label="Intelligence principles"
         >
           {[
@@ -501,8 +516,8 @@ export default function IntelligencePage() {
               text: 'Red teaming starts by naming what can go wrong, then designing tests that make failures visible.',
             },
           ].map((item) => (
-            <div key={item.title} className="border border-border-muted bg-bg-panel p-5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{item.title}</p>
+            <div key={item.title} className="border-b border-border-muted py-5 md:border-b-0 md:px-6 first:md:pl-0 last:md:pr-0">
+              <p className="text-lg font-semibold tracking-tight text-text-primary">{item.title}</p>
               <p className="mt-3 text-sm leading-relaxed text-text-secondary">{item.text}</p>
             </div>
           ))}
@@ -525,17 +540,17 @@ export default function IntelligencePage() {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="border-t border-border-muted pt-8"
+          className="border-t border-border-muted pt-10"
         >
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="space-y-7">
             {[
               ['Recruiter lens', 'This pillar supports the broader product story by showing technical depth behind shipped work.'],
               ['Engineer lens', 'The sections expose pipelines, boundaries, uncertainty, and evaluation logic.'],
               ['Founder lens', 'The framing shows judgment: when to automate, when to review, and how to manage risk.'],
             ].map(([label, text]) => (
-              <div key={label} className="border border-border-muted bg-bg-panel p-4">
+              <div key={label} className="border-b border-border-muted pb-7 last:border-b-0 last:pb-0">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{label}</p>
-                <p className="mt-2 text-xs leading-relaxed text-text-secondary">{text}</p>
+                <p className="mt-3 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-text-primary sm:text-3xl">{text}</p>
               </div>
             ))}
           </div>

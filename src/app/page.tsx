@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Compass, Zap, GitBranch, Cpu, Package } from 'lucide-react';
+import { ArrowRight, Compass, Zap, GitBranch, Cpu, Package, X, Maximize2 } from 'lucide-react';
 import { useNavigator } from '@/context/NavigatorContext';
 import { workspaceNodes, workspaceEdges } from '@/data/workspaceData';
 import WorkspaceMap from '@/components/WorkspaceMap';
@@ -51,11 +51,15 @@ export default function Home() {
     () => typeof window !== 'undefined' && window.innerWidth < 768
   );
   const [graphReady, setGraphReady] = useState(false);
+  // overlayOpen tracks the full-screen overlay — separate from the resting hero graph
+  const [overlayOpen, setOverlayOpen] = useState(false);
   const [minimumBootTimePassed, setMinimumBootTimePassed] = useState(false);
   const [bootStateIndex, setBootStateIndex] = useState(0);
   const reduceMotion = useReducedMotion();
   const bootStates = isMobile ? MOBILE_BOOT_STATES : DESKTOP_BOOT_STATES;
   const bootComplete = graphReady && minimumBootTimePassed;
+  // Capture scroll position before opening overlay so we can restore on close
+  const savedScrollY = useRef(0);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -90,26 +94,125 @@ export default function Home() {
     setGraphReady(true);
   }, []);
 
-  const graphOpacity = useMemo(() => {
-    if (reduceMotion) return 0.92;
-    if (bootComplete) return isMobile ? 0.86 : 0.96;
-    return isMobile ? 0.26 : 0.42;
-  }, [bootComplete, isMobile, reduceMotion]);
+  // Open the overlay — save current scroll position
+  const openOverlay = useCallback(() => {
+    if (!bootComplete || isMobile) return;
+    savedScrollY.current = window.scrollY;
+    setOverlayOpen(true);
+  }, [bootComplete, isMobile]);
+
+  // Close the overlay — restore scroll position
+  const closeOverlay = useCallback(() => {
+    setOverlayOpen(false);
+    // Restore scroll on next frame so the page repaints first
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
+    });
+  }, []);
+
+  // Escape key closes overlay
+  useEffect(() => {
+    if (!overlayOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeOverlay();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [overlayOpen, closeOverlay]);
+
+  // Resting hero graph is always dimmed — opacity never changes based on engagement
+  const restingGraphOpacity = bootComplete
+    ? (isMobile ? 0.38 : 0.28)
+    : (isMobile ? 0.14 : 0.18);
+  const restingGraphFilter = 'saturate(0.4) brightness(0.45)';
 
   return (
     <div className="flex-1 flex flex-col">
 
-      {/* ─── SECTION 1: Living Network Hero ─────────────────────────────────── */}
-      <section className="relative h-[82vh] min-h-[560px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark sm:h-[85vh] sm:min-h-[600px]">
+      {/* ─── FULL-SCREEN GRAPH OVERLAY ───────────────────────────────────────── */}
+      {/*
+        Sits above everything (z-50). Separate from the hero graph — own NetworkGraph
+        instance at full brightness. Hero text is fully hidden behind solid bg.
+        Closing restores scroll position.
+      */}
+      <AnimatePresence>
+        {overlayOpen && (
+          <motion.div
+            key="graph-overlay"
+            className="fixed inset-0 z-50 flex flex-col bg-bg-dark"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0.08 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Interactive workspace graph"
+          >
+            {/* Overlay header bar */}
+            <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border-muted bg-bg-dark/90 backdrop-blur-sm">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="font-mono text-[11px] text-text-secondary tracking-widest uppercase">
+                  Workspace Graph — drag nodes · scroll to zoom · click to open
+                </span>
+              </div>
+              <button
+                onClick={closeOverlay}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-border-muted hover:border-accent/35 bg-bg-panel hover:bg-bg-panel-hover text-text-secondary hover:text-text-primary font-mono text-[11px] tracking-wide transition-all duration-150"
+                aria-label="Close graph overlay"
+              >
+                <X className="w-3.5 h-3.5" />
+                Close
+              </button>
+            </div>
 
-        {/* Network graph layer — fills the whole section */}
+            {/* Full-viewport graph — all interactivity, full brightness */}
+            <div className="relative flex-1 overflow-hidden">
+              <NetworkGraph
+                nodes={workspaceNodes}
+                edges={workspaceEdges}
+                onReady={() => {}}
+                reduceMotion={reduceMotion ?? false}
+                isEngaged={true}
+                onEngage={() => {}}
+              />
+              {/* Subtle hint at the bottom */}
+              <p className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-widest text-text-muted">
+                drag · scroll to zoom · click node to open · esc to close
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── SECTION 1: Living Network Hero ─────────────────────────────────── */}
+      {/*
+        The hero section itself is clickable to open the overlay, but we guard
+        against clicks that originate from buttons or links (the CTAs) using
+        a pointer-events check on the event target.
+      */}
+      <section
+        className="relative h-[82vh] min-h-[560px] max-h-[900px] border-b border-border-muted overflow-hidden bg-bg-dark sm:h-[85vh] sm:min-h-[600px] cursor-pointer"
+        onClick={(e) => {
+          // Don't open overlay if user clicked a button or link (CTAs)
+          const target = e.target as HTMLElement;
+          if (target.closest('button, a')) return;
+          openOverlay();
+        }}
+        aria-label="Click to open interactive workspace graph"
+      >
+
+        {/* Resting graph layer — always dimmed, never changes state */}
         <motion.div
           className="absolute inset-0 z-0"
           initial={false}
-          animate={{ opacity: graphOpacity }}
+          animate={{
+            opacity: restingGraphOpacity,
+            filter: restingGraphFilter,
+          }}
           transition={{
             duration: (reduceMotion ? REDUCED_MOTION_CROSSFADE_MS : CROSSFADE_DURATION_MS) / 1000,
-            ease: [0.16, 1, 0.3, 1],
+            ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
           }}
         >
           {isMobile
@@ -120,16 +223,34 @@ export default function Home() {
                 edges={workspaceEdges}
                 onReady={handleGraphReady}
                 reduceMotion={reduceMotion ?? false}
+                isEngaged={false}
+                onEngage={() => {}}
               />
             )}
         </motion.div>
 
-        {/* Vignette overlay — pulls attention to center text */}
+        {/* Vignette — outer edge darkening */}
         <div className="absolute inset-0 z-10 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 66% 66% at 50% 50%, transparent 34%, rgba(3,3,3,0.5) 100%)' }}
+          style={{ background: 'radial-gradient(ellipse 70% 70% at 50% 50%, transparent 28%, rgba(3,3,3,0.65) 100%)' }}
         />
 
-        {/* Hero text content — center-aligned, above graph */}
+        {/* Center hard gradient overlay — always present, always smothers graph text behind hero */}
+        {!isMobile && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+            style={{ width: 'calc(64% + 160px)', height: 'calc(48% + 160px)' }}
+          >
+            <div
+              className="w-full h-full"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(3,3,3,0.97) 0%, rgba(3,3,3,0.92) 38%, rgba(3,3,3,0.72) 62%, rgba(3,3,3,0) 100%)',
+              }}
+            />
+          </div>
+        )}
+
+        {/* Boot sequence overlay */}
         <AnimatePresence>
           {!bootComplete && (
             <motion.div
@@ -157,6 +278,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
+        {/* Hero text content */}
         <div className="pointer-events-none relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
@@ -164,14 +286,17 @@ export default function Home() {
             transition={{ duration: reduceMotion ? 0.08 : 0.36, ease: [0.16, 1, 0.3, 1] }}
             className="pointer-events-none relative max-w-3xl space-y-6 px-5 py-7 sm:px-8 sm:py-8"
           >
+            {/* Solid backdrop — guarantees legibility regardless of graph position */}
             <div
               aria-hidden
-              className="absolute inset-[-1.75rem] -z-10 rounded-[2rem] bg-bg-dark/60 backdrop-blur-[1px]"
+              className="absolute -z-10 backdrop-blur-[2px]"
               style={{
+                inset: '-2.5rem',
                 background:
-                  'radial-gradient(ellipse 78% 64% at 50% 48%, rgba(3,3,3,0.82) 0%, rgba(3,3,3,0.62) 46%, rgba(3,3,3,0.22) 74%, rgba(3,3,3,0) 100%)',
+                  'radial-gradient(ellipse 80% 72% at 50% 50%, rgba(3,3,3,0.97) 0%, rgba(3,3,3,0.92) 30%, rgba(3,3,3,0.78) 56%, rgba(3,3,3,0.42) 78%, rgba(3,3,3,0) 100%)',
               }}
             />
+
             {/* Status badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/25 bg-accent/5 text-accent text-xs font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -209,18 +334,29 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Graph hint */}
+          {/* Click-to-open graph hint — describes the overlay model accurately */}
           {!isMobile && (
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: bootComplete ? 1 : 0 }}
               transition={{ delay: 1.5, duration: 1 }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-mono text-text-muted tracking-widest"
+              className="pointer-events-none absolute bottom-8 left-1/2 z-30 -translate-x-1/2 flex items-center gap-1.5 font-mono text-[10px] tracking-widest text-text-muted"
             >
-              drag nodes / scroll to zoom / click to navigate
+              <Maximize2 className="w-3 h-3" />
+              click to explore the graph in full screen
             </motion.p>
           )}
         </div>
+
+        {/* Click target — entire hero section opens the overlay on desktop */}
+        {!isMobile && bootComplete && (
+          <button
+            onClick={openOverlay}
+            className="absolute inset-0 z-10 cursor-pointer bg-transparent border-0 appearance-none"
+            aria-label="Open interactive workspace graph"
+            tabIndex={-1}
+          />
+        )}
       </section>
 
       {/* ─── SECTION 2: Identity ────────────────────────────────────────────── */}
