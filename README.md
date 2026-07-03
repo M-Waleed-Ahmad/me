@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Waleed Ahmad — Portfolio & Workspace
 
-## Getting Started
+An interactive engineering portfolio that maps the relationships between products, systems, technologies, experience, and applied AI work.
 
-First, run the development server:
+The site combines detailed project case studies with a D3-powered workspace graph, global search, keyboard-friendly navigation, and responsive motion. It is designed as an explorable system rather than a conventional collection of portfolio pages.
+
+## Highlights
+
+- Interactive relationship graph with drag, zoom, and linked project nodes
+- Responsive desktop and mobile graph experiences
+- Product case studies for WePsych, Arabia Hills, and ALFA Club
+- Systems and applied-intelligence showcases
+- Filterable relationship explorer
+- Search and navigator available throughout the site
+- Career and education timeline
+- Reduced-motion support and responsive layouts
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org/) with the App Router and Turbopack
+- [React 19](https://react.dev/) and TypeScript
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [D3.js](https://d3js.org/) for network visualization
+- [Motion](https://motion.dev/) for interface animation
+- [Lucide React](https://lucide.dev/) for icons
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20.9 or later
+- npm
+
+### Installation
 
 ```bash
+git clone https://github.com/M-Waleed-Ahmad/me.git
+cd me
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in a browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project currently requires no environment variables for local development.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available scripts
 
-## Learn More
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server with Turbopack |
+| `npm run build` | Create an optimized production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint |
 
-To learn more about Next.js, take a look at the following resources:
+To preview a production build locally:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Main routes
 
-## Deploy on Vercel
+| Route | Description |
+| --- | --- |
+| `/` | Interactive workspace overview and network graph |
+| `/products` | Product portfolio and case-study index |
+| `/products/wepsych` | WePsych case study |
+| `/products/arabia-hills` | Arabia Hills case study |
+| `/products/alfa-club` | ALFA Club case study |
+| `/systems` | Architecture, automation, CI/CD, and testing work |
+| `/intelligence` | Applied AI, media forensics, robotics, and evaluation work |
+| `/explorer` | Filterable relationship explorer |
+| `/journey` | Education and professional timeline |
+| `/contact` | Contact links and résumé |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+src/
+├── app/          # App Router pages, layout, and global styles
+├── components/   # Shared UI, navigation, search, and graph components
+├── context/      # Navigator and search state providers
+└── data/         # Workspace graph nodes and relationships
+public/           # Static assets and résumé
+```
+
+Graph content is defined in `src/data/workspaceData.ts`. Add or update nodes and edges there to change the relationships rendered across the workspace.
+
+## Deployment
+
+The application can be deployed to any platform that supports Next.js. For Vercel, import the repository and use the detected defaults; no additional environment configuration is currently needed.
+
+## Contact
+
+- [LinkedIn](https://www.linkedin.com/in/waleed-ahmad-0bb087260/)
+- [GitHub](https://github.com/M-Waleed-Ahmad)
+- [Email](mailto:waleed.ahmadmunir@gmail.com)
