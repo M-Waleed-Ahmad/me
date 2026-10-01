@@ -124,6 +124,7 @@ export default function Search() {
                   aria-label="Search"
                   aria-controls="search-results"
                   aria-activedescendant={results[activeIndex] ? `search-${results[activeIndex].id}` : undefined}
+                  autoFocus
                   autoComplete="off"
                   spellCheck={false}
                 />

@@ -15,6 +15,12 @@ const ROUTES = [
   '/contact',
 ];
 
+/** Load a page and wait for hydration, for tests that interact with client components. */
+async function gotoReady(page: Page, url: string) {
+  await page.goto(url);
+  await page.waitForLoadState('networkidle');
+}
+
 /** Collect console errors and uncaught exceptions (hydration mismatches show up here). */
 function trackErrors(page: Page) {
   const errors: string[] = [];
@@ -71,7 +77,7 @@ test('homepage map intro plays on landing and can be skipped', async ({ page }) 
 });
 
 test('contact and résumé are reachable from the header', async ({ page, isMobile }) => {
-  await page.goto('/products');
+  await gotoReady(page, '/products');
   if (isMobile) {
     await page.getByRole('button', { name: 'Open menu' }).click();
     await expect(page.getByRole('navigation', { name: 'Mobile' }).getByRole('link', { name: 'Contact' })).toBeVisible();
@@ -86,17 +92,21 @@ test('contact and résumé are reachable from the header', async ({ page, isMobi
 
 test('search opens with the keyboard and navigates', async ({ page, isMobile }) => {
   test.skip(isMobile, 'keyboard shortcut is a desktop affordance');
-  await page.goto('/');
+  await page.goto('/products');
+  // The shortcut is handled by client code, so wait until the page has hydrated.
+  await page.waitForLoadState('networkidle');
   await page.keyboard.press('Control+k');
   const dialog = page.getByRole('dialog', { name: 'Search the site' });
   await expect(dialog).toBeVisible();
-  await page.keyboard.type('wepsych');
-  await page.keyboard.press('Enter');
+  const input = dialog.getByRole('textbox', { name: 'Search' });
+  await expect(input).toBeFocused();
+  await input.fill('wepsych');
+  await input.press('Enter');
   await expect(page).toHaveURL(/\/products\/wepsych$/);
 });
 
 test('DeepShield band explorer responds to the slider', async ({ page }) => {
-  await page.goto('/products/deepshield');
+  await gotoReady(page, '/products/deepshield');
   const slider = page.getByRole('slider', { name: 'Model score' });
   await slider.fill('0.2');
   await expect(page.getByText('Reported as likely authentic.')).toBeVisible();
@@ -106,7 +116,7 @@ test('DeepShield band explorer responds to the slider', async ({ page }) => {
 
 test('explorer draws edges and re-centres on click', async ({ page }) => {
   const errors = trackErrors(page);
-  await page.goto('/explorer');
+  await gotoReady(page, '/explorer');
   const graph = page.locator('figure svg').first();
   await expect(graph.locator('line').first()).toBeAttached();
   // Graph nodes are keyboard-operable; this also avoids clicking the gap between circle and label.
@@ -123,7 +133,7 @@ test('unknown routes get the notebook 404', async ({ page }) => {
 });
 
 test('home map opens a project summary and links to its page', async ({ page }) => {
-  await page.goto('/');
+  await gotoReady(page, '/');
   await page.getByRole('button', { name: 'Open WePsych' }).focus();
   await page.keyboard.press('Enter');
   const open = page.getByRole('link', { name: 'Open project' });
@@ -146,7 +156,7 @@ test('retired pages redirect to their new homes', async ({ page }) => {
 });
 
 test('earlier site versions can be viewed and switched back', async ({ page }) => {
-  await page.goto('/process');
+  await gotoReady(page, '/process');
   await page.getByRole('button', { name: /Emerald on black/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-version', 'v1');
   await page.goto('/journey');
