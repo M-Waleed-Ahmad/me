@@ -1,95 +1,439 @@
 @import "tailwindcss";
 
+/*
+  Design tokens. Light "paper" with blueprint-blue ink is the default; dark follows the OS setting.
+  Utilities read these through var(), so every component themes automatically.
+*/
 @theme {
-  --color-bg-dark: #030303;
-  --color-bg-panel: #0d0d0d;
-  --color-bg-panel-hover: #161616;
-  --color-border-muted: #25272b;
-  --color-border-focus: #3c4248;
-  
-  --color-accent: #10b981;
-  --color-accent-dim: #064e3b;
-  --color-accent-bright: #34d399;
-  
-  --color-text-primary: #f5f5f7;
-  --color-text-secondary: #b0b0b7;
-  --color-text-muted: #73737c;
+  --color-paper: #f1f1ed;
+  --color-surface: #f9f9f6;
+  --color-ink: #16171a;
+  --color-ink-2: #43454b;
+  --color-ink-3: #65676e;
+  --color-rule: #d6d7d2;
+  --color-rule-strong: #aeb0aa;
+  --color-accent: #2748b8;
+  --color-accent-ink: #1e3a94;
 
-  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-geist-mono), SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #0f1115;
+    --color-surface: #161920;
+    --color-ink: #e9eaee;
+    --color-ink-2: #b6b9c2;
+    --color-ink-3: #8b8f99;
+    --color-rule: #262a33;
+    --color-rule-strong: #3d424d;
+    --color-accent: #7f9cff;
+    --color-accent-ink: #a3b8ff;
+  }
 }
 
 :root {
-  --background: #030303;
-  --foreground: #f5f5f7;
-  --accent: #10b981;
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
-/* Base Styles */
-html,
-body {
-  background-color: var(--background);
-  color: var(--foreground);
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
   overflow-x: hidden;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #030303;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #25272b;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #3c4248;
-}
-
-/* Selection Color */
 ::selection {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  background-color: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  color: var(--color-ink);
 }
 
-/* Typography Enhancements */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-text-primary);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
-/* Premium UI Utilities */
-.glass-panel {
-  background: rgba(13, 13, 13, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* Faint grid, used only behind figures so diagrams read as drawn on graph paper. */
+@utility graph-paper {
+  background-color: var(--color-surface);
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--color-rule) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-rule) 55%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
 }
 
-.glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Running text inside case studies and long-form pages. */
+@utility prose-notebook {
+  max-width: 68ch;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-ink-2);
+
+  & p + p {
+    margin-top: 1.1em;
+  }
+
+  & strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
 }
 
-.glass-panel-hover:hover {
-  background: rgba(22, 22, 22, 0.85);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-/* Hide scrollbar helper classes */
-.no-scrollbar::-webkit-scrollbar {
+/* Print: datasheets become a clean one-page spec. */
+@media print {
+  :root {
+    --color-paper: #ffffff;
+    --color-surface: #ffffff;
+    --color-ink: #111111;
+    --color-ink-2: #333333;
+    --color-ink-3: #555555;
+    --color-rule: #cccccc;
+    --color-rule-strong: #999999;
+  }
+
+  header.sticky,
+  footer,
+  [data-no-print] {
+    display: none !important;
+  }
+
+  .graph-paper {
+    background-image: none;
+  }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────────
+   One idea: the page draws itself in like a blueprint, and navigation keeps you
+   oriented. Everything is short, eased and switched off for reduced motion. */
+
+:root {
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  interpolate-size: allow-keywords;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Staggered entrance: set --i on each block (0, 1, 2…) to sequence them. */
+.reveal {
+  animation: rise 600ms var(--ease-out-soft) both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* Quick swap for content that changes in place (panels, answers). */
+.swap-in {
+  animation: rise 320ms var(--ease-out-soft) both;
+}
+
+/* Map lines trace in once, like ink; labels fade in column by column. */
+.ink-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 900ms var(--ease-out-soft) forwards;
+}
+
+.ink-label {
+  animation: fade-in 500ms ease-out both;
+}
+
+/* Question answers open smoothly instead of snapping (progressive enhancement). */
+details::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size 320ms var(--ease-out-soft),
+    content-visibility 320ms allow-discrete;
+}
+
+details[open]::details-content {
+  block-size: auto;
+}
+
+/* Page navigations: a soft crossfade, with the header held still as an anchor. */
+::view-transition-old(root) {
+  animation: 160ms ease-in both fade-in reverse;
+}
+
+::view-transition-new(root) {
+  animation: 260ms var(--ease-out-soft) 80ms both fade-in;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header) {
   display: none;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* Shared elements (a project's name) glide between pages. */
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .swap-in,
+  .ink-label {
+    animation: none;
+  }
+
+  .ink-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ── Homepage intro: the seam ──────────────────────────────────────────────
+   When a visit lands on the homepage, a line draws across a closed screen under
+   "Start with the problem." and the screen parts along it like doors. The map
+   then draws itself in place, and the rest of the page arrives after it
+   (--map-offset, --intro-offset). A click or key press skips it all. */
+
+:root {
+  --intro-offset: 1.9s;
+  --map-offset: 1.7s;
+  --seam-shadow: rgb(0 0 0 / 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --seam-shadow: rgb(0 0 0 / 0.55);
+  }
+}
+
+html[data-intro='skip'] {
+  --intro-offset: 0s;
+  --map-offset: 0s;
+}
+
+.reveal {
+  animation-delay: calc(var(--intro-offset) + var(--i, 0) * 80ms);
+}
+
+.seam-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+html[data-intro='skip'] .seam-intro {
+  display: none;
+}
+
+.seam-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.seam-top {
+  top: 0;
+  bottom: 50%;
+  align-items: flex-end;
+  padding-bottom: 1.1rem;
+  animation: seam-up 1100ms cubic-bezier(0.65, 0, 0.25, 1) 1500ms forwards;
+}
+
+.seam-bottom {
+  top: 50%;
+  bottom: 0;
+  align-items: flex-start;
+  padding-top: 1.1rem;
+  animation: seam-down 1100ms cubic-bezier(0.65, 0, 0.25, 1) 1500ms forwards;
+}
+
+.seam-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  animation:
+    seam-draw 900ms var(--ease-out-soft) 150ms forwards,
+    fade-in 400ms ease 1500ms reverse forwards;
+}
+
+.seam-text {
+  opacity: 0;
+  animation: fade-in 600ms ease 350ms forwards;
+}
+
+@keyframes seam-draw {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Each half casts a soft shadow from its inner edge while it opens. It fades in
+   as the halves separate and out before they leave, so nothing shows while
+   closed or lingers after. */
+@keyframes seam-up {
+  0% {
+    transform: none;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  18%,
+  80% {
+    box-shadow: 0 22px 48px -12px var(--seam-shadow);
+  }
+  100% {
+    transform: translateY(-102%);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes seam-down {
+  0% {
+    transform: none;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  18%,
+  80% {
+    box-shadow: 0 -22px 48px -12px var(--seam-shadow);
+  }
+  100% {
+    transform: translateY(102%);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seam-intro {
+    display: none;
+  }
+}
+
+/* ── Earlier versions, viewable from /process ───────────────────────────────
+   <html data-version> swaps the design tokens (and for v3, the datasheet
+   corners and rules). Selector specificity beats the OS dark-mode block. */
+
+:root {
+  /* The current look's own swatch colours, never overridden by a version. */
+  --v4-paper: #f1f1ed;
+  --v4-ink: #16171a;
+  --v4-accent: #2748b8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --v4-paper: #0f1115;
+    --v4-ink: #e9eaee;
+    --v4-accent: #7f9cff;
+  }
+}
+
+html[data-version='v1'] {
+  color-scheme: dark;
+  --color-paper: #030303;
+  --color-surface: #0d0d0d;
+  --color-ink: #f5f5f7;
+  --color-ink-2: #b0b0b7;
+  --color-ink-3: #73737c;
+  --color-rule: #25272b;
+  --color-rule-strong: #3c4248;
+  --color-accent: #10b981;
+  --color-accent-ink: #34d399;
+  --font-serif: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --seam-shadow: rgb(0 0 0 / 0.6);
+}
+
+html[data-version='v2'] {
+  color-scheme: light;
+  --color-paper: #f3f0e8;
+  --color-surface: #faf8f3;
+  --color-ink: #1b1a17;
+  --color-ink-2: #48453f;
+  --color-ink-3: #6b675f;
+  --color-rule: #dcd6c8;
+  --color-rule-strong: #b8b0a0;
+  --color-accent: #c2410c;
+  --color-accent-ink: #9a3412;
+  --seam-shadow: rgb(0 0 0 / 0.16);
+}
+
+html[data-version='v3'] {
+  color-scheme: light;
+  --color-paper: #f1f1ed;
+  --color-surface: #f9f9f6;
+  --color-ink: #16171a;
+  --color-ink-2: #43454b;
+  --color-ink-3: #65676e;
+  --color-rule: #d6d7d2;
+  --color-rule-strong: #aeb0aa;
+  --color-accent: #2748b8;
+  --color-accent-ink: #1e3a94;
+  --seam-shadow: rgb(0 0 0 / 0.16);
+}
+
+/* v3 was a spec sheet: square corners and a hairline around every surface. */
+html[data-version='v3'] :where(.rounded-2xl, .rounded-xl, .rounded-lg, .rounded-full) {
+  border-radius: 2px;
+}
+
+html[data-version='v3'] :where(.bg-surface) {
+  box-shadow: inset 0 0 0 1px var(--color-rule-strong);
 }

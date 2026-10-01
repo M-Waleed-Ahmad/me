@@ -127,7 +127,9 @@ export function useNeighborhoodGraph(focusId: string) {
       };
     });
 
-    const simLinks: SimLink[] = links;
+    // forceLink replaces source/target ids with node objects in place, so give it
+    // copies and keep `links` (plain ids) for building the rendered edges.
+    const simLinks: SimLink[] = links.map((l) => ({ ...l }));
 
     const sizeFor = (id: string) => {
       const count = connectionCounts.get(id) ?? 1;
@@ -183,7 +185,7 @@ export function useNeighborhoodGraph(focusId: string) {
       );
 
       setLaidOutEdges(
-        simLinks.map((l, i) => {
+        links.map((l, i) => {
           const sourceNode = nodeMap.get(l.source)!;
           const targetNode = nodeMap.get(l.target)!;
           const sourceMeta = nodes.find((n) => n.id === l.source)!;

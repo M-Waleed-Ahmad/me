@@ -1,246 +1,170 @@
 'use client';
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search as SearchIcon, X, Layers, Code2, Cpu, Briefcase, ArrowRight, Hash, Zap } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { CornerDownLeft, Search as SearchIcon, X } from 'lucide-react';
 import { useSearch } from '@/context/SearchContext';
-import { workspaceNodes, WorkspaceNode } from '@/data/workspaceData';
+import { workspaceNodes } from '@/data/workspaceData';
+import { profile } from '@/data/site';
 
-// ─── Type config ────────────────────────────────────────────────────────────
-const TYPE_META: Record<WorkspaceNode['type'], { label: string; icon: React.ElementType; color: string }> = {
-  pillar:     { label: 'Pillar',     icon: Hash,     color: 'text-accent' },
-  project:    { label: 'Project',    icon: Layers,   color: 'text-text-primary' },
-  technology: { label: 'Technology', icon: Code2,    color: 'text-accent' },
-  concept:    { label: 'Concept',    icon: Zap,      color: 'text-accent' },
-  experience: { label: 'Experience', icon: Briefcase,color: 'text-accent' },
-};
+type Result = { id: string; label: string; kind: string; description?: string; url: string; external?: boolean };
 
-const PILLAR_META: Record<string, { icon: React.ElementType; color: string }> = {
-  products:     { icon: Layers, color: 'text-accent' },
-  systems:      { icon: Code2,  color: 'text-accent' },
-  intelligence: { icon: Cpu,    color: 'text-accent' },
-};
+const PAGES: Result[] = [
+  { id: 'page-work', label: 'Work', kind: 'page', description: 'All case studies', url: '/products' },
+  { id: 'page-journey', label: 'Journey', kind: 'page', description: 'Experience and education timeline', url: '/journey' },
+  { id: 'page-contact', label: 'Contact', kind: 'page', description: 'Email, LinkedIn, GitHub', url: '/contact' },
+  { id: 'page-resume', label: 'Résumé (PDF)', kind: 'file', description: 'Download the CV', url: profile.resume, external: true },
+  { id: 'page-process', label: 'How I built this', kind: 'page', description: 'Decisions, AI use and quality checks', url: '/process' },
+  { id: 'page-explorer', label: 'Explorer', kind: 'page', description: 'How everything connects', url: '/explorer' },
+];
 
-// ─── Fuzzy scorer ────────────────────────────────────────────────────────────
-function scoreNode(node: WorkspaceNode, q: string): number {
-  const needle = q.toLowerCase();
-  const haystack = [
-    node.label,
-    node.description ?? '',
-    node.type,
-    node.pillar ?? '',
-  ].join(' ').toLowerCase();
+const NODE_RESULTS: Result[] = workspaceNodes
+  .filter((n) => n.url)
+  .map((n) => ({ id: n.id, label: n.label, kind: n.type === 'pillar' ? 'area' : n.type, description: n.description, url: n.url! }));
 
-  if (node.label.toLowerCase().startsWith(needle)) return 3;
-  if (node.label.toLowerCase().includes(needle)) return 2;
-  if (haystack.includes(needle)) return 1;
+const ALL = [...PAGES, ...NODE_RESULTS];
+
+function score(result: Result, q: string) {
+  const label = result.label.toLowerCase();
+  if (label.startsWith(q)) return 3;
+  if (label.includes(q)) return 2;
+  if (`${result.kind} ${result.description ?? ''}`.toLowerCase().includes(q)) return 1;
   return 0;
 }
 
 export default function Search() {
   const { isOpen, query, setQuery, closeSearch } = useSearch();
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Focus input when opened
   useEffect(() => {
-    if (isOpen) {
-      const timer = window.setTimeout(() => {
-        inputRef.current?.focus();
-        setActiveIndex(0);
-      }, 60);
-
-      return () => window.clearTimeout(timer);
-    }
+    if (!isOpen) return;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 30);
+    return () => window.clearTimeout(timer);
   }, [isOpen]);
 
-  // Filtered + scored results
   const results = useMemo(() => {
-    const q = query.trim();
-    if (!q) {
-      // Default: show pillars + projects (most useful starting point)
-      return workspaceNodes
-        .filter(n => n.type === 'pillar' || n.type === 'project')
-        .slice(0, 10);
-    }
-    return workspaceNodes
-      .map(n => ({ node: n, score: scoreNode(n, q) }))
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map(({ node }) => node)
+    const q = query.trim().toLowerCase();
+    if (!q) return ALL.filter((r) => r.kind === 'page' || r.kind === 'file' || r.kind === 'project').slice(0, 10);
+    return ALL.map((r) => ({ r, s: score(r, q) }))
+      .filter(({ s }) => s > 0)
+      .sort((a, b) => b.s - a.s)
+      .map(({ r }) => r)
       .slice(0, 12);
   }, [query]);
 
-  // Navigate to selected node
-  const selectNode = (node: WorkspaceNode) => {
-    if (node.url) {
-      router.push(node.url);
-      closeSearch();
-    }
+  const open = (result: Result) => {
+    closeSearch();
+    setActiveIndex(0);
+    if (result.external) window.open(result.url, '_blank', 'noopener');
+    else router.push(result.url);
   };
 
-  // Keyboard navigation within list
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIndex(i => Math.min(i + 1, results.length - 1));
+      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveIndex(i => Math.max(i - 1, 0));
+      setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      const node = results[activeIndex];
-      if (node) selectNode(node);
+      const result = results[activeIndex];
+      if (result) open(result);
     }
   };
 
-  // Scroll active item into view
   useEffect(() => {
     const el = listRef.current?.children[activeIndex] as HTMLElement | undefined;
     el?.scrollIntoView({ block: 'nearest' });
   }, [activeIndex]);
 
+  const duration = reduceMotion ? 0 : 0.15;
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration }}
             onClick={closeSearch}
-            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-ink/30 backdrop-blur-[2px]"
           />
-
-          {/* Palette modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: -8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed left-1/2 top-[12%] z-[70] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 sm:top-[18%]"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration }}
+            className="fixed left-1/2 top-[12%] z-[70] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2"
             role="dialog"
             aria-modal="true"
-            aria-label="Workspace search"
+            aria-label="Search the site"
           >
-            <div className="rounded-xl border border-border-muted bg-bg-panel/98 shadow-2xl overflow-hidden backdrop-blur-xl">
-
-              {/* Input row */}
-              <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border-muted">
-                <SearchIcon className="w-4 h-4 text-text-secondary flex-shrink-0" />
+            <div className="overflow-hidden border border-ink bg-paper shadow-[8px_8px_0_0_var(--color-rule)]">
+              <div className="flex items-center gap-3 border-b border-rule px-4 py-3.5">
+                <SearchIcon className="h-4 w-4 shrink-0 text-ink-3" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={query}
-                  onChange={e => {
+                  onChange={(e) => {
                     setActiveIndex(0);
                     setQuery(e.target.value);
                   }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Search projects, technologies, concepts..."
-                  className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none font-mono"
-                  aria-label="Search workspace"
+                  onKeyDown={onKeyDown}
+                  placeholder="Search projects, roles, technologies…"
+                  className="flex-1 bg-transparent text-ink outline-none placeholder:text-ink-3"
+                  aria-label="Search"
+                  aria-controls="search-results"
+                  aria-activedescendant={results[activeIndex] ? `search-${results[activeIndex].id}` : undefined}
                   autoComplete="off"
                   spellCheck={false}
                 />
-                {query && (
-                  <button
-                    onClick={() => {
-                      setActiveIndex(0);
-                      setQuery('');
-                    }}
-                    className="text-text-muted hover:text-text-secondary transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-                <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-border-muted text-[10px] font-mono text-text-muted">
-                  ESC
-                </kbd>
+                <button type="button" onClick={closeSearch} aria-label="Close search" className="text-ink-3 hover:text-ink">
+                  <X className="h-4 w-4" />
+                </button>
               </div>
 
-              {/* Results list */}
-              <ul ref={listRef} className="max-h-80 overflow-y-auto py-1.5 no-scrollbar" role="listbox">
+              <ul id="search-results" ref={listRef} role="listbox" className="max-h-80 overflow-y-auto py-1">
                 {results.length === 0 && (
-                  <li className="px-4 py-8 text-center text-sm text-text-muted font-mono">
-                    No results for &ldquo;{query}&rdquo;
-                  </li>
+                  <li className="px-4 py-8 text-center text-ink-3">Nothing for “{query}”.</li>
                 )}
-
-                {results.map((node, idx) => {
-                  const typeMeta = TYPE_META[node.type];
-                  const TypeIcon = typeMeta.icon;
-                  const pillarMeta = node.pillar ? PILLAR_META[node.pillar] : null;
-                  const PillarIcon = pillarMeta?.icon;
-                  const isActive = idx === activeIndex;
-
+                {results.map((result, idx) => {
+                  const active = idx === activeIndex;
                   return (
                     <li
-                      key={node.id}
+                      key={result.id}
+                      id={`search-${result.id}`}
                       role="option"
-                      aria-selected={isActive}
-                      onClick={() => selectNode(node)}
+                      aria-selected={active}
+                      onClick={() => open(result)}
                       onMouseEnter={() => setActiveIndex(idx)}
-                      className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${
-                        isActive ? 'bg-bg-panel-hover' : 'hover:bg-bg-panel-hover'
+                      className={`flex cursor-pointer items-center gap-4 border-l-2 px-4 py-2.5 ${
+                        active ? 'border-accent bg-surface' : 'border-transparent'
                       }`}
                     >
-                      {/* Node type icon */}
-                      <div className={`flex-shrink-0 ${typeMeta.color}`}>
-                        <TypeIcon className="w-4 h-4" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-serif text-xl leading-tight text-ink">{result.label}</p>
+                        {result.description && <p className="truncate text-sm text-ink-3">{result.description}</p>}
                       </div>
-
-                      {/* Label + meta */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-text-primary truncate">
-                            {node.label}
-                          </span>
-                          {node.pillar && PillarIcon && (
-                            <span className={`text-[10px] font-mono flex items-center gap-0.5 ${pillarMeta?.color}`}>
-                              <PillarIcon className="w-2.5 h-2.5" />
-                              {node.pillar}
-                            </span>
-                          )}
-                        </div>
-                        {node.description && (
-                          <p className="text-[11px] text-text-muted truncate mt-0.5">
-                            {node.description}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Type badge + arrow */}
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="hidden sm:inline text-[10px] font-mono text-text-muted">
-                          {typeMeta.label}
-                        </span>
-                        {node.url && (
-                          <ArrowRight className={`w-3.5 h-3.5 transition-colors ${isActive ? 'text-accent' : 'text-text-muted'}`} />
-                        )}
-                      </div>
+                      <span className="shrink-0 font-mono text-[11px] text-ink-3">{result.kind}</span>
+                      {active && <CornerDownLeft className="h-3.5 w-3.5 shrink-0 text-accent" />}
                     </li>
                   );
                 })}
               </ul>
 
-              {/* Footer hints */}
-              <div className="px-4 py-2.5 border-t border-border-muted flex items-center justify-between">
-                <div className="flex items-center gap-4 text-[10px] font-mono text-text-muted">
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1 py-0.5 rounded border border-border-muted">↑↓</kbd> navigate
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1 py-0.5 rounded border border-border-muted">↵</kbd> open
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono text-text-muted">
-                  {results.length} result{results.length !== 1 ? 's' : ''}
+              <div className="flex items-center justify-between border-t border-rule px-4 py-2 font-mono text-[11px] text-ink-3">
+                <span>↑↓ to move · enter to open · esc to close</span>
+                <span>
+                  {results.length} result{results.length === 1 ? '' : 's'}
                 </span>
               </div>
             </div>

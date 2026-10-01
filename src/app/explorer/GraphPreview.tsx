@@ -12,11 +12,11 @@ const nodeTreatment: Record<
   WorkspaceNode['type'],
   { fill: string; stroke: string; text: string; initial: string; labelTone: string }
 > = {
-  pillar: { fill: 'var(--color-accent)', stroke: 'var(--color-accent-bright)', text: 'var(--color-bg-dark)', initial: 'P', labelTone: 'var(--color-text-primary)' },
-  project: { fill: 'var(--color-bg-panel-hover)', stroke: 'var(--color-accent)', text: 'var(--color-accent-bright)', initial: 'PR', labelTone: 'var(--color-text-primary)' },
-  technology: { fill: 'var(--color-bg-panel)', stroke: 'var(--color-text-secondary)', text: 'var(--color-text-primary)', initial: 'T', labelTone: 'var(--color-text-secondary)' },
-  concept: { fill: 'var(--color-bg-panel)', stroke: 'var(--color-accent-dim)', text: 'var(--color-accent-bright)', initial: 'C', labelTone: 'var(--color-text-secondary)' },
-  experience: { fill: 'var(--color-bg-panel)', stroke: 'var(--color-text-secondary)', text: 'var(--color-text-primary)', initial: 'E', labelTone: 'var(--color-text-secondary)' },
+  pillar: { fill: 'var(--color-accent)', stroke: 'var(--color-accent-ink)', text: 'var(--color-paper)', initial: 'P', labelTone: 'var(--color-ink)' },
+  project: { fill: 'var(--color-surface)', stroke: 'var(--color-accent)', text: 'var(--color-accent-ink)', initial: 'PR', labelTone: 'var(--color-ink)' },
+  technology: { fill: 'var(--color-surface)', stroke: 'var(--color-ink-2)', text: 'var(--color-ink)', initial: 'T', labelTone: 'var(--color-ink-2)' },
+  concept: { fill: 'var(--color-surface)', stroke: 'var(--color-rule-strong)', text: 'var(--color-accent-ink)', initial: 'C', labelTone: 'var(--color-ink-2)' },
+  experience: { fill: 'var(--color-surface)', stroke: 'var(--color-ink-2)', text: 'var(--color-ink)', initial: 'E', labelTone: 'var(--color-ink-2)' },
 };
 
 interface GraphPreviewProps {
@@ -28,7 +28,7 @@ export function GraphPreview({ focusId, onSelect }: GraphPreviewProps) {
   const { laidOutNodes, laidOutEdges, width, height } = useNeighborhoodGraph(focusId);
 
   return (
-    <div className="relative bg-bg-dark" style={{ aspectRatio: `${width} / ${height}` }}>
+    <div className="relative bg-surface" style={{ aspectRatio: `${width} / ${height}` }}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
@@ -40,10 +40,10 @@ export function GraphPreview({ focusId, onSelect }: GraphPreviewProps) {
       >
         <defs>
           <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
-            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="var(--color-text-primary)" strokeWidth="1" />
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="var(--color-ink)" strokeWidth="1" />
           </pattern>
         </defs>
-        <rect width={width} height={height} fill="url(#grid)" opacity={0.04} />
+        <rect width={width} height={height} fill="url(#grid)" opacity={0.06} />
 
         <g>
           {laidOutEdges.map((edge) => (
@@ -72,7 +72,7 @@ function EdgeLine({ edge }: { edge: LaidOutEdge }) {
       y1={edge.source.y}
       x2={edge.target.x}
       y2={edge.target.y}
-      stroke={isFocusEdge ? 'var(--color-accent)' : 'var(--color-border-muted)'}
+      stroke={isFocusEdge ? 'var(--color-accent)' : 'var(--color-rule-strong)'}
       strokeOpacity={isFocusEdge ? 0.55 : 0.65}
       strokeWidth={isFocusEdge ? 1.4 : 1}
       strokeDasharray={isFocusEdge ? '0' : '3 4'}
@@ -97,8 +97,8 @@ function NodeDot({
 }) {
   const { node, x, y, r, isFocus } = laidOut;
   const treatment = nodeTreatment[node.type];
-  const displayLabel = node.label.length > 18 ? `${node.label.slice(0, 17)}...` : node.label;
-  const labelWidth = Math.min(132, Math.max(58, displayLabel.length * 6.4 + 18));
+  const displayLabel = node.label.length > 22 ? `${node.label.slice(0, 21)}…` : node.label;
+  const labelWidth = Math.min(132, Math.max(58, displayLabel.length * 6.8 + 18));
   const labelHeight = 22;
   const dx = x - VIEWBOX_WIDTH / 2;
   const dy = y - VIEWBOX_HEIGHT / 2;
@@ -135,9 +135,9 @@ function NodeDot({
           cy={y}
           r={r + 8}
           fill="none"
-          stroke="var(--color-accent-bright)"
+          stroke="var(--color-accent-ink)"
           strokeWidth={1}
-          initial={{ opacity: 0.6 }}
+          initial={{ opacity: 0.6, cx: x, cy: y }}
           animate={{
             cx: x,
             cy: y,
@@ -169,7 +169,7 @@ function NodeDot({
           cx={x}
           cy={y}
           r={Math.max(4, r - 8)}
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0, cx: x, cy: y }}
           animate={{ opacity: 0.16, cx: x, cy: y }}
           exit={{ opacity: 0 }}
           fill={treatment.stroke}
@@ -182,7 +182,7 @@ function NodeDot({
         y={y}
         textAnchor="middle"
         dominantBaseline="middle"
-        className="select-none font-mono text-[9px] font-semibold uppercase tracking-widest"
+        className="select-none font-mono text-[10px] font-semibold"
         fill={treatment.text}
         pointerEvents="none"
       >
@@ -194,10 +194,10 @@ function NodeDot({
         y={labelCenterY}
         textAnchor="middle"
         dominantBaseline="middle"
-        className="select-none font-mono text-[9px] font-semibold uppercase tracking-wide"
+        className="select-none font-serif text-[14px]"
         fill="none"
-        stroke="var(--color-bg-dark)"
-        strokeWidth={4}
+        stroke="var(--color-surface)"
+        strokeWidth={5}
         strokeLinejoin="round"
         pointerEvents="none"
       >
@@ -208,8 +208,8 @@ function NodeDot({
         y={labelCenterY}
         textAnchor="middle"
         dominantBaseline="middle"
-        className="select-none font-mono text-[9px] font-semibold uppercase tracking-wide"
-        fill={isFocus ? 'var(--color-text-primary)' : treatment.labelTone}
+        className="select-none font-serif text-[14px]"
+        fill={isFocus ? 'var(--color-ink)' : treatment.labelTone}
         pointerEvents="none"
       >
         {displayLabel}
