@@ -18,6 +18,11 @@ const WIDTH = 760;
 const PAD = 24;
 const x = (v: number) => PAD + v * (WIDTH - PAD * 2);
 
+/** Phone layout: a narrow chart with the band names moved into a legend below. */
+const COMPACT = 320;
+const CPAD = 16;
+const cx = (v: number) => CPAD + v * (COMPACT - CPAD * 2);
+
 function bandFor(score: number) {
   return BANDS.find((b) => score <= b.to) ?? BANDS[BANDS.length - 1];
 }
@@ -30,7 +35,40 @@ export default function ConfidenceBands() {
 
   return (
     <div className="p-4 sm:p-6">
-      <svg viewBox={`0 0 ${WIDTH} 130`} className="block h-auto w-full" aria-hidden>
+      <svg viewBox={`0 0 ${COMPACT} 92`} className="block h-auto w-full sm:hidden" aria-hidden>
+        {BANDS.map((b, i) => (
+          <rect
+            key={b.name}
+            x={cx(b.from)}
+            y={22}
+            width={cx(b.to) - cx(b.from)}
+            height={30}
+            fill="var(--color-accent)"
+            fillOpacity={0.08 + i * 0.16}
+            stroke="var(--color-paper)"
+            strokeWidth={2}
+          />
+        ))}
+        {[0, 0.3, 0.65, 0.85, 1].map((t) => (
+          <text key={t} x={cx(t)} y={76} textAnchor="middle" fontSize={13.5} className="font-mono" fill="var(--color-ink-3)">
+            {t === 0 || t === 1 ? t.toFixed(0) : t.toFixed(2).slice(1)}
+          </text>
+        ))}
+        <g style={{ transform: `translateX(${cx(score)}px)`, transition: 'transform 80ms linear' }}>
+          <line x1={0} y1={12} x2={0} y2={58} stroke="var(--color-ink)" strokeWidth={2} />
+          <circle cx={0} cy={10} r={4.5} fill="var(--color-ink)" />
+        </g>
+      </svg>
+      <ul className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm sm:hidden" aria-hidden>
+        {BANDS.map((b, i) => (
+          <li key={b.name} className={`flex items-center gap-2 ${i === bandIndex ? 'text-ink' : 'text-ink-3'}`}>
+            <span className="h-3 w-3 shrink-0 rounded-sm bg-accent" style={{ opacity: 0.15 + i * 0.25 }} />
+            <span className={i === bandIndex ? 'font-serif text-base italic' : ''}>{b.name}</span>
+          </li>
+        ))}
+      </ul>
+
+      <svg viewBox={`0 0 ${WIDTH} 130`} className="hidden h-auto w-full sm:block" aria-hidden>
         {BANDS.map((b, i) => (
           <g key={b.name}>
             <rect

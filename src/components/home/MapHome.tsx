@@ -101,17 +101,29 @@ export default function MapHome() {
       </section>
 
       {/* Map + panel */}
-      <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] lg:gap-8">
-        <div className="rounded-2xl bg-surface px-3 pb-3 pt-5 sm:px-5">
-          <ConnectionMap
-            headings="titles"
-            selected={selected}
-            highlight={hovered}
-            onSelect={(id) => pick(selected === id ? null : id)}
-          />
+      <section className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] lg:gap-8">
+        {/* On phones the map keeps a readable size and scrolls sideways, below the project list. */}
+        <div>
+          <div className="overflow-x-auto rounded-2xl bg-surface px-3 pb-3 pt-5 sm:px-5">
+            <div className="min-w-[600px] lg:min-w-0">
+              <ConnectionMap
+                headings="titles"
+                selected={selected}
+                highlight={hovered}
+                onSelect={(id) => {
+                  pick(selected === id ? null : id);
+                  // The summary sits above the map on phones: bring it into view.
+                  if (window.innerWidth < 1024) {
+                    document.getElementById('project-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <p className="mt-2 font-mono text-xs text-ink-3 lg:hidden">swipe the map sideways to see it all →</p>
         </div>
 
-        <div className="reveal lg:pt-1" style={{ '--i': 4 } as React.CSSProperties}>
+        <div id="project-panel" className="reveal order-first scroll-mt-20 lg:order-none lg:pt-1" style={{ '--i': 4 } as React.CSSProperties}>
           {selected ? (
             <div key={selected} className="swap-in h-full">
               <ProjectSummary id={selected} onBack={() => pick(null)} />
@@ -119,7 +131,10 @@ export default function MapHome() {
           ) : (
             <div key="list" className="swap-in">
               <p className="font-serif text-2xl text-ink">Projects</p>
-              <p className="mt-1 text-sm text-ink-3">Hover to trace it on the map, click to open.</p>
+              <p className="mt-1 text-sm text-ink-3">
+                <span className="hidden lg:inline">Hover to trace it on the map, click to open.</span>
+                <span className="lg:hidden">Tap a project to open it.</span>
+              </p>
               <ul className="mt-4">
                 {PROJECTS.map((p) => (
                   <li key={p.id}>

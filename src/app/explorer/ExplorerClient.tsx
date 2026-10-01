@@ -59,7 +59,7 @@ export default function ExplorerClient() {
   }, [connections]);
 
   return (
-    <section className="reveal grid gap-8 pb-24 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start" style={{ '--i': 1 } as React.CSSProperties}>
+    <section className="reveal grid grid-cols-[minmax(0,1fr)] gap-8 pb-24 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start" style={{ '--i': 1 } as React.CSSProperties}>
       <aside className="overflow-hidden rounded-2xl bg-surface lg:sticky lg:top-24">
         <label className="flex items-center gap-2 border-b border-rule px-4 py-3">
           <Search className="h-4 w-4 text-ink-3" />

@@ -46,7 +46,7 @@ export default function WePsychProject() {
         ]}
       />
 
-      <div className="mt-14 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SoftCard title="Who can see what" lede="Session facts are shared. Reflections belong to one person.">
           <AccessMatrix
             caption="WePsych access model by record and role"

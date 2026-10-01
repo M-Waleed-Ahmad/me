@@ -32,7 +32,7 @@ export function ProjectHero({
         <PrintButton />
       </div>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
+      <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
         <div>
           <p className="reveal font-mono text-xs text-ink-3" style={{ '--i': 1 } as React.CSSProperties}>{item.kind}</p>
           <ViewTransition name={`project-title-${item.slug}`} share="morph">

@@ -97,7 +97,7 @@ export function Figure({
     <figure className={className}>
       {/* Figures keep a readable minimum width; on phones they scroll sideways instead of shrinking. */}
       <div className={`overflow-x-auto border border-rule ${plain ? 'bg-surface' : 'graph-paper'}`}>
-        <div className={fluid ? undefined : 'min-w-[600px]'}>{children}</div>
+        <div className={fluid ? undefined : 'min-w-[680px]'}>{children}</div>
       </div>
       <figcaption className="mt-3 flex gap-3 text-sm leading-snug text-ink-3">
         <span className="shrink-0 font-mono text-xs leading-5 text-ink-2">Fig. {number}</span>
@@ -120,7 +120,7 @@ export function MarginNote({ children, className = '' }: { children: React.React
 /** Body text with an optional note in the right margin (stacks below on small screens). */
 export function WithMargin({ note, children }: { note?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12">
       <div className="prose-notebook">{children}</div>
       {note ? <MarginNote className="lg:pt-1">{note}</MarginNote> : <span className="hidden lg:block" />}
     </div>

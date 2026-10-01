@@ -19,14 +19,14 @@ export default function SiteFooter() {
             {profile.email}
           </a>
         </div>
-        <nav aria-label="Footer" className="grid content-start gap-2 text-sm text-ink-2">
+        <nav aria-label="Footer" className="grid content-start gap-0.5 text-sm text-ink-2 [&_a]:py-1.5">
           <Link href="/products" className="hover:text-ink">Work</Link>
           <Link href="/journey" className="hover:text-ink">Journey</Link>
           <Link href="/process" className="hover:text-ink">How I built this</Link>
           <Link href="/explorer" className="hover:text-ink">Explorer</Link>
           <Link href="/contact" className="hover:text-ink">Contact</Link>
         </nav>
-        <div className="grid content-start gap-2 text-sm text-ink-2">
+        <div className="grid content-start gap-0.5 text-sm text-ink-2 [&_a]:py-1.5">
           <a href={profile.resume} className="hover:text-ink">Résumé (PDF)</a>
           <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-ink">LinkedIn</a>
           <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-ink">GitHub</a>

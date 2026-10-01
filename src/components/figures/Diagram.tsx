@@ -135,7 +135,7 @@ export default function Diagram({ width, height, nodes, edges, notes = [], title
                   x={lx}
                   y={ly}
                   textAnchor="middle"
-                  fontSize={11}
+                  fontSize={12.5}
                   className="font-mono"
                   fill="var(--color-ink-3)"
                   stroke="var(--color-surface)"
@@ -182,7 +182,7 @@ export default function Diagram({ width, height, nodes, edges, notes = [], title
               {n.label}
             </text>
             {n.sub && (
-              <text x={n.x} y={n.y + 13} textAnchor="middle" fontSize={10.5} className="font-mono" fill="var(--color-ink-3)">
+              <text x={n.x} y={n.y + 14} textAnchor="middle" fontSize={12} className="font-mono" fill="var(--color-ink-3)">
                 {n.sub}
               </text>
             )}

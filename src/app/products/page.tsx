@@ -76,7 +76,7 @@ export default function WorkPage() {
           <p className="text-sm text-ink-3">Exploration, not production work</p>
         </div>
 
-        <article className="mt-6 grid gap-8 rounded-2xl bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-10">
+        <article className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-8 rounded-2xl bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-10">
           <div>
             <div className="flex items-center gap-3">
               <span className="rounded-full bg-accent/12 px-3 py-1 text-xs text-accent-ink">Ongoing</span>
@@ -100,7 +100,7 @@ export default function WorkPage() {
           </div>
 
           <div className="self-center overflow-x-auto rounded-xl bg-paper p-3 sm:p-4">
-            <div className="min-w-[480px]">
+            <div className="min-w-[680px] lg:min-w-0">
               <Diagram
                 idPrefix="robotics"
                 title="Robotics architecture: goal, planner, skill library, policy and arena, with a feedback loop from the arena back to the planner."

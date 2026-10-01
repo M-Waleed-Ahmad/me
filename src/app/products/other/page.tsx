@@ -45,7 +45,7 @@ export default function OtherWorkPage() {
 
       <div className="space-y-4">
         {OTHER_WORK.map((project, index) => (
-          <article key={project.name} className="reveal grid gap-6 rounded-2xl bg-surface p-6 lg:grid-cols-[4rem_minmax(0,1fr)_15rem] lg:gap-10" style={{ '--i': index + 1 } as React.CSSProperties}>
+          <article key={project.name} className="reveal grid grid-cols-[minmax(0,1fr)] gap-6 rounded-2xl bg-surface p-6 lg:grid-cols-[4rem_minmax(0,1fr)_15rem] lg:gap-10" style={{ '--i': index + 1 } as React.CSSProperties}>
             <span className="font-serif text-5xl leading-none text-rule-strong">{String(index + 1).padStart(2, '0')}</span>
             <div>
               <p className="font-mono text-xs text-ink-3">{project.type}</p>

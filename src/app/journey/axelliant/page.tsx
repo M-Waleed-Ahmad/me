@@ -52,13 +52,14 @@ export default function AxelliantProject() {
         ]}
       />
 
-      <div className="mt-14 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SoftCard title="Test cycle, before and after" lede="Drawn to scale. Before is a range because the honest answer was “two to three days”.">
           <div className="overflow-x-auto">
-            <div className="min-w-[520px]">
+            <div className="min-w-[620px] lg:min-w-0">
               <TestCycleChart />
             </div>
           </div>
+          <p className="mt-2 font-mono text-xs text-ink-3 lg:hidden">swipe the chart sideways →</p>
         </SoftCard>
         <SoftCard title="At a glance">
           <KeyValues

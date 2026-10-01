@@ -204,7 +204,7 @@ export default function ProcessPage() {
         <h2 className="reveal text-base font-medium text-ink">What changed, side by side</h2>
         <ol className="mt-4 space-y-3">
           {pairs.map((pair) => (
-            <li key={pair.title} className="grid gap-3 rounded-2xl bg-surface p-4 sm:p-5 lg:grid-cols-[12rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-6">
+            <li key={pair.title} className="grid grid-cols-[minmax(0,1fr)] gap-3 rounded-2xl bg-surface p-4 sm:p-5 lg:grid-cols-[12rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-6">
               <p className="font-serif text-2xl leading-tight text-ink">{pair.title}</p>
               {(['before', 'after'] as const).map((side) => (
                 <div key={side} className={`rounded-xl p-4 ${side === 'after' ? 'bg-paper' : ''}`}>

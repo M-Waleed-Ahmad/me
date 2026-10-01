@@ -22,7 +22,7 @@ const links = [
 export default function ContactPage() {
   return (
     <Container className="pb-24">
-      <div className="grid gap-12 pt-12 sm:pt-16 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 pt-12 sm:pt-16 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
         <div className="reveal">
           <Kicker>Contact</Kicker>
           <h1 className="mt-4 font-serif text-6xl leading-none text-ink sm:text-7xl">Let&apos;s talk.</h1>

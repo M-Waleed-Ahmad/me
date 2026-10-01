@@ -129,7 +129,7 @@ export default function BriefComposer() {
       <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
         <span className="text-ink-3">Try:</span>
         {EXAMPLES.map((ex) => (
-          <button key={ex} type="button" onClick={() => setProblem(ex)} className="text-ink-2 underline decoration-rule-strong underline-offset-4 hover:text-ink">
+          <button key={ex} type="button" onClick={() => setProblem(ex)} className="py-1 text-ink-2 underline decoration-rule-strong underline-offset-4 hover:text-ink">
             {ex}
           </button>
         ))}
@@ -145,7 +145,25 @@ export default function BriefComposer() {
             </span>
           )}
         </figcaption>
-        <svg key={drawKey} viewBox="0 0 520 160" className="mt-2 block h-auto w-full" role="img" aria-label={skills.length ? `Your brief connects to ${skills.map(nodeLabel).join(', ')}, used in ${projects.map((p) => p.name).join(', ')}.` : 'No matches yet.'}>
+        {/* Phones: the matched skills as chips; the drawn map needs more width to stay legible. */}
+        <div className="mt-3 sm:hidden">
+          {skills.length === 0 ? (
+            <p className="font-mono text-xs text-ink-3">
+              {hasText ? 'No direct match yet. Tell me more, or send it anyway.' : 'Start typing to see related work.'}
+            </p>
+          ) : (
+            <ul className="flex flex-wrap items-center gap-1.5" aria-label="Skills your brief needs">
+              <li className="rounded-full bg-ink px-3 py-1 text-sm text-paper">your brief</li>
+              <li aria-hidden className="text-ink-3">→</li>
+              {skills.map((id) => (
+                <li key={id} className="rounded-full bg-accent/12 px-3 py-1 font-mono text-xs text-accent-ink">
+                  {nodeLabel(id)}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <svg key={drawKey} viewBox="0 0 520 160" className="mt-2 hidden h-auto w-full sm:block" role="img" aria-label={skills.length ? `Your brief connects to ${skills.map(nodeLabel).join(', ')}, used in ${projects.map((p) => p.name).join(', ')}.` : 'No matches yet.'}>
           {skills.length === 0 ? (
             <text x="260" y="84" textAnchor="middle" fontSize="13" className="font-mono" fill="var(--color-ink-3)">
               {hasText ? 'no direct match yet. Tell me more, or send it anyway' : 'start typing to see related work'}

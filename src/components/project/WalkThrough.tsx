@@ -54,7 +54,7 @@ export default function WalkThrough({ idPrefix, title, width, height, nodes, edg
 
   const figure = (
     <div className="overflow-x-auto border border-rule graph-paper">
-      <div className="min-w-[560px] p-3 sm:p-5">
+      <div className="min-w-[720px] p-3 sm:p-5 lg:min-w-0">
         <Diagram
           idPrefix={idPrefix}
           title={title}
@@ -101,6 +101,7 @@ export default function WalkThrough({ idPrefix, title, width, height, nodes, edg
       {/* Phones and tablets: figure on top, swipeable frames below */}
       <div className="lg:hidden">
         {figure}
+        <p className="mt-2 font-mono text-xs text-ink-3">swipe the diagram sideways to see it all →</p>
         <ol
           ref={rail}
           onScroll={onRailScroll}

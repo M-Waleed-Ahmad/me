@@ -18,7 +18,7 @@ export default function VersionPicker({ versions }: { versions: VersionCard[] })
   const active = useSyncExternalStore(subscribeSiteVersion, getSiteVersion, () => 'v4' as const);
 
   return (
-    <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ol className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {versions.map((v, i) => {
         const on = active === v.tag;
         return (
@@ -30,7 +30,7 @@ export default function VersionPicker({ versions }: { versions: VersionCard[] })
               className="group block w-full text-left"
             >
               <span
-                className={`flex aspect-[4/3] flex-col justify-between rounded-2xl p-5 transition-transform group-hover:-translate-y-0.5 ${
+                className={`flex aspect-[4/3] flex-col justify-between rounded-2xl p-3.5 transition-transform sm:p-5 group-hover:-translate-y-0.5 ${
                   on ? 'ring-2 ring-accent ring-offset-2 ring-offset-paper' : 'ring-1 ring-rule'
                 }`}
                 style={{ background: v.bg, color: v.ink }}
@@ -40,7 +40,7 @@ export default function VersionPicker({ versions }: { versions: VersionCard[] })
                   <span>{on ? 'viewing' : v.tag === 'v4' ? 'current' : 'try it'}</span>
                 </span>
                 <span>
-                  <span className="block text-5xl leading-none" style={{ fontFamily: v.font }}>
+                  <span className="block text-4xl leading-none sm:text-5xl" style={{ fontFamily: v.font }}>
                     Aa
                   </span>
                   <span className="mt-3 flex gap-1.5">
@@ -50,7 +50,7 @@ export default function VersionPicker({ versions }: { versions: VersionCard[] })
                 </span>
               </span>
               <span className="mt-3 block font-serif text-xl text-ink">{v.name}</span>
-              <span className="mt-1 block text-sm leading-relaxed text-ink-3">{v.why}</span>
+              <span className="mt-1 block text-xs leading-snug text-ink-3 sm:text-sm sm:leading-relaxed">{v.why}</span>
             </button>
           </li>
         );

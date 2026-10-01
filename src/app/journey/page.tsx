@@ -32,7 +32,7 @@ export default function JourneyPage() {
           <li
             key={role.id}
             id={role.id}
-            className="reveal grid scroll-mt-24 gap-6 rounded-2xl bg-surface p-6 lg:grid-cols-[10rem_minmax(0,1fr)_16rem] lg:gap-10"
+            className="reveal grid grid-cols-[minmax(0,1fr)] scroll-mt-24 gap-6 rounded-2xl bg-surface p-6 lg:grid-cols-[10rem_minmax(0,1fr)_16rem] lg:gap-10"
             style={{ '--i': i + 2 } as React.CSSProperties}
           >
             <div>

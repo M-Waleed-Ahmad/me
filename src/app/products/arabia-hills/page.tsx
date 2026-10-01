@@ -20,7 +20,7 @@ const nodes: DiagramNode[] = [
   { id: 'files', x: 85, y: 90, label: 'Listing files', sub: 'bulk source', w: 130, external: true },
   { id: 'make', x: 305, y: 90, label: 'Make.com', sub: 'validate · transform', w: 150 },
   { id: 'cms', x: 305, y: 270, label: 'Agent CMS', sub: 'React · auth', w: 150 },
-  { id: 'db', x: 490, y: 180, label: 'Supabase', sub: 'Postgres · Auth · Storage', w: 170 },
+  { id: 'db', x: 490, y: 180, label: 'Supabase', sub: 'Postgres · Auth · Storage', w: 190 },
   { id: 'site', x: 685, y: 180, label: 'Public site', sub: 'filter · browse', w: 120 },
 ];
 
@@ -46,7 +46,7 @@ export default function ArabiaHillsProject() {
         ]}
       />
 
-      <div className="mt-14 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SoftCard title="What happens to a bulk upload" lede="Every row is checked before it can touch the listings. A bad row goes back with its reason.">
           <IngestionFigure />
         </SoftCard>

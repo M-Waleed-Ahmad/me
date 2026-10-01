@@ -52,7 +52,7 @@ export default function DeepShieldProject() {
         ]}
       />
 
-      <div className="mt-14 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SoftCard title="How sure is it?" lede="Drag the score. The same model output becomes a different kind of claim depending on where it lands.">
           <div className="-mx-4 -mb-4 sm:-mx-6">
             <ConfidenceBands />

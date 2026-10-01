@@ -35,7 +35,7 @@ export default function AlfaClubProject() {
         </SoftCard>
       </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
+      <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
         <SoftCard title="At a glance">
           <KeyValues
             rows={[

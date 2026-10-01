@@ -21,7 +21,7 @@ export default function TestCycleChart() {
       {ticks.map((t) => (
         <g key={t}>
           <line x1={scale(t)} y1={28} x2={scale(t)} y2={170} stroke="var(--color-rule)" />
-          <text x={scale(t)} y={190} textAnchor="middle" fontSize={11} className="font-mono" fill="var(--color-ink-3)">
+          <text x={scale(t)} y={192} textAnchor="middle" fontSize={13} className="font-mono" fill="var(--color-ink-3)">
             {t}h
           </text>
         </g>
@@ -31,7 +31,7 @@ export default function TestCycleChart() {
       <text x={LEFT - 16} y={68} textAnchor="end" fontSize={16} className="font-serif" fill="var(--color-ink)">
         Before
       </text>
-      <text x={LEFT - 16} y={84} textAnchor="end" fontSize={11} className="font-mono" fill="var(--color-ink-3)">
+      <text x={LEFT - 16} y={84} textAnchor="end" fontSize={13} className="font-mono" fill="var(--color-ink-3)">
         mostly manual
       </text>
       <rect x={scale(0)} y={52} width={scale(48) - scale(0)} height={30} fill="var(--color-ink-2)" />
@@ -43,14 +43,14 @@ export default function TestCycleChart() {
         fill="var(--color-ink-2)"
         fillOpacity={0.35}
       />
-      <text x={scale(60)} y={72} textAnchor="middle" fontSize={12} className="font-mono" fill="var(--color-ink)">
+      <text x={scale(60)} y={72} textAnchor="middle" fontSize={14} className="font-mono" fill="var(--color-ink)">
         2–3 days
       </text>
 
       <text x={LEFT - 16} y={134} textAnchor="end" fontSize={16} className="font-serif" fill="var(--color-ink)">
         After
       </text>
-      <text x={LEFT - 16} y={150} textAnchor="end" fontSize={11} className="font-mono" fill="var(--color-ink-3)">
+      <text x={LEFT - 16} y={150} textAnchor="end" fontSize={13} className="font-mono" fill="var(--color-ink-3)">
         automated in CI
       </text>
       <rect x={scale(0)} y={118} width={scale(2) - scale(0)} height={30} fill="var(--color-accent)" />
