@@ -1,332 +1,123 @@
-'use client';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { certifications, educationHistory, experience, leadership, profile } from '@/data/site';
+import { ButtonLink, Container, PageIntro } from '@/components/ui';
+import { pageMetadata } from '@/lib/metadata';
 
-import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  BookOpen,
-  Briefcase,
-  Compass,
-  Database,
-  GraduationCap,
-  Layers,
-  Network,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react';
-
-type JourneyNode = {
-  id: string;
-  company: string;
-  role: string;
-  period: string;
-  angle: string;
-  description: string;
-  lessons: string[];
-  projects: string[];
-  skills: string[];
-  icon: React.ElementType;
-};
-
-const educationNodes: JourneyNode[] = [
-  {
-    id: 'gcl',
-    company: 'Government College Lahore',
-    role: 'FSC',
-    period: '08/2020 - 06/2022',
-    angle: 'Foundations',
-    description: 'Early academic foundation before moving into computer science and product engineering.',
-    lessons: [
-      'Built the discipline for technical study before the work became product-shaped.',
-      'Created the base that later made CS fundamentals and implementation work easier to connect.',
-    ],
-    projects: ['Academic foundation'],
-    skills: ['Mathematics', 'Science foundations'],
-    icon: GraduationCap,
-  },
-  {
-    id: 'fast',
-    company: 'FAST NUCES',
-    role: 'Bachelor of Computer Science',
-    period: '09/2022 - 06/2026',
-    angle: 'CS fundamentals',
-    description: 'Computer science training in Lahore, still in progress, grounding the portfolio in algorithms, data structures, databases, and system thinking.',
-    lessons: [
-      'Model the problem before choosing the implementation tool.',
-      'Use fundamentals to make product decisions easier to reason about under constraints.',
-    ],
-    projects: ['DeepShield', 'Robotics skill architecture'],
-    skills: ['Algorithms', 'Data Structures', 'Databases', 'Python'],
-    icon: GraduationCap,
-  },
-];
-
-const experienceNodes: JourneyNode[] = [
-  {
-    id: 'arrivy',
-    company: 'Arrivy',
-    role: 'QA Engineer Intern',
-    period: '06/2023 - 08/2023',
-    angle: 'Quality systems',
-    description: 'Worked on QA for an employee management system and an automation tool, both shipped to production, while helping maintain quality and schedules in a seven-member intern team.',
-    lessons: [
-      'Shipping is not only writing features; it is keeping quality visible enough for a team to trust the release.',
-      'Testing work teaches where product assumptions break before users find the breakage.',
-    ],
-    projects: ['Employee management system', 'Automation tool'],
-    skills: ['QA', 'Release discipline', 'Team coordination'],
-    icon: ShieldCheck,
-  },
-  {
-    id: 'ashtex',
-    company: 'Ashtex Solutions',
-    role: 'Software Engineer & Assistant Project Manager',
-    period: '06/2024 - 10/2024',
-    angle: 'Client delivery',
-    description: 'Built React and automation tooling for client-facing products while managing documentation, sprint delivery, and cross-team coordination.',
-    lessons: [
-      'Client work rewards clear communication as much as implementation speed.',
-      'Automation only helps when the people using it can understand what it is doing.',
-    ],
-    projects: ['Client-facing products', 'Automation tooling'],
-    skills: ['React', 'Automation tooling', 'Laravel', 'Make.com'],
-    icon: Layers,
-  },
-  {
-    id: 'axelliant',
-    company: 'Axelliant',
-    role: 'Automation & CI/CD Engineer',
-    period: '04/2025 - 02/2026',
-    angle: 'Systems delivery',
-    description: 'Worked on GitHub Actions parallel pipelines, deployment reliability, and automated test frameworks using Playwright and Cypress in CI.',
-    lessons: [
-      'A pipeline is a product for engineers: it has users, failure states, feedback loops, and trust requirements.',
-      'Measured-in-practice automation can change team behavior when it compresses multi-day testing into hours.',
-    ],
-    projects: ['CI/CD pipelines', 'Playwright/Cypress test automation'],
-    skills: ['GitHub Actions', 'Playwright', 'Cypress', 'CI/CD'],
-    icon: Database,
-  },
-  {
-    id: 'future',
-    company: 'Future',
-    role: 'Next product and systems chapter',
-    period: 'Next',
-    angle: 'Direction',
-    description: 'The forward-looking node keeps the map open: more product ownership, deeper systems work, and applied intelligence that earns trust through evidence.',
-    lessons: [
-      'The next step should compound the same pattern: own real problems, expose the system, and ship with accountability.',
-      'Future work belongs here only if it strengthens the proof that Waleed can own a product or feature end to end.',
-    ],
-    projects: ['Product ownership', 'Systems architecture', 'Applied AI workflows'],
-    skills: ['Ownership', 'System design', 'Applied AI'],
-    icon: Sparkles,
-  },
-];
-
-const journeyNodes = [...educationNodes, ...experienceNodes];
+export const metadata: Metadata = pageMetadata({
+  title: 'Journey',
+  description:
+    'Experience and education: CI/CD at Axelliant, client delivery at Ashtex Solutions, a traineeship at Arrivy, and a BS in Computer Science from FAST NUCES.',
+  path: '/journey',
+});
 
 export default function JourneyPage() {
-  const [activeId, setActiveId] = useState('axelliant');
-  const activeNode = useMemo(
-    () => journeyNodes.find((node) => node.id === activeId) ?? experienceNodes[0],
-    [activeId]
-  );
-  const ActiveIcon = activeNode.icon;
-
   return (
-    <div className="flex-1">
-      <div className="mx-auto w-full max-w-7xl space-y-12 px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-        <section className="border-b border-border-muted pb-8">
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent">
-            <Briefcase className="h-4 w-4" />
-            Journey
-          </div>
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
-            <div>
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-                A career map organized by lessons, not dates.
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
-                Education sets the foundation. Experience carries the main narrative: quality,
-                client delivery, CI/CD ownership, and the next systems-oriented chapter.
-              </p>
-            </div>
-            <aside className="border border-border-muted bg-bg-panel p-5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Sanity check</p>
-              <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                The through-line is ownership: quality, delivery, automation, and systems thinking
-                all point back to building software that can survive real users and real teams.
-              </p>
-            </aside>
-          </div>
-        </section>
+    <Container className="pb-24">
+      <PageIntro kicker="Journey" title="QA first, then delivery, then pipelines.">
+        That order explains most of how I work: I test what I build, I care how it ships, and I would rather make a
+        system visible than clever.
+      </PageIntro>
 
-        <section className="grid gap-6 lg:grid-cols-[1fr_390px] lg:items-start">
-          <div className="space-y-10">
-            <div className="border-y border-border-muted py-5">
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Foundations</p>
-                  <p className="mt-1 text-xs text-text-muted">Education, shown as supporting context.</p>
-                </div>
-                <GraduationCap className="h-4 w-4 text-accent" />
-              </div>
+      <div className="reveal flex flex-wrap items-center justify-between gap-4" style={{ '--i': 1 } as React.CSSProperties}>
+        <h2 className="text-base font-medium text-ink">Experience</h2>
+        <ButtonLink href={profile.resume} variant="secondary" download>
+          Résumé (PDF)
+        </ButtonLink>
+      </div>
 
-              <div className="relative grid gap-8 sm:grid-cols-2 sm:items-start">
-                <div className="pointer-events-none absolute left-8 right-8 top-8 hidden h-px bg-border-muted sm:block" />
-                {educationNodes.map((node, index) => {
-                  const Icon = node.icon;
-                  const selected = node.id === activeId;
-
-                  return (
-                    <button
-                      key={node.id}
-                      id={node.id}
-                      onClick={() => setActiveId(node.id)}
-                      className="group relative z-10 text-left"
-                    >
-                      <span
-                        className={`flex h-16 w-16 items-center justify-center rounded-full border transition-all ${
-                          selected
-                            ? 'border-accent/70 bg-accent/10 text-accent'
-                            : 'border-border-muted bg-bg-dark text-text-muted group-hover:border-accent/35 group-hover:text-accent'
-                        }`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <span className="mt-4 block font-mono text-[10px] text-text-muted">{node.period}</span>
-                      <span className="mt-1 block text-sm font-semibold text-text-primary">{node.company}</span>
-                      <span className="mt-1 block text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</span>
-                      {index === 0 && <span className="sr-only">continues to FAST NUCES</span>}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="py-2">
-              <div className="mb-6 flex items-center justify-between gap-3 border-b border-border-muted pb-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-accent">Experience track</p>
-                  <p className="mt-1 text-xs text-text-muted">Chronological, left to right on desktop.</p>
-                </div>
-                <Network className="h-4 w-4 text-accent" />
-              </div>
-
-              <div className="relative grid gap-8 md:grid-cols-4 md:items-start">
-                <div className="pointer-events-none absolute left-12 right-12 top-12 hidden h-px bg-border-muted md:block" />
-                {experienceNodes.map((node, index) => {
-                  const Icon = node.icon;
-                  const selected = node.id === activeId;
-                  const isFuture = node.id === 'future';
-
-                  return (
-                    <button
-                      key={node.id}
-                      id={node.id}
-                      onClick={() => setActiveId(node.id)}
-                      className="group relative z-10 text-left"
-                    >
-                      <span
-                        className={`flex h-24 w-24 items-center justify-center rounded-full border transition-all ${
-                          selected
-                            ? 'border-accent/75 bg-accent/10 text-accent shadow-[0_0_0_6px_rgba(16,185,129,0.04)]'
-                            : isFuture
-                              ? 'border-border-muted border-dashed bg-bg-dark/70 text-text-muted group-hover:border-accent/35 group-hover:text-accent'
-                              : 'border-border-muted bg-bg-dark text-text-muted group-hover:border-accent/35 group-hover:text-accent'
-                        }`}
-                      >
-                        <Icon className="h-6 w-6" />
-                      </span>
-                      <span className="mt-5 block font-mono text-[10px] uppercase tracking-widest text-accent">{node.period}</span>
-                      <span className="mt-2 block text-base font-semibold text-text-primary">{node.company}</span>
-                      <span className="mt-1 block text-[11px] font-mono leading-relaxed text-text-secondary">{node.role}</span>
-                      <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted">{node.angle}</span>
-                      {index < experienceNodes.length - 1 && <span className="sr-only">continues to next experience</span>}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <motion.aside
-            key={activeNode.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.22 }}
-            className="border border-border-muted bg-bg-panel p-5"
+      <ol className="mt-4 space-y-4">
+        {experience.map((role, i) => (
+          <li
+            key={role.id}
+            id={role.id}
+            className="reveal grid scroll-mt-24 gap-6 rounded-2xl bg-surface p-6 lg:grid-cols-[10rem_minmax(0,1fr)_16rem] lg:gap-10"
+            style={{ '--i': i + 2 } as React.CSSProperties}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-border-muted pb-5">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-accent">{activeNode.period}</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">{activeNode.company}</h2>
-                <p className="mt-1 text-xs font-mono text-text-secondary">{activeNode.role}</p>
-              </div>
-              <div className="flex h-11 w-11 items-center justify-center border border-accent/25 bg-accent/10">
-                <ActiveIcon className="h-5 w-5 text-accent" />
-              </div>
+            <div>
+              <p className="font-mono text-xs text-ink-3">
+                {role.start} – {role.end}
+              </p>
+              <p className="mt-1 font-mono text-xs text-ink-3">{role.place}</p>
             </div>
-
-            <div className="mt-5 space-y-5">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">What this reveals</p>
-                <p className="mt-2 text-sm leading-relaxed text-text-secondary">{activeNode.description}</p>
-              </div>
-
-              <div>
-                <p className="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
-                  <BookOpen className="h-3.5 w-3.5 text-accent" />
-                  Lessons carried forward
-                </p>
-                <div className="space-y-2">
-                  {activeNode.lessons.map((lesson) => (
-                    <div key={lesson} className="border border-border-muted bg-bg-dark p-3 text-xs leading-relaxed text-text-secondary">
-                      {lesson}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
-                  <Compass className="h-3.5 w-3.5 text-accent" />
-                  Connected work
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {activeNode.projects.map((project) => (
-                    <span key={project} className="border border-border-muted bg-bg-dark px-2.5 py-1 font-mono text-[10px] text-text-secondary">
-                      {project}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted">Skills gained</p>
-                <div className="flex flex-wrap gap-2">
-                  {activeNode.skills.map((skill) => (
-                    <span key={skill} className="border border-accent/15 bg-accent/5 px-2.5 py-1 font-mono text-[10px] text-accent">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <div>
+              <h3 className="font-serif text-4xl leading-tight text-ink">{role.org}</h3>
+              <p className="mt-1 text-ink-2">{role.title}</p>
+              <ul className="mt-4 space-y-2.5">
+                {role.points.map((point) => (
+                  <li key={point} className="flex gap-3 leading-relaxed text-ink-2">
+                    <span aria-hidden className="mt-2.5 h-px w-3 shrink-0 bg-accent" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+              {role.related.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-accent/60 underline-offset-4 hover:text-accent-ink"
+                >
+                  {link.label} <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              ))}
             </div>
-          </motion.aside>
+            <p className="font-serif text-lg italic leading-snug text-accent-ink lg:pt-1">{role.lesson}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-16 grid gap-4 lg:grid-cols-2">
+        <section className="rounded-2xl bg-surface p-6">
+          <h2 className="text-base font-medium text-ink">Education</h2>
+          {educationHistory.map((entry) => (
+            <div key={entry.id} id={entry.id} className="mt-4 scroll-mt-24">
+              <p className="font-mono text-xs text-ink-3">
+                {entry.start} – {entry.end} · {entry.place}
+              </p>
+              <h3 className="mt-1 font-serif text-3xl text-ink">{entry.org}</h3>
+              <p className="text-ink-2">{entry.title}</p>
+              {entry.note && <p className="mt-2 leading-relaxed text-ink-2">{entry.note}</p>}
+            </div>
+          ))}
         </section>
 
-        <section className="border-t border-border-muted pt-8">
-          <div className="flex flex-col gap-3 text-sm text-text-secondary sm:flex-row sm:items-center sm:justify-between">
-            <p>Each node answers the same question: what did this stage teach Waleed about building reliable software?</p>
-            <a href="/explorer" className="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-accent-bright">
-              Open Relationship Explorer
-              <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          </div>
+        <section className="rounded-2xl bg-surface p-6">
+          <h2 className="text-base font-medium text-ink">Leadership and certification</h2>
+          {leadership.map((entry) => (
+            <div key={entry.id} id={entry.id} className="mt-4 scroll-mt-24">
+              <p className="font-mono text-xs text-ink-3">
+                {entry.start} – {entry.end}
+              </p>
+              <h3 className="mt-1 font-serif text-3xl text-ink">{entry.org}</h3>
+              <p className="text-ink-2">{entry.title}</p>
+            </div>
+          ))}
+          {certifications.map((name) => (
+            <div key={name} className="mt-6">
+              <p className="font-mono text-xs text-ink-3">Certification</p>
+              <h3 className="mt-1 font-serif text-3xl text-ink">{name}</h3>
+              <p className="text-ink-2">Make, the automation platform behind the Arabia Hills ingestion flow</p>
+            </div>
+          ))}
         </section>
       </div>
-    </div>
+
+      <section className="mt-16 rounded-2xl bg-ink p-8 text-paper sm:p-10">
+        <p className="font-mono text-xs text-paper/60">Next</p>
+        <p className="mt-3 max-w-3xl font-serif text-4xl leading-tight">
+          I&apos;m looking for a team where I can own a product or feature end to end, from the data model to the pipeline
+          it ships through.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/contact" className="rounded-full bg-paper px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-accent hover:text-paper">
+            Get in touch
+          </Link>
+          <Link href="/" className="rounded-full border border-paper/40 px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:border-paper">
+            See how it all connects
+          </Link>
+        </div>
+      </section>
+    </Container>
   );
 }

@@ -1,221 +1,130 @@
-'use client';
-
-import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Layers, ArrowUpRight, Compass, ExternalLink } from 'lucide-react';
-import { useNavigator } from '@/context/NavigatorContext';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { selectedWork } from '@/data/site';
+import Diagram from '@/components/figures/Diagram';
+import { Container, PageIntro } from '@/components/ui';
+import { pageMetadata } from '@/lib/metadata';
 
-const PRODUCTS = [
-  {
-    id: 'wepsych',
-    href: '/products/wepsych',
-    status: 'Production',
-    name: 'WePsych',
-    role: 'Product Engineer',
-    tagline: 'AHPRA-aligned CPD compliance and peer-support platform for Australian psychologists.',
-    description: 'Flutter and Supabase platform for CPD logs, peer consultation, supervision records, pathway tracking, and audit-ready exports.',
-    impact: [
-      { label: 'Tracks', value: '3 roles' },
-      { label: 'Model', value: 'AHPRA' },
-      { label: 'Estimate', value: '~30%' },
-    ],
-    tech: ['Flutter', 'Supabase', 'PostgreSQL', 'Supabase Storage'],
-    pillarTag: 'Compliance · Product Systems',
-    featured: true,
-  },
-  {
-    id: 'arabia-hills',
-    href: '/products/arabia-hills',
-    status: 'Production',
-    name: 'Arabia Hills',
-    role: 'Product Engineer',
-    tagline: 'Real estate platform built by a two-person team with CMS and Make.com listing ingestion.',
-    description: 'End-to-end platform where non-technical agents can manage listings and bulk imports flow through Make.com before reaching Supabase.',
-    impact: [
-      { label: 'Catalog', value: '20+ est.' },
-      { label: 'Team', value: '2 people' },
-    ],
-    tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Make.com'],
-    pillarTag: 'Real Estate · Platform Delivery',
-    featured: false,
-  },
-  {
-    id: 'alfa-club',
-    href: '/products/alfa-club',
-    status: 'Production',
-    name: 'ALFA Club',
-    role: 'Frontend Engineer',
-    tagline: 'React ecommerce storefront for alfaclub.ca focused on performance and checkout UX.',
-    description: 'Frontend work centered on ecommerce polish, Lighthouse performance, and mobile checkout optimization.',
-    impact: [
-      { label: 'Lighthouse', value: '90s est.' },
-      { label: 'Focus', value: 'Checkout' },
-    ],
-    tech: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    pillarTag: 'Ecommerce · UX Craftsmanship',
-    featured: false,
-  },
-];
+export const metadata: Metadata = pageMetadata({
+  title: 'Work',
+  description:
+    'Projects with the decisions behind them: DeepShield, WePsych, Arabia Hills and ALFA Club, plus smaller builds and an ongoing robotics exploration.',
+  path: '/products',
+});
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 18 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.08,
-      duration: 0.55,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-    },
-  }),
-};
-
-export default function ProductsPage() {
-  const { openNavigator } = useNavigator();
-  const featured = PRODUCTS.find(p => p.featured)!;
-  const secondary = PRODUCTS.filter(p => !p.featured);
-
+export default function WorkPage() {
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-12">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="border-b border-border-muted pb-8"
-        >
-          <div className="flex items-center gap-2 text-accent font-mono text-[10px] tracking-widest uppercase mb-3">
-            <Layers className="w-3.5 h-3.5" />
-            Pillar 01 // Products
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">The Workspace Shelf</h1>
-          <p className="text-text-secondary text-sm max-w-2xl leading-relaxed">
-            Production software built to solve human problems. Each entry is a story:
-            the problem, constraints, decisions, tradeoffs, and what Waleed learned by shipping it.
-          </p>
-        </motion.div>
+    <Container className="pb-24">
+      <PageIntro kicker="Work" title="Projects, each with the decisions behind it.">
+        Every page covers what the project is, the constraints, the system and the tradeoffs, plus the questions I
+        usually get asked about it.
+      </PageIntro>
 
-        <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
-          <Link
-            href={featured.href}
-            className="group block rounded-xl border border-border-muted bg-bg-panel hover:border-accent/30 transition-all duration-300 overflow-hidden"
-          >
-            <div className="bg-bg-dark/60 border-b border-border-muted px-8 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-accent" />
-                <span className="font-mono text-[10px] text-accent tracking-widest uppercase">{featured.status}</span>
-              </div>
-              <span className="font-mono text-[10px] text-text-muted">FEATURED CASE STUDY</span>
-            </div>
-
-            <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-5">
+      <ul className="grid gap-4 md:grid-cols-2">
+        {selectedWork.map((item, i) => (
+          <li key={item.slug} className="reveal" style={{ '--i': i + 1 } as React.CSSProperties}>
+            <Link
+              href={item.href}
+              className="group flex h-full flex-col rounded-2xl bg-surface p-6 transition-colors hover:bg-rule/60"
+            >
+              <p className="font-mono text-xs text-ink-3">{item.kind}</p>
+              <h2 className="mt-2 flex items-center gap-2 font-serif text-4xl leading-none text-ink transition-colors group-hover:text-accent-ink">
+                {item.name}
+                <ArrowUpRight className="h-5 w-5 text-ink-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+              </h2>
+              <p className="mt-3 leading-relaxed text-ink-2">{item.summary}</p>
+              <div className="mt-auto flex flex-wrap items-end justify-between gap-4 pt-6">
                 <div>
-                  <p className="text-[10px] font-mono text-text-muted mb-1">{featured.pillarTag}</p>
-                  <h2 className="text-3xl sm:text-4xl font-bold group-hover:text-accent transition-colors duration-300">
-                    {featured.name}
-                  </h2>
-                  <p className="text-sm text-text-secondary font-mono mt-1">{featured.role}</p>
+                  <p className="font-serif text-4xl leading-none text-ink">{item.figure.value}</p>
+                  <p className="mt-1 text-sm text-ink-3">{item.figure.label}</p>
                 </div>
-                <p className="text-base text-text-secondary leading-relaxed max-w-xl">
-                  {featured.tagline}
-                </p>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {featured.tech.map(t => (
-                    <span key={t} className="font-mono text-[10px] px-2.5 py-1 rounded border border-border-muted bg-bg-dark text-text-secondary">
-                      {t}
-                    </span>
+                <ul className="flex flex-wrap justify-end gap-1.5" aria-label="Stack">
+                  {item.stack.slice(0, 3).map((tech) => (
+                    <li key={tech} className="rounded-full bg-paper px-2.5 py-0.5 text-xs text-ink-2">
+                      {tech}
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
-
-              <div className="space-y-5">
-                <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
-                  {featured.impact.map(m => (
-                    <div key={m.label} className="p-3 rounded-lg border border-border-muted bg-bg-dark">
-                      <p className="text-lg font-bold font-mono text-accent">{m.value}</p>
-                      <p className="text-[9px] font-mono text-text-muted uppercase tracking-wider mt-0.5">{m.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs font-mono text-text-secondary">Inspect case study</span>
-                  <ArrowUpRight className="w-4 h-4 text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {secondary.map((product, i) => (
-            <motion.div key={product.id} custom={i + 1} variants={fadeUp} initial="hidden" animate="visible">
-              <Link
-                href={product.href}
-                className="group block h-full rounded-xl border border-border-muted bg-bg-panel hover:border-accent/30 hover:bg-bg-panel-hover transition-all duration-300 overflow-hidden"
-              >
-                <div className="bg-bg-dark/40 border-b border-border-muted px-6 py-3 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-text-muted tracking-widest">{product.status}</span>
-                  <ExternalLink className="w-3 h-3 text-text-muted group-hover:text-accent transition-colors" />
-                </div>
-                <div className="p-6 space-y-4">
-                  <div>
-                    <p className="text-[10px] font-mono text-text-muted mb-1">{product.pillarTag}</p>
-                    <h2 className="text-xl font-bold group-hover:text-accent transition-colors duration-300">{product.name}</h2>
-                    <p className="text-xs text-text-secondary font-mono mt-0.5">{product.role}</p>
-                  </div>
-                  <p className="text-sm text-text-secondary leading-relaxed">{product.tagline}</p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {product.tech.map(t => (
-                      <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded border border-border-muted bg-bg-dark text-text-secondary">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-4 pt-2">
-                    {product.impact.map(m => (
-                      <div key={m.label}>
-                        <p className="text-base font-bold font-mono text-accent">{m.value}</p>
-                        <p className="text-[9px] font-mono text-text-muted uppercase tracking-wider">{m.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible">
+            </Link>
+          </li>
+        ))}
+        <li className="reveal md:col-span-2" style={{ '--i': selectedWork.length + 1 } as React.CSSProperties}>
           <Link
             href="/products/other"
-            className="group flex items-center justify-between p-5 rounded-xl border border-border-muted border-dashed hover:border-accent/25 hover:bg-bg-panel transition-all"
+            className="group flex h-full flex-col justify-between rounded-2xl border border-dashed border-rule-strong p-6 transition-colors hover:border-ink"
           >
             <div>
-              <p className="text-sm font-semibold text-text-secondary group-hover:text-text-primary transition-colors">
-                Other Work
-              </p>
-              <p className="text-xs text-text-muted font-mono mt-0.5">
-                Freelance builds, media-heavy sites, and smaller delivery work
+              <p className="font-mono text-xs text-ink-3">Client sites</p>
+              <h2 className="mt-2 font-serif text-4xl leading-none text-ink">Smaller builds</h2>
+              <p className="mt-3 leading-relaxed text-ink-2">
+                Zillabyte and CCHROME: media-heavy agency and portfolio sites built with React and Cloudinary.
               </p>
             </div>
-            <ArrowUpRight className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" />
+            <span className="mt-6 inline-flex items-center gap-2 text-sm text-ink-2">
+              See them <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
           </Link>
-        </motion.div>
+        </li>
+      </ul>
 
-        <div className="border-t border-border-muted pt-8 flex items-center justify-between">
-          <p className="text-xs font-mono text-text-muted">
-            Looking for Systems or Intelligence work?
-          </p>
-          <button
-            onClick={openNavigator}
-            className="flex items-center gap-2 text-xs font-mono px-3 py-2 rounded border border-border-muted hover:border-accent/30 text-text-secondary hover:text-text-primary transition-all"
-          >
-            <Compass className="w-3.5 h-3.5 text-accent" /> Open Navigator
-          </button>
+      {/* One honest lab-notebook entry: an exploration, written up with what's still open */}
+      <section id="robotics" className="mt-24 scroll-mt-24">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="font-serif text-4xl text-ink">From the lab notebook</h2>
+          <p className="text-sm text-ink-3">Exploration, not production work</p>
         </div>
-      </div>
-    </div>
+
+        <article className="mt-6 grid gap-8 rounded-2xl bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-10">
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-accent/12 px-3 py-1 text-xs text-accent-ink">Ongoing</span>
+              <span className="font-mono text-xs text-ink-3">FAST NUCES · Python</span>
+            </div>
+            <h3 className="mt-4 font-serif text-4xl leading-tight text-ink">Robotics skill composition</h3>
+
+            <dl className="mt-6 space-y-5">
+              {[
+                ['Question', 'Can a robot get reliable behaviour from small, named skills instead of one monolithic learned policy?'],
+                ['Approach', 'A rule-based planner breaks goals into checkpoints and picks from a library of scripted and learned skills. Training data comes from automated expert rollouts, not teleoperation.'],
+                ['What works', 'Navigation and obstacle avoidance compose reliably, and when a behaviour fails you can inspect the planner, the skill or the feedback loop instead of guessing.'],
+                ['Still open', 'Larger, maze-scale arenas exposed reactive-control tuning I’m still working through.'],
+              ].map(([label, text]) => (
+                <div key={label} className="grid gap-1 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-4">
+                  <dt className={`font-mono text-xs leading-6 ${label === 'Still open' ? 'text-accent-ink' : 'text-ink-3'}`}>{label}</dt>
+                  <dd className="leading-relaxed text-ink-2">{text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div className="self-center overflow-x-auto rounded-xl bg-paper p-3 sm:p-4">
+            <div className="min-w-[480px]">
+              <Diagram
+                idPrefix="robotics"
+                title="Robotics architecture: goal, planner, skill library, policy and arena, with a feedback loop from the arena back to the planner."
+                width={760}
+                height={220}
+                nodes={[
+                  { id: 'goal', x: 75, y: 90, label: 'Goal', w: 110, external: true },
+                  { id: 'planner', x: 225, y: 90, label: 'Planner', sub: 'rule-based', w: 130 },
+                  { id: 'skills', x: 390, y: 90, label: 'Skill library', sub: 'scripted + learned', w: 150, emphasis: true },
+                  { id: 'policy', x: 555, y: 90, label: 'Policy', sub: 'imitation-learned', w: 140 },
+                  { id: 'arena', x: 695, y: 90, label: 'Arena', w: 100, external: true },
+                ]}
+                edges={[
+                  { from: 'goal', to: 'planner' },
+                  { from: 'planner', to: 'skills' },
+                  { from: 'skills', to: 'policy' },
+                  { from: 'policy', to: 'arena' },
+                  { from: 'arena', to: 'planner', label: 'feedback', bend: -100, dashed: true, labelDy: 0 },
+                ]}
+              />
+            </div>
+          </div>
+        </article>
+      </section>
+    </Container>
   );
 }

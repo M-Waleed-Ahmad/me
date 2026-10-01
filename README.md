@@ -1,37 +1,23 @@
-# Waleed Ahmad — Portfolio & Workspace
+# Waleed Ahmad · Portfolio
 
-An interactive engineering portfolio that maps the relationships between products, systems, technologies, experience, and applied AI work.
+[![CI](https://github.com/M-Waleed-Ahmad/me/actions/workflows/ci.yml/badge.svg)](https://github.com/M-Waleed-Ahmad/me/actions/workflows/ci.yml)
 
-The site combines detailed project case studies with a D3-powered workspace graph, global search, keyboard-friendly navigation, and responsive motion. It is designed as an explorable system rather than a conventional collection of portfolio pages.
+My portfolio, laid out like an engineering notebook: case studies written as decisions, annotated architecture
+figures, and a few interactive pieces where interaction actually explains something (the DeepShield confidence
+bands, the connection map, the relationship explorer).
 
-## Highlights
+## Stack
 
-- Interactive relationship graph with drag, zoom, and linked project nodes
-- Responsive desktop and mobile graph experiences
-- Product case studies for WePsych, Arabia Hills, and ALFA Club
-- Systems and applied-intelligence showcases
-- Filterable relationship explorer
-- Search and navigator available throughout the site
-- Career and education timeline
-- Reduced-motion support and responsive layouts
-
-## Tech stack
-
-- [Next.js 16](https://nextjs.org/) with the App Router and Turbopack
-- [React 19](https://react.dev/) and TypeScript
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [D3.js](https://d3js.org/) for network visualization
-- [Motion](https://motion.dev/) for interface animation
-- [Lucide React](https://lucide.dev/) for icons
+- [Next.js 16](https://nextjs.org/) App Router. Every route is statically prerendered; pages are Server Components
+  with small client islands.
+- React 19, TypeScript (strict), Tailwind CSS 4
+- Instrument Serif, Geist and Geist Mono via `next/font`
+- D3 (force layout for the explorer), Framer Motion (explorer and search transitions only)
+- Playwright smoke tests, run in GitHub Actions on every push and pull request
 
 ## Getting started
 
-### Prerequisites
-
-- Node.js 20.9 or later
-- npm
-
-### Installation
+Requires Node.js 20.9 or later.
 
 ```bash
 git clone https://github.com/M-Waleed-Ahmad/me.git
@@ -40,60 +26,89 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in a browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-The project currently requires no environment variables for local development.
-
-## Available scripts
+## Scripts
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the development server with Turbopack |
-| `npm run build` | Create an optimized production build |
+| `npm run dev` | Development server (Turbopack) |
+| `npm run build` | Production build |
 | `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript, no emit |
+| `npm run test:e2e` | Playwright smoke tests against the production build (run `npm run build` first) |
 
-To preview a production build locally:
+The first time you run the tests, install a browser with `npx playwright install chromium`, or reuse one you
+already have: `PW_CHANNEL=msedge npm run test:e2e` (or `chrome`).
 
-```bash
-npm run build
-npm run start
-```
+The smoke tests load every route on desktop and mobile viewports. They fail on any console error or hydration
+mismatch, on horizontal overflow, or on missing titles, canonical URLs or share images. They also cover search,
+the DeepShield slider and the explorer graph.
 
-## Main routes
+## Routes
 
-| Route | Description |
+| Route | Content |
 | --- | --- |
-| `/` | Interactive workspace overview and network graph |
-| `/products` | Product portfolio and case-study index |
-| `/products/wepsych` | WePsych case study |
-| `/products/arabia-hills` | Arabia Hills case study |
-| `/products/alfa-club` | ALFA Club case study |
-| `/systems` | Architecture, automation, CI/CD, and testing work |
-| `/intelligence` | Applied AI, media forensics, robotics, and evaluation work |
-| `/explorer` | Filterable relationship explorer |
-| `/journey` | Education and professional timeline |
-| `/contact` | Contact links and résumé |
+| `/` | Intro and connection map with a project list: hover to trace, click to open |
+| `/products` | Work index, smaller builds and research notes |
+| `/products/deepshield` | DeepShield project page |
+| `/products/wepsych` | WePsych project page |
+| `/products/arabia-hills` | Arabia Hills project page |
+| `/products/alfa-club` | ALFA Club project page |
+| `/products/other` | Smaller client builds |
+| `/journey` | Experience, education, leadership |
+| `/journey/axelliant` | Deep-dive on the Axelliant CI/CD and test automation role |
+| `/process` | How the site was built with AI, and how it was checked |
+| `/explorer` | Interactive relationship graph |
+| `/contact` | Contact details and résumé |
+
+`/systems` and `/intelligence` redirect to the Axelliant deep-dive and the DeepShield page.
 
 ## Project structure
 
 ```text
 src/
-├── app/          # App Router pages, layout, and global styles
-├── components/   # Shared UI, navigation, search, and graph components
-├── context/      # Navigator and search state providers
-└── data/         # Workspace graph nodes and relationships
-public/           # Static assets and résumé
+├── app/                 # Routes, metadata, OG image, icon, sitemap, robots
+├── components/
+│   ├── ui.tsx           # Layout primitives: Figure, MarginNote, Decision, TagList…
+│   ├── home/            # Map home page
+│   ├── project/         # Project page parts: hero, cards, questions, walk-through
+│   └── figures/         # Diagrams, connection map, charts, access matrix
+├── context/             # Search state
+├── data/
+│   ├── site.ts          # Profile, selected work, experience (keep in sync with the CV)
+│   └── workspaceData.ts # Graph nodes and edges for the map and explorer
+└── lib/metadata.ts      # Per-page metadata helper
+tests/                   # Playwright smoke tests
 ```
 
-Graph content is defined in `src/data/workspaceData.ts`. Add or update nodes and edges there to change the relationships rendered across the workspace.
+### Adding product screenshots
+
+Put images in `public/work/<slug>/` and list them in the `screenshots` array for that project in
+`src/data/site.ts`:
+
+```ts
+screenshots: [
+  { src: '/work/wepsych/dashboard.png', alt: 'CPD dashboard with pathway progress', width: 1600, height: 1000 },
+],
+```
+
+Project pages show them under the title section automatically.
+
+### Theming
+
+Colour tokens live in `src/app/globals.css`. The light "paper" palette is the default; a dark palette applies
+automatically when the OS is set to dark mode. Components use only the tokens (`bg-paper`, `text-ink`,
+`border-rule`, `text-accent`…), so changing the palette means editing one file.
 
 ## Deployment
 
-The application can be deployed to any platform that supports Next.js. For Vercel, import the repository and use the detected defaults; no additional environment configuration is currently needed.
+Deploys to Vercel with default settings. Canonical URLs, the sitemap and Open Graph tags use the Vercel production
+domain automatically; set `NEXT_PUBLIC_SITE_URL` if you serve the site from a custom domain.
 
 ## Contact
 
+- [Email](mailto:waleed.ahmadmunir@gmail.com)
 - [LinkedIn](https://www.linkedin.com/in/waleed-ahmad-0bb087260/)
 - [GitHub](https://github.com/M-Waleed-Ahmad)
-- [Email](mailto:waleed.ahmadmunir@gmail.com)
