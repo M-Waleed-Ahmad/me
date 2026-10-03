@@ -21,7 +21,7 @@ const nodes: DiagramNode[] = [
   { id: 'intake', x: 80, y: 200, label: 'Intake', sub: 'SHA-256 dedup', w: 140 },
   { id: 'forensics', x: 300, y: 90, label: 'Forensics', sub: 'UCF + Xception', w: 170 },
   { id: 'ai', x: 300, y: 290, label: 'AI detector', sub: 'Hugging Face ViT', w: 170 },
-  { id: 'band', x: 510, y: 90, label: 'Forensic band', sub: '≤0.35 · ≥0.55', w: 150 },
+  { id: 'band', x: 510, y: 90, label: 'Label', sub: '≤0.35 · ≥0.55', w: 150 },
   { id: 'gradcam', x: 510, y: 190, label: 'Grad-CAM++', sub: 'only above 0.55', w: 150 },
   { id: 'report', x: 680, y: 230, label: 'Report', sub: 'PDF · local chain', w: 140 },
   { id: 'admin', x: 680, y: 330, label: 'Admin', sub: 'React · roles', w: 140 },
@@ -119,13 +119,13 @@ export default function DeepShieldProject() {
                       highlight: ['intake', 'forensics', 'intake>forensics'],
                     },
                     {
-                      title: 'Decide the forensic band',
-                      body: '0.35 or below is Authentic, 0.55 or above is Manipulated, and anything between is Inconclusive. Above 0.55, Grad-CAM++ heatmaps are generated and overlaid at full original resolution.',
+                      title: 'Decide the label and the band',
+                      body: 'The label is Authentic at 0.35 or below, Manipulated at 0.55 or above, and Inconclusive between. The separate forensic band is Real at 0.30 or below, Unsure to 0.65, Likely fake to 0.85 and Strong fake above. Above 0.55, Grad-CAM++ heatmaps are generated and overlaid at full original resolution.',
                       highlight: ['forensics', 'band', 'gradcam', 'forensics>band', 'forensics>gradcam'],
                     },
                     {
                       title: 'Signal two: AI-generation detection',
-                      body: 'Separately, a pretrained Hugging Face Vision Transformer (umm-maybe/AI-image-detector) checks for AI generation, falling back to an optional EfficientNet-B0 classifier and then to classical heuristics. Above its 0.55 threshold it can override the prediction to “AI-Generated”, but it never changes the forensic band.',
+                      body: 'Separately, a pretrained Hugging Face Vision Transformer (umm-maybe/AI-image-detector) checks for AI generation, falling back to an optional EfficientNet-B0 classifier and then to classical heuristics. At 0.50 or above it can override the label to “AI-Generated” (unless the label is already Manipulated), but it never changes the forensic band.',
                       highlight: ['intake', 'ai', 'report', 'intake>ai', 'ai>report'],
                     },
                     {
@@ -185,11 +185,11 @@ export default function DeepShieldProject() {
                     <p>
                       A forensic score of 0.35 or below is Authentic, 0.55 or above is Manipulated, and anything in between is
                       Inconclusive. Grad-CAM++ heatmaps are only generated above 0.55, so a reviewer sees heatmaps when there
-                      is evidence to look at. The AI detector uses its own 0.55 threshold.
+                      is evidence to look at. The AI detector uses its own 0.50 threshold.
                     </p>
                   </div>
                   <Decision
-                    title="An explicit Inconclusive band"
+                    title="An explicit Inconclusive label"
                     gained="Borderline scores are reported as borderline instead of being forced into a verdict."
                     accepted="Some results need a person to follow up."
                   />

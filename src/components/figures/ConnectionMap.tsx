@@ -10,9 +10,9 @@ import { workspaceEdges, workspaceNodes, WorkspaceNode } from '@/data/workspaceD
   every time.
 */
 
-// Arrivy has no project on the map since the separate testing entry was merged into Axelliant's.
-const LEFT = ['fast', 'axelliant', 'ashtex'];
-const MIDDLE = ['deepshield', 'arabia-hills', 'wepsych', 'budgetbuddy', 'alfa-club', 'axelliant-ci', 'automation', 'robotics'];
+// Arrivy and Ashtex have no project of their own on the map; the client projects sit under Freelance.
+const LEFT = ['fast', 'freelance', 'axelliant'];
+const MIDDLE = ['deepshield', 'arabia-hills', 'wepsych', 'budgetbuddy', 'alfa-club', 'axelliant-ci', 'robotics'];
 const RIGHT = [
   'pytorch', 'huggingface', 'python', 'flutter', 'supabase', 'postgresql', 'react',
   'nodejs', 'mongodb', 'cloudinary', 'github-actions', 'playwright', 'cypress', 'makecom',
@@ -31,11 +31,9 @@ const X = {
 };
 
 const SHORT_LABELS: Record<string, string> = {
-  automation: 'Workflow automation',
   'axelliant-ci': 'Axelliant CI/CD & tests',
   robotics: 'Robotics skills',
   fast: 'FAST NUCES',
-  ashtex: 'Ashtex',
 };
 
 type Column = 'left' | 'middle' | 'right';
@@ -155,7 +153,7 @@ export default function ConnectionMap({ onSelect, selected = null, highlight = n
       aria-labelledby="connection-map-title"
     >
       <title id="connection-map-title">
-        Map linking my roles (Ashtex, Axelliant, Arrivy, FAST NUCES) to the projects built there and the technologies underneath them.
+        Map linking where I worked (FAST NUCES, freelance, Axelliant) to the projects built there and the technologies underneath them.
       </title>
 
       {HEADINGS[headings].map((heading, i) => (

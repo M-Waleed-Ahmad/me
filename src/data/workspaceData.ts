@@ -23,7 +23,6 @@ export const workspaceNodes: WorkspaceNode[] = [
   { id: 'alfa-club', label: 'ALFA Club', type: 'project', pillar: 'products', description: 'React ecommerce storefront for alfaclub.ca: Lighthouse 90+, mobile checkout and Cloudinary media.', url: '/products/alfa-club' },
   { id: 'budgetbuddy', label: 'BudgetBuddy', type: 'project', pillar: 'products', description: 'Personal and shared budgeting app (university team project): category limits and alerts, expense tracking, shared plans with roles and approvals.', url: '/products/budgetbuddy' },
 
-  { id: 'automation', label: 'Workflows & Automation', type: 'project', pillar: 'systems', description: 'Automation tooling and workflow thinking from client-facing and operations work.', url: '/products/arabia-hills' },
   { id: 'axelliant-ci', label: 'Axelliant: CI/CD & test automation', type: 'project', pillar: 'systems', description: 'Playwright and Cypress frameworks for hybrid systems, run in parallel GitHub Actions pipelines.', url: '/journey/axelliant' },
   { id: 'architecture', label: 'System Architecture', type: 'project', pillar: 'systems', description: 'Architecture thinking around data ownership, boundaries, and operational visibility.', url: '/journey/axelliant' },
 
@@ -59,6 +58,7 @@ export const workspaceNodes: WorkspaceNode[] = [
   { id: 'arrivy', label: 'Arrivy', type: 'experience', url: '/journey#arrivy' },
   { id: 'ashtex', label: 'Ashtex Solutions', type: 'experience', url: '/journey#ashtex' },
   { id: 'axelliant', label: 'Axelliant', type: 'experience', url: '/journey#axelliant' },
+  { id: 'freelance', label: 'Freelance', type: 'experience', url: '/products' },
 ];
 
 export const workspaceEdges: WorkspaceEdge[] = [
@@ -66,7 +66,6 @@ export const workspaceEdges: WorkspaceEdge[] = [
   { source: 'products', target: 'arabia-hills' },
   { source: 'products', target: 'alfa-club' },
   { source: 'products', target: 'budgetbuddy' },
-  { source: 'systems', target: 'automation' },
   { source: 'systems', target: 'axelliant-ci' },
   { source: 'systems', target: 'architecture' },
   { source: 'intelligence', target: 'deepshield' },
@@ -88,8 +87,6 @@ export const workspaceEdges: WorkspaceEdge[] = [
   { source: 'budgetbuddy', target: 'express' },
   { source: 'budgetbuddy', target: 'mongodb' },
 
-  { source: 'automation', target: 'makecom' },
-  { source: 'automation', target: 'automation-flows' },
   { source: 'axelliant-ci', target: 'github-actions' },
   { source: 'axelliant-ci', target: 'playwright' },
   { source: 'axelliant-ci', target: 'cypress' },
@@ -116,7 +113,9 @@ export const workspaceEdges: WorkspaceEdge[] = [
   { source: 'fast', target: 'robotics' },
   { source: 'ashtex', target: 'react' },
   { source: 'ashtex', target: 'makecom' },
-  { source: 'ashtex', target: 'automation' },
+  { source: 'freelance', target: 'arabia-hills' },
+  { source: 'freelance', target: 'wepsych' },
+  { source: 'freelance', target: 'alfa-club' },
   { source: 'axelliant', target: 'axelliant-ci' },
   { source: 'axelliant', target: 'github-actions' },
 ];

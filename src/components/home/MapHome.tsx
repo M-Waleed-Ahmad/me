@@ -19,7 +19,6 @@ const PROJECTS: { id: string; kind: string }[] = [
   { id: 'budgetbuddy', kind: 'Finance app · team project' },
   { id: 'alfa-club', kind: 'Ecommerce' },
   { id: 'axelliant-ci', kind: 'Role deep-dive' },
-  { id: 'automation', kind: 'Workflows' },
   { id: 'robotics', kind: 'Skill composition' },
 ];
 
