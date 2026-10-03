@@ -9,7 +9,7 @@ import { pageMetadata } from '@/lib/metadata';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Contact',
-  description: `Email, LinkedIn, GitHub and résumé for ${profile.name}, software engineer in ${profile.location}. Open to full-time roles and remote work.`,
+  description: `Email, LinkedIn, GitHub and résumé for ${profile.name}, AI & full-stack developer in ${profile.location}. Open to full-time roles and remote work.`,
   path: '/contact',
 });
 

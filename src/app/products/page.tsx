@@ -9,7 +9,7 @@ import { pageMetadata } from '@/lib/metadata';
 export const metadata: Metadata = pageMetadata({
   title: 'Work',
   description:
-    'Projects with the decisions behind them: DeepShield, WePsych, Arabia Hills and ALFA Club, plus smaller builds and an ongoing robotics exploration.',
+    'Projects with the decisions behind them: DeepShield, Arabia Hills, WePsych, BudgetBuddy and ALFA Club, plus smaller builds and an ongoing robotics exploration.',
   path: '/products',
 });
 

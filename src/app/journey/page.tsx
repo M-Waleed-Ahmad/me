@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { certifications, educationHistory, experience, leadership, profile } from '@/data/site';
+import { certifications, educationHistory, experience, leadership, profile, skills } from '@/data/site';
 import { ButtonLink, Container, PageIntro } from '@/components/ui';
 import { pageMetadata } from '@/lib/metadata';
 
@@ -67,7 +67,27 @@ export default function JourneyPage() {
         ))}
       </ol>
 
-      <div className="mt-16 grid gap-4 lg:grid-cols-2">
+      <section id="skills" className="mt-16 scroll-mt-24 rounded-2xl bg-surface p-6">
+        <h2 className="text-base font-medium text-ink">Skills</h2>
+        <dl className="mt-5 grid gap-x-10 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+          {skills.map(({ group, items }) => (
+            <div key={group}>
+              <dt className="font-mono text-xs text-ink-3">{group}</dt>
+              <dd className="mt-2">
+                <ul className="flex flex-wrap gap-1.5">
+                  {items.map((item) => (
+                    <li key={item} className="rounded-full bg-paper px-3 py-1 text-sm text-ink-2">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <section className="rounded-2xl bg-surface p-6">
           <h2 className="text-base font-medium text-ink">Education</h2>
           {educationHistory.map((entry) => (

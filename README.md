@@ -54,6 +54,7 @@ the DeepShield slider and the explorer graph.
 | `/products` | Work index, smaller builds and research notes |
 | `/products/deepshield` | DeepShield project page |
 | `/products/wepsych` | WePsych project page |
+| `/products/budgetbuddy` | BudgetBuddy project page |
 | `/products/arabia-hills` | Arabia Hills project page |
 | `/products/alfa-club` | ALFA Club project page |
 | `/products/other` | Smaller client builds |

@@ -6,6 +6,7 @@ const routes = [
   '/products',
   '/products/deepshield',
   '/products/wepsych',
+  '/products/budgetbuddy',
   '/products/arabia-hills',
   '/products/alfa-club',
   '/products/other',

@@ -9,17 +9,17 @@ import { profile, roleDeepDives, selectedWork } from '@/data/site';
 import { workspaceNodes } from '@/data/workspaceData';
 
 /** Map nodes whose story is told by another project's page. */
-const WORK_FOR: Record<string, string> = { cicd: 'axelliant', testing: 'axelliant' };
+const WORK_FOR: Record<string, string> = { 'axelliant-ci': 'axelliant' };
 
 /** Same order as the map's middle column, so the list and the map read together. */
 const PROJECTS: { id: string; kind: string }[] = [
-  { id: 'wepsych', kind: 'Compliance platform' },
-  { id: 'arabia-hills', kind: 'Real estate · UAE' },
-  { id: 'alfa-club', kind: 'Ecommerce' },
-  { id: 'automation', kind: 'Workflows' },
-  { id: 'cicd', kind: 'Pipelines · Axelliant' },
-  { id: 'testing', kind: 'Test automation · Axelliant' },
   { id: 'deepshield', kind: 'Final-year project' },
+  { id: 'arabia-hills', kind: 'Real estate · UAE' },
+  { id: 'wepsych', kind: 'Compliance platform' },
+  { id: 'budgetbuddy', kind: 'Finance app · team project' },
+  { id: 'alfa-club', kind: 'Ecommerce' },
+  { id: 'axelliant-ci', kind: 'Role deep-dive' },
+  { id: 'automation', kind: 'Workflows' },
   { id: 'robotics', kind: 'Skill composition' },
 ];
 
@@ -85,10 +85,10 @@ export default function MapHome() {
             {profile.location} · available for new roles
           </p>
           <h1 className="reveal mt-4 font-serif text-4xl leading-[1.05] text-ink sm:text-5xl lg:text-6xl" style={{ '--i': 1 } as React.CSSProperties}>
-            Software engineer, full-stack and AI systems.
+            {profile.role}.
           </h1>
           <p className="reveal mt-4 text-lg text-ink-2" style={{ '--i': 2 } as React.CSSProperties}>
-            {profile.experience} shipping web, mobile and ML work for international clients.
+            {profile.tagline}
           </p>
         </div>
         <Link

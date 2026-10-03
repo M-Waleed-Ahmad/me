@@ -5,10 +5,11 @@
 
 export const profile = {
   name: 'Waleed Ahmad',
-  role: 'Software Engineer',
-  /** Matches the second half of the CV headline. */
-  focus: 'Full-stack & AI systems',
+  /** The title used in the hero, page metadata and the share image. */
+  role: 'AI & Full-Stack Developer',
   experience: '1.5+ years',
+  /** The line under the hero headline. */
+  tagline: '1.5+ years shipping web, mobile and ML work for international clients.',
   location: 'Lahore, Pakistan',
   availability: 'Open to full-time roles and focused freelance builds · remote-friendly',
   email: 'waleed.ahmadmunir@gmail.com',
@@ -60,10 +61,23 @@ export const selectedWork: WorkItem[] = [
     kind: 'Final-year project',
     role: 'ML + backend',
     summary:
-      'Deepfake detection that shows its evidence: two fused models, Grad-CAM++ heatmaps, four confidence bands, and results anchored on-chain so tampering is detectable.',
-    stack: ['Python', 'FastAPI', 'PyTorch', 'OpenCV', 'Supabase'],
-    figure: { value: '4', label: 'confidence bands, not a yes/no' },
-    status: 'FYP · 2026',
+      'Detects manipulated and AI-generated media with two independent signals that are never fused, Grad-CAM++ evidence, and report hashes anchored on a local chain.',
+    stack: ['FastAPI', 'PyTorch', 'OpenCV', 'Hugging Face', 'Flutter', 'React/TypeScript', 'Supabase', 'Hardhat'],
+    figure: { value: '2', label: 'independent signals, never fused' },
+    status: 'Working FYP prototype, not publicly deployed',
+    screenshots: [],
+  },
+  {
+    slug: 'arabia-hills',
+    href: '/products/arabia-hills',
+    name: 'Arabia Hills',
+    kind: 'Real estate platform · UAE client',
+    role: 'Product engineer',
+    summary:
+      'Listings platform for a UAE client with live properties in Dubai: automated bulk uploads, an agent CMS and public search, all on one Supabase schema.',
+    stack: ['React', 'Supabase', 'PostgreSQL', 'Make.com'],
+    figure: { value: '1', label: 'schema shared by three surfaces' },
+    status: 'In production',
     screenshots: [],
   },
   {
@@ -80,16 +94,17 @@ export const selectedWork: WorkItem[] = [
     screenshots: [],
   },
   {
-    slug: 'arabia-hills',
-    href: '/products/arabia-hills',
-    name: 'Arabia Hills',
-    kind: 'Real estate platform · UAE client',
-    role: 'Product engineer',
+    slug: 'budgetbuddy',
+    href: '/products/budgetbuddy',
+    name: 'BudgetBuddy',
+    kind: 'Personal finance app · university team project',
+    role: 'Team project, FAST NUCES',
     summary:
-      'Listings platform for a UAE client with live properties in Dubai: automated bulk uploads, an agent CMS and public search, all on one Supabase schema.',
-    stack: ['React', 'Supabase', 'PostgreSQL', 'Make.com'],
-    figure: { value: '1', label: 'schema shared by three surfaces' },
-    status: 'In production',
+      'Personal and shared budgeting: monthly budgets with category limits and alerts, expense tracking, and shared plans with roles and an approval workflow.',
+    stack: ['React', 'Node.js', 'Express', 'MongoDB', 'JWT', 'Jest'],
+    figure: { value: '3', label: 'roles in shared plans: admin, editor, viewer' },
+    status: 'University team project',
+    source: 'https://github.com/M-Waleed-Ahmad/BudgetBuddy',
     screenshots: [],
   },
   {
@@ -128,6 +143,18 @@ export const roleDeepDives: WorkItem[] = [
   },
 ];
 
+/** Skills as listed on the CV, grouped. Shown on the Journey page. */
+export const skills: { group: string; items: string[] }[] = [
+  { group: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'Dart', 'SQL'] },
+  { group: 'AI & ML', items: ['PyTorch', 'OpenCV', 'Hugging Face Transformers', 'Grad-CAM++ explainability'] },
+  { group: 'Frontend & Mobile', items: ['React', 'Next.js', 'Tailwind CSS', 'Flutter', 'React Native'] },
+  {
+    group: 'Backend & Data',
+    items: ['Node.js', 'Express', 'FastAPI', 'REST APIs', 'Supabase', 'PostgreSQL', 'MongoDB'],
+  },
+  { group: 'Automation & DevOps', items: ['Playwright', 'Cypress', 'GitHub Actions', 'CI/CD', 'Make.com', 'Git'] },
+];
+
 export type Role = {
   id: string;
   org: string;
@@ -150,8 +177,8 @@ export const experience: Role[] = [
     place: 'Lahore',
     points: [
       'Built end-to-end Playwright and Cypress automation frameworks for hybrid systems, taking full testing cycles from 2–3 days to about 2 hours.',
-      'Integrated the tests into GitHub Actions and parallelised execution to shorten feedback loops across development and release pipelines.',
-      'Improved CI/CD reliability and deployment speed by streamlining test orchestration and cutting repetitive manual validation.',
+      'Engineered CI/CD pipelines with GitHub Actions using parallelised workflows, shortening feedback loops across development and release pipelines.',
+      'Collaborated with dev and product teams to maintain stable builds, streamlining test orchestration and reducing repetitive manual validation.',
     ],
     lesson:
       'A pipeline is a product for engineers. It has users, failure states and a trust problem, and it only helps if people believe its red and green.',
@@ -182,7 +209,6 @@ export const experience: Role[] = [
     place: 'Pakistan',
     points: [
       'Led QA for an employee management system and an automation tool; both went on to active production use.',
-      'Ran quality checks and tracked delivery schedules to support stable releases.',
       'Worked in a seven-person cross-functional intern team spanning development, testing and delivery.',
     ],
     lesson:

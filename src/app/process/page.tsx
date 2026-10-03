@@ -84,7 +84,7 @@ const lanes = [
 ];
 
 const stats = [
-  { value: '45', label: 'automated checks on every push' },
+  { value: '49', label: 'automated checks on every push' },
   { value: '2', label: 'viewports tested: desktop and phone' },
   { value: '0', label: 'console errors tolerated' },
   { value: '100%', label: 'of pages statically rendered' },

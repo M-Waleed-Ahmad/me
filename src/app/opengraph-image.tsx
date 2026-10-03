@@ -31,13 +31,15 @@ export default function OpengraphImage() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ fontSize: 112, lineHeight: 1 }}>{profile.name}</div>
           <div style={{ fontSize: 44, marginTop: 20, color: '#43454b' }}>
-            {`${profile.role} · ${profile.focus}`}
+            {profile.role}
           </div>
+          <div style={{ fontSize: 30, marginTop: 14, color: '#65676e' }}>{profile.tagline}</div>
         </div>
         <div style={{ display: 'flex', gap: 28, fontSize: 26, color: '#1e3a94', fontStyle: 'italic' }}>
           <span>DeepShield</span>
-          <span>WePsych</span>
           <span>Arabia Hills</span>
+          <span>WePsych</span>
+          <span>BudgetBuddy</span>
           <span>ALFA Club</span>
         </div>
       </div>

@@ -5,6 +5,7 @@ const ROUTES = [
   '/products',
   '/products/deepshield',
   '/products/wepsych',
+  '/products/budgetbuddy',
   '/products/arabia-hills',
   '/products/alfa-club',
   '/products/other',
@@ -163,4 +164,15 @@ test('earlier site versions can be viewed and switched back', async ({ page }) =
   await expect(page.locator('html')).toHaveAttribute('data-version', 'v1');
   await page.getByRole('button', { name: 'Back to now' }).click();
   await expect(page.locator('html')).not.toHaveAttribute('data-version', /.+/);
+});
+
+test('BudgetBuddy is listed in the work and links to its page and source', async ({ page }) => {
+  await page.goto('/products');
+  await page.getByRole('link', { name: /BudgetBuddy/ }).first().click();
+  await expect(page).toHaveURL(/\/products\/budgetbuddy$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'BudgetBuddy' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'View source' })).toHaveAttribute(
+    'href',
+    'https://github.com/M-Waleed-Ahmad/BudgetBuddy'
+  );
 });

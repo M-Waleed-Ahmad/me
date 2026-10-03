@@ -10,11 +10,12 @@ import { workspaceEdges, workspaceNodes, WorkspaceNode } from '@/data/workspaceD
   every time.
 */
 
-const LEFT = ['ashtex', 'axelliant', 'arrivy', 'fast'];
-const MIDDLE = ['wepsych', 'arabia-hills', 'alfa-club', 'automation', 'cicd', 'testing', 'deepshield', 'robotics'];
+// Arrivy has no project on the map since the separate testing entry was merged into Axelliant's.
+const LEFT = ['fast', 'axelliant', 'ashtex'];
+const MIDDLE = ['deepshield', 'arabia-hills', 'wepsych', 'budgetbuddy', 'alfa-club', 'axelliant-ci', 'automation', 'robotics'];
 const RIGHT = [
-  'flutter', 'supabase', 'postgresql', 'react', 'makecom', 'cloudinary',
-  'github-actions', 'playwright', 'cypress', 'python', 'fastapi', 'pytorch', 'opencv',
+  'pytorch', 'huggingface', 'python', 'flutter', 'supabase', 'postgresql', 'react',
+  'nodejs', 'mongodb', 'cloudinary', 'github-actions', 'playwright', 'cypress', 'makecom',
 ];
 
 const WIDTH = 640;
@@ -31,6 +32,7 @@ const X = {
 
 const SHORT_LABELS: Record<string, string> = {
   automation: 'Workflow automation',
+  'axelliant-ci': 'Axelliant CI/CD & tests',
   robotics: 'Robotics skills',
   fast: 'FAST NUCES',
   ashtex: 'Ashtex',

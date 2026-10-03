@@ -24,7 +24,12 @@ const KEYWORDS: [RegExp, string][] = [
   [/react|frontend|front-end|web ?app|website|dashboard/, 'react'],
   [/python|script|data pipeline/, 'python'],
   [/\bai\b|\bml\b|machine learning|model|deep ?fake|detect|classif|neural|pytorch/, 'pytorch'],
-  [/fastapi|\bapis?\b|server|endpoint/, 'fastapi'],
+  [/fastapi|server|endpoint/, 'fastapi'],
+  [/node(\.js)?\b|mern/, 'nodejs'],
+  [/express|rest ?api|\bapis?\b/, 'express'],
+  [/mongo|mongoose|nosql/, 'mongodb'],
+  [/hugging ?face|transformer|\bvit\b|ai.generated|generated image/, 'huggingface'],
+  [/typescript|admin dashboard/, 'typescript'],
   [/vision|video|image analysis|opencv|frames?/, 'opencv'],
   [/test|\bqa\b|playwright|e2e|end.to.end|regression/, 'playwright'],
   [/cypress/, 'cypress'],
@@ -36,8 +41,7 @@ const KEYWORDS: [RegExp, string][] = [
 /** Where each project node in the graph is written up on the site. */
 const PROJECT_PAGES: Record<string, { name: string; href: string }> = {
   ...Object.fromEntries(selectedWork.map((w) => [w.slug, { name: w.name, href: w.href }])),
-  cicd: { name: 'Axelliant CI/CD', href: roleDeepDives[0].href },
-  testing: { name: 'Axelliant CI/CD', href: roleDeepDives[0].href },
+  'axelliant-ci': { name: 'Axelliant CI/CD', href: roleDeepDives[0].href },
   robotics: { name: 'Robotics', href: '/products#robotics' },
 };
 

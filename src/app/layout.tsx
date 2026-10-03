@@ -27,7 +27,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const description =
-  'Waleed Ahmad is a software engineer in Lahore building full-stack products (React, Flutter, FastAPI) with CI/CD and test-automation depth. Case studies, systems work and applied AI.';
+  'Waleed Ahmad is an AI & full-stack developer in Lahore: applied AI (PyTorch, Hugging Face), full-stack products (React, Flutter, Node.js, FastAPI) and the automation that ships them.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -38,7 +38,8 @@ export const metadata: Metadata = {
   description,
   keywords: [
     'Waleed Ahmad',
-    'Software Engineer',
+    'AI & Full-Stack Developer',
+    'AI Developer',
     'Full-Stack Developer',
     'React',
     'Flutter',
